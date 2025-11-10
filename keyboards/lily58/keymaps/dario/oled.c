@@ -249,9 +249,6 @@ static void print_status_narrow(void) {
         case FUN:
             oled_write("FUN  ", false);
             break;
-        case GAME:
-            oled_write("GAME ", false);
-            break;
         default:
             break;
     }
