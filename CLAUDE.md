@@ -21,7 +21,12 @@ qmk config user.overlay_dir="$(realpath .)"
 
 ### Building Firmware
 
-Build all configured keyboards:
+Build all configured keyboards with visualization generation:
+```bash
+./build_all.sh
+```
+
+Build all keyboards without visualization:
 ```bash
 qmk userspace-compile
 ```
@@ -139,13 +144,12 @@ The codebase uses a **single source of truth** approach for keymap definitions t
 **Note**: All changes must comply with the [project constitution](.specify/memory/constitution.md), which defines mandatory principles for upstream modularity, 36-key layout consistency, extension modularity, keyboard inventory transparency, and visual keymap documentation.
 
 ### Adding a New Keyboard
-1. Create keymap using `qmk new-keymap -kb <keyboard> -km dario`
-2. Include `"dario.h"` in keymap.c
-3. Import shared layers from `users/dario/layers.h` or manually define using the same structure
-4. Create keyboard-specific config.h if needed
+1. Create keymap directory: `mkdir -p keyboards/<keyboard>/keymaps/dario`
+2. Create `keymap.c` that includes `"keymap_config.h"` (if wrapper needed), `"dario.h"`, and `"layers.h"`
+3. Create `keymap_config.h` with `LAYOUT_wrapper` and `LAYOUT_split_3x5_3` macros if keyboard has >36 keys
+4. Create `rules.mk` with `USER_NAME := dario` and keyboard-specific features
 5. Add to build targets: `qmk userspace-add -kb <keyboard> -km dario`
-6. **REQUIRED**: Update KEYBOARDS.md with the new keyboard entry (Principle IV)
-7. **REQUIRED**: Add ASCII art layer visualizations to keymap documentation (Principle V)
+6. **REQUIRED**: Add ASCII art layer visualizations to keymap documentation (Principle V)
 
 ### Modifying the Shared Keymap
 - Edit `users/dario/layers.h` to change the 36-key layout
@@ -161,18 +165,36 @@ The codebase uses a **single source of truth** approach for keymap definitions t
 ## File Organization
 ```
 qmk_userspace/
-├── users/dario/              # Shared userspace code
-│   ├── layers.h              # Single source of truth for 36-key layouts
-│   ├── dario.h               # Shared constants and layer enums
-│   ├── dario.c               # Custom keycode handlers
-│   ├── config.h              # Shared config
-│   └── rules.mk              # Shared features
-├── keyboards/
+├── users/dario/                      # Shared userspace code
+│   ├── layers.h                      # Single source of truth for 36-key layouts
+│   ├── dario.h                       # Shared constants and layer enums
+│   ├── dario.c                       # Custom keycode handlers
+│   ├── config.h                      # Shared config
+│   └── rules.mk                      # Shared features
+├── keyboards/                        # Per-keyboard keymaps
 │   ├── bastardkb/skeletyl/keymaps/dario/
+│   │   ├── keymap.c                  # Uses LAYOUT_wrapper(LAYER_*)
+│   │   ├── keymap_config.h           # LAYOUT_wrapper macro
+│   │   └── rules.mk                  # USER_NAME := dario
 │   ├── boardsource/lulu/keymaps/dario/
-│   └── lily58/keymaps/dario/ # Has GAME layer + OLED
-├── qmk.json                  # Build targets configuration
-└── *.hex, *.uf2              # Compiled firmware outputs
+│   │   ├── keymap.c                  # Uses LAYOUT_wrapper(LAYER_*)
+│   │   ├── keymap_config.h           # 36→58 key wrapper
+│   │   ├── oled.c                    # OLED display implementation
+│   │   └── rules.mk                  # OLED_ENABLE, RGB_MATRIX_ENABLE
+│   └── lily58/keymaps/dario/
+│       ├── keymap.c                  # Uses LAYOUT_wrapper(LAYER_*)
+│       ├── keymap_config.h           # 36→58 key wrapper
+│       ├── oled.c                    # Luna pet animation
+│       ├── oled.h                    # OLED header
+│       └── rules.mk                  # OLED_ENABLE, WPM_ENABLE
+├── scripts/
+│   └── generate_keymap_diagram.sh    # Keymap visualization generator
+├── docs/keymaps/                     # Generated keymap SVGs
+│   └── *.svg                         # Visualization outputs
+├── qmk.json                          # Build targets (managed by qmk CLI)
+├── build_all.sh                      # Build all + generate visualizations
+├── .keymap-drawer-config.yaml        # Keymap visualization config
+└── *.hex, *.uf2                      # Compiled firmware outputs
 ```
 
 ## GitHub Actions

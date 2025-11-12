@@ -9,20 +9,14 @@
 #define LAYER_BASE \
     KC_Q,              KC_W,              KC_F,              KC_P,              KC_G,              KC_J,              KC_L,              KC_U,              KC_Y,              KC_QUOT, \
     LGUI_T(KC_A),      LALT_T(KC_R),      LCTL_T(KC_S),      LSFT_T(KC_T),      KC_D,              KC_H,              LSFT_T(KC_N),      LCTL_T(KC_E),      LALT_T(KC_I),      LGUI_T(KC_O), \
-    LT(BUTTON, KC_Z),  LT(FUN, KC_X),     KC_C,              KC_V,              KC_B,              KC_K,              KC_M,              KC_COMM,           ALGR_T(KC_DOT),    LT(BUTTON, KC_SLSH), \
+    KC_Z,              LT(FUN, KC_X),     KC_C,              KC_V,              KC_B,              KC_K,              KC_M,              KC_COMM,           ALGR_T(KC_DOT),    KC_SLSH, \
                                           KC_ENT,            LT(NAV, KC_SPC),   LT(MEDIA, KC_TAB),                    LT(SYM, KC_DEL),   KC_LSFT,           LT(NUM, KC_BSPC)
 
 #define LAYER_NAV \
-    U_NA,    U_NA,     U_NA,     U_NA,     U_NA,     U_RDO,    U_PST,    U_CPY,    U_CUT,    U_UND, \
+    U_NA,    U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA, \
     KC_LGUI, KC_LALT,  KC_LCTL,  KC_LSFT,  U_NA,     KC_CAPS,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT, \
-    U_UND,   U_CUT,    U_CPY,    U_PST,    U_NA,     KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END, \
+    U_NA,    U_NA,     U_NA,     U_NA,     U_NA,     KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END, \
                        U_NA,     U_NA,     U_NA,     KC_DEL,   KC_ENT,   KC_BSPC
-
-#define LAYER_MOUSE \
-    U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_RDO,    U_PST,    U_CPY,    U_CUT,    U_UND, \
-    KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  U_NA,     U_NU,     MS_LEFT,  MS_DOWN,  MS_UP,    MS_RGHT, \
-    U_NA,     KC_ALGR,  U_NA,     U_NA,     U_NA,     U_NU,     MS_WHLL,  MS_WHLD,  MS_WHLU,  MS_WHLR, \
-                        U_NA,     U_NA,     U_NA,     MS_BTN1,  MS_BTN3,  MS_BTN2
 
 #define LAYER_MEDIA \
     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     RM_TOGG,  RM_NEXT,  RM_HUEU,  RM_SATU,  RM_VALU, \
@@ -47,11 +41,5 @@
     KC_F11,   KC_F4,    KC_F5,    KC_F6,    KC_SCRL,  U_NA,     KC_LSFT,  KC_LCTL,  KC_LALT,  KC_LGUI, \
     KC_F10,   KC_F1,    KC_F2,    KC_F3,    KC_PAUS,  U_NA,     U_NA,     U_NA,     KC_ALGR,  U_NA, \
                         KC_APP,   KC_SPC,   KC_TAB,   U_NA,     U_NA,     U_NA
-
-#define LAYER_BUTTON \
-    U_UND,    U_CUT,    U_CPY,    U_PST,    U_RDO,    U_RDO,    U_PST,    U_CPY,    U_CUT,    U_UND, \
-    KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_TRNS,  KC_TRNS,  KC_LSFT,  KC_LCTL,  KC_LALT,  KC_LGUI, \
-    U_UND,    U_CUT,    U_CPY,    U_PST,    U_RDO,    U_RDO,    U_PST,    U_CPY,    U_CUT,    U_UND, \
-                        MS_BTN2,  MS_BTN3,  MS_BTN1,  MS_BTN1,  MS_BTN3,  MS_BTN2
 
 #endif // USERSPACE_LAYERS_H

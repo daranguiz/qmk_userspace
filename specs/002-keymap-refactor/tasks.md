@@ -112,34 +112,34 @@
 
 ### Lulu Cleanup
 
-- [ ] T035 [US4] Review keyboards/boardsource/lulu/keymaps/dario/keymap.c and remove all commented-out experimental code
-- [ ] T036 [US4] Review keyboards/boardsource/lulu/keymaps/dario/config.h and remove unused configuration flags
-- [ ] T037 [US4] Review keyboards/boardsource/lulu/keymaps/dario/rules.mk and remove unused feature flags
-- [ ] T038 [US4] Remove any references to bilateral combinations patch in Lulu keymap
+- [X] T035 [US4] Review keyboards/boardsource/lulu/keymaps/dario/keymap.c and remove all commented-out experimental code
+- [X] T036 [US4] Review keyboards/boardsource/lulu/keymaps/dario/config.h and remove unused configuration flags (N/A - no config.h exists)
+- [X] T037 [US4] Review keyboards/boardsource/lulu/keymaps/dario/rules.mk and remove unused feature flags
+- [X] T038 [US4] Remove any references to bilateral combinations patch in Lulu keymap (none found)
 
 ### Lily58 Cleanup
 
-- [ ] T039 [US4] Review keyboards/lily58/keymaps/dario/keymap.c and remove all commented-out experimental code
-- [ ] T040 [US4] Review keyboards/lily58/keymaps/dario/config.h and remove unused configuration flags
-- [ ] T041 [US4] Review keyboards/lily58/keymaps/dario/rules.mk and remove unused feature flags
-- [ ] T042 [US4] Remove any references to bilateral combinations patch in Lily58 keymap
+- [X] T039 [US4] Review keyboards/lily58/keymaps/dario/keymap.c and remove all commented-out experimental code
+- [X] T040 [US4] Review keyboards/lily58/keymaps/dario/config.h and remove unused configuration flags (N/A - no config.h exists)
+- [X] T041 [US4] Review keyboards/lily58/keymaps/dario/rules.mk and remove unused feature flags
+- [X] T042 [US4] Remove any references to bilateral combinations patch in Lily58 keymap (none found)
 
 ### Skeletyl Cleanup
 
-- [ ] T043 [US4] Review keyboards/bastardkb/skeletyl/keymaps/dario/keymap.c and remove all commented-out experimental code
-- [ ] T044 [US4] Review keyboards/bastardkb/skeletyl/keymaps/dario/config.h and remove unused configuration flags
-- [ ] T045 [US4] Review keyboards/bastardkb/skeletyl/keymaps/dario/rules.mk and remove unused feature flags
-- [ ] T046 [US4] Remove any references to bilateral combinations patch in Skeletyl keymap
+- [X] T043 [US4] Review keyboards/bastardkb/skeletyl/keymaps/dario/keymap.c and remove all commented-out experimental code
+- [X] T044 [US4] Review keyboards/bastardkb/skeletyl/keymaps/dario/config.h and remove unused configuration flags (N/A - no config.h exists)
+- [X] T045 [US4] Review keyboards/bastardkb/skeletyl/keymaps/dario/rules.mk and remove unused feature flags
+- [X] T046 [US4] Remove any references to bilateral combinations patch in Skeletyl keymap (none found)
 
 ### Userspace Cleanup (if exists)
 
-- [ ] T047 [US4] Review users/daranguiz/ directory if it exists and identify code to migrate or remove
-- [ ] T048 [US4] Remove any legacy userspace directories that won't be used
+- [X] T047 [US4] Review users/daranguiz/ directory if it exists and identify code to migrate or remove (does not exist)
+- [X] T048 [US4] Remove any legacy userspace directories that won't be used (none found)
 
 ### Verification
 
-- [ ] T049 [US4] Compile all three keyboards to verify they still build after cleanup
-- [ ] T050 [US4] Document all currently-used features in a checklist for reference
+- [X] T049 [US4] Compile all three keyboards to verify they still build after cleanup
+- [X] T050 [US4] Document all currently-used features in a checklist for reference (documented in rules.mk files)
 
 **Checkpoint**: Clean codebase with no dead code, only actively used configuration
 
@@ -241,29 +241,29 @@
 
 ### Lulu Migration (58-key with wrapper)
 
-- [ ] T057 [US1] Create keyboards/boardsource/lulu/keymaps/dario/keymap_config.h with LAYOUT_split_3x5_3 wrapper macro mapping 36 keys to Lulu's 58-key layout
-- [ ] T058 [US1] Define XXX (KC_NO) for unused positions in keyboards/boardsource/lulu/keymaps/dario/keymap_config.h
-- [ ] T059 [US1] Rewrite keyboards/boardsource/lulu/keymaps/dario/keymap.c to include keymap_config.h, dario.h, and layers.h
-- [ ] T060 [US1] Update keyboards/boardsource/lulu/keymaps/dario/keymap.c keymaps array to use LAYOUT_split_3x5_3(LAYER_BASE), etc. for all 8 layers
-- [ ] T061 [US1] Verify keyboards/boardsource/lulu/keymaps/dario/rules.mk has USER_NAME := dario
-- [ ] T062 [US1] Test build: make boardsource/lulu/rp2040:dario and verify successful compilation
-- [ ] T063 [US1] Flash Lulu and verify base layer functionality matches original
+- [X] T057 [US1] Create keyboards/boardsource/lulu/keymaps/dario/keymap_config.h with LAYOUT_split_3x5_3 wrapper macro mapping 36 keys to Lulu's 58-key layout
+- [X] T058 [US1] Define XXX (KC_NO) for unused positions in keyboards/boardsource/lulu/keymaps/dario/keymap_config.h
+- [X] T059 [US1] Rewrite keyboards/boardsource/lulu/keymaps/dario/keymap.c to include keymap_config.h, dario.h, and layers.h
+- [X] T060 [US1] Update keyboards/boardsource/lulu/keymaps/dario/keymap.c keymaps array to use LAYOUT_split_3x5_3(LAYER_BASE), etc. for all 8 layers
+- [X] T061 [US1] Verify keyboards/boardsource/lulu/keymaps/dario/rules.mk has USER_NAME := dario
+- [X] T062 [US1] Test build: make boardsource/lulu/rp2040:dario and verify successful compilation
+- [ ] T063 [US1] Flash Lulu and verify base layer functionality matches original (requires physical hardware)
 
 ### Lily58 Migration (58-key with wrapper)
 
-- [ ] T064 [US1] Create keyboards/lily58/keymaps/dario/keymap_config.h with LAYOUT_split_3x5_3 wrapper macro mapping 36 keys to Lily58's 58-key layout
-- [ ] T065 [US1] Define XXX (KC_NO) for unused positions in keyboards/lily58/keymaps/dario/keymap_config.h
-- [ ] T066 [US1] Rewrite keyboards/lily58/keymaps/dario/keymap.c to include keymap_config.h, dario.h, and layers.h
-- [ ] T067 [US1] Update keyboards/lily58/keymaps/dario/keymap.c keymaps array to use LAYOUT_split_3x5_3(LAYER_BASE), etc. for all 8 layers
-- [ ] T068 [US1] Verify keyboards/lily58/keymaps/dario/rules.mk has USER_NAME := dario
-- [ ] T069 [US1] Test build: make lily58/rev1:dario and verify successful compilation
-- [ ] T070 [US1] Flash Lily58 and verify base layer functionality matches original
+- [X] T064 [US1] Create keyboards/lily58/keymaps/dario/keymap_config.h with LAYOUT_split_3x5_3 wrapper macro mapping 36 keys to Lily58's 58-key layout
+- [X] T065 [US1] Define XXX (KC_NO) for unused positions in keyboards/lily58/keymaps/dario/keymap_config.h
+- [X] T066 [US1] Rewrite keyboards/lily58/keymaps/dario/keymap.c to include keymap_config.h, dario.h, and layers.h
+- [X] T067 [US1] Update keyboards/lily58/keymaps/dario/keymap.c keymaps array to use LAYOUT_split_3x5_3(LAYER_BASE), etc. for all 8 layers
+- [X] T068 [US1] Verify keyboards/lily58/keymaps/dario/rules.mk has USER_NAME := dario
+- [X] T069 [US1] Test build: make lily58/rev1:dario and verify successful compilation
+- [ ] T070 [US1] Flash Lily58 and verify base layer functionality matches original (requires physical hardware)
 
 ### Verification of Single Source of Truth
 
-- [ ] T071 [US1] Make a test change to LAYER_BASE in users/dario/layers.h (e.g., swap two keys)
-- [ ] T072 [US1] Rebuild all three keyboards and verify the change appears in all builds
-- [ ] T073 [US1] Revert the test change in users/dario/layers.h
+- [X] T071 [US1] Make a test change to LAYER_BASE in users/dario/layers.h (e.g., swap two keys)
+- [X] T072 [US1] Rebuild all three keyboards and verify the change appears in all builds
+- [X] T073 [US1] Revert the test change in users/dario/layers.h
 
 **Checkpoint**: Single source of truth established - modifying users/dario/layers.h affects all keyboards
 
@@ -279,35 +279,35 @@
 
 ### Lulu OLED Implementation
 
-- [ ] T074 [P] [US2] Review existing OLED code in keyboards/boardsource/lulu/keymaps/dario/ if present
-- [ ] T075 [P] [US2] Create or update keyboards/boardsource/lulu/keymaps/dario/oled.c with oled_init_user and oled_task_user functions
-- [ ] T076 [US2] Add OLED_ENABLE = yes to keyboards/boardsource/lulu/keymaps/dario/rules.mk
-- [ ] T077 [US2] Add SRC += oled.c to keyboards/boardsource/lulu/keymaps/dario/rules.mk
-- [ ] T078 [US2] Update OLED display to show current layer name using get_highest_layer(layer_state)
-- [ ] T079 [US2] Test build and flash: make boardsource/lulu/rp2040:dario:flash
-- [ ] T080 [US2] Verify OLED displays correctly on Lulu
+- [X] T074 [P] [US2] Review existing OLED code in keyboards/boardsource/lulu/keymaps/dario/ if present
+- [X] T075 [P] [US2] Create or update keyboards/boardsource/lulu/keymaps/dario/oled.c with oled_init_user and oled_task_user functions
+- [X] T076 [US2] Add OLED_ENABLE = yes to keyboards/boardsource/lulu/keymaps/dario/rules.mk
+- [X] T077 [US2] Add SRC += oled.c to keyboards/boardsource/lulu/keymaps/dario/rules.mk
+- [X] T078 [US2] Update OLED display to show current layer name using get_highest_layer(layer_state)
+- [X] T079 [US2] Test build and flash: make boardsource/lulu/rp2040:dario:flash (build successful)
+- [ ] T080 [US2] Verify OLED displays correctly on Lulu (requires physical hardware)
 
 ### Lily58 OLED Implementation
 
-- [ ] T081 [P] [US2] Review existing OLED code in keyboards/lily58/keymaps/dario/ if present
-- [ ] T082 [P] [US2] Create or update keyboards/lily58/keymaps/dario/oled.c with oled_init_user and oled_task_user functions
-- [ ] T083 [US2] Add OLED_ENABLE = yes to keyboards/lily58/keymaps/dario/rules.mk
-- [ ] T084 [US2] Add SRC += oled.c to keyboards/lily58/keymaps/dario/rules.mk
-- [ ] T085 [US2] Update OLED display to show current layer name using get_highest_layer(layer_state)
-- [ ] T086 [US2] Test build and flash: make lily58/rev1:dario:flash
-- [ ] T087 [US2] Verify OLED displays correctly on Lily58
+- [X] T081 [P] [US2] Review existing OLED code in keyboards/lily58/keymaps/dario/ if present (already has elaborate OLED with Luna pet)
+- [X] T082 [P] [US2] Create or update keyboards/lily58/keymaps/dario/oled.c with oled_init_user and oled_task_user functions (already complete)
+- [X] T083 [US2] Add OLED_ENABLE = yes to keyboards/lily58/keymaps/dario/rules.mk (already present)
+- [X] T084 [US2] Add SRC += oled.c to keyboards/lily58/keymaps/dario/rules.mk (already present as SRC += ./oled.c)
+- [X] T085 [US2] Update OLED display to show current layer name using get_highest_layer(layer_state) (already implemented)
+- [X] T086 [US2] Test build and flash: make lily58/rev1:dario:flash (build tested successfully)
+- [ ] T087 [US2] Verify OLED displays correctly on Lily58 (requires physical hardware)
 
 ### Extra Keys Configuration (Lulu and Lily58)
 
 - [ ] T088 [US2] Document which physical keys on Lulu are extra (beyond 36-key core) in keyboards/boardsource/lulu/keymaps/dario/README.md
 - [ ] T089 [US2] Document which physical keys on Lily58 are extra (beyond 36-key core) in keyboards/lily58/keymaps/dario/README.md
-- [ ] T090 [US2] Verify extra keys in wrapper macros are mapped to XXX (KC_NO) or have intentional assignments
+- [X] T090 [US2] Verify extra keys in wrapper macros are mapped to XXX (KC_NO) or have intentional assignments (verified: some intentionally repeated for pinky convenience)
 
 ### Verification
 
-- [ ] T091 [US2] Verify Skeletyl build still succeeds and has no OLED code: make bastardkb/skeletyl:dario
-- [ ] T092 [US2] Test that modifying users/dario/layers.h still affects all three keyboards equally
-- [ ] T093 [US2] Verify OLED features are keyboard-specific and don't leak to other boards
+- [X] T091 [US2] Verify Skeletyl build still succeeds and has no OLED code: make bastardkb/skeletyl:dario (tested successfully, no OLED)
+- [X] T092 [US2] Test that modifying users/dario/layers.h still affects all three keyboards equally (already tested in T071-T073)
+- [X] T093 [US2] Verify OLED features are keyboard-specific and don't leak to other boards (Skeletyl builds without OLED, Lulu and Lily58 have separate implementations)
 
 **Checkpoint**: Keyboard-specific features working, base layout still shared
 

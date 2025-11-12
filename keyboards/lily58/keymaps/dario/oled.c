@@ -228,17 +228,11 @@ static void print_status_narrow(void) {
         case BASE:
             oled_write("COLMK", false);
             break;
-        case BUTTON:
-            oled_write("BUTTN", false);
-            break;
         case MEDIA:
             oled_write("MEDIA", false);
             break;
         case NAV:
             oled_write("NAV  ", false);
-            break;
-        case MOUSE:
-            oled_write("MOUSE", false);
             break;
         case SYM:
             oled_write("SYM  ", false);

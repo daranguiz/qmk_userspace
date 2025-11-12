@@ -1,0 +1,138 @@
+parse_config:
+  qmk_remove_keycode_prefix:
+    - "KC_"
+
+  # Highlight all keys that activate layers (not just first one)
+  mark_alternate_layer_activators: true
+
+  # Specify which layer each named layer corresponds to
+  layer_names:
+    - BASE
+    - NAV
+    - MEDIA
+    - NUM
+    - SYM
+    - FUN
+
+  # Custom layer names (for keys that reference layers)
+  layer_legend_map:
+    "BASE": "BASE"
+    "NAV": "NAV"
+    "MEDIA": "MEDIA"
+    "NUM": "NUM"
+    "SYM": "SYM"
+    "FUN": "FUN"
+
+  raw_binding_map:
+    # Layer-tap keys - show tap key on top, layer below
+    "LT(FUN, KC_X)":
+      tap: "X"
+      hold: "FUN"
+    "LT(NAV, KC_SPC)":
+      tap: "Space"
+      hold: "NAV"
+    "LT(MEDIA, KC_TAB)":
+      tap: "Tab"
+      hold: "MEDIA"
+    "LT(SYM, KC_DEL)":
+      tap: "Del"
+      hold: "SYM"
+    "LT(NUM, KC_BSPC)":
+      tap: "Bksp"
+      hold: "NUM"
+
+    # Miryoku custom keycodes
+    "U_NA": ""
+    "U_NU": ""
+    "U_NP": ""
+    "U_UND": "⎌ Undo"
+    "U_RDO": "⟲ Redo"
+    "U_CUT": "✂ Cut"
+    "U_CPY": "⧉ Copy"
+    "U_PST": "⎀ Paste"
+
+    # Mouse keycodes
+    "MS_LEFT": "M←"
+    "MS_DOWN": "M↓"
+    "MS_UP": "M↑"
+    "MS_RGHT": "M→"
+    "MS_BTN1": "LC"
+    "MS_BTN2": "RC"
+    "MS_BTN3": "MC"
+    "MS_WHLL": "W←"
+    "MS_WHLD": "W↓"
+    "MS_WHLU": "W↑"
+    "MS_WHLR": "W→"
+
+    # RGB controls
+    "RM_TOGG": "RGB"
+    "RM_NEXT": "Mode"
+    "RM_HUEU": "Hue+"
+    "RM_SATU": "Sat+"
+    "RM_VALU": "Val+"
+
+draw_config:
+  ortho_layout:
+    split: true
+    rows: 3
+    columns: 5
+    thumbs: 3
+
+  # Custom styling for held keys (layer activators)
+  svg_extra_style: |
+    /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green */
+    .layer-BASE .keypos-21 rect,
+    .layer-BASE .keypos-31 rect,
+    .layer-BASE .keypos-32 rect,
+    .layer-BASE .keypos-33 rect,
+    .layer-BASE .keypos-35 rect {
+      fill: #4CAF50 !important;
+      stroke: #2E7D32 !important;
+      stroke-width: 3 !important;
+      opacity: 1 !important;
+    }
+    .layer-BASE .keypos-21 text,
+    .layer-BASE .keypos-31 text,
+    .layer-BASE .keypos-32 text,
+    .layer-BASE .keypos-33 text,
+    .layer-BASE .keypos-35 text {
+      fill: white !important;
+      font-weight: bold !important;
+    }
+
+    /* Highlight home row mods (positions 10-13, 16-19) with lighter green stroke */
+    .layer-BASE .keypos-10 rect,
+    .layer-BASE .keypos-11 rect,
+    .layer-BASE .keypos-12 rect,
+    .layer-BASE .keypos-13 rect,
+    .layer-BASE .keypos-16 rect,
+    .layer-BASE .keypos-17 rect,
+    .layer-BASE .keypos-18 rect,
+    .layer-BASE .keypos-19 rect {
+      stroke: #66BB6A !important;
+      stroke-width: 2 !important;
+    }
+
+    /* On other layers, highlight the key that keeps you on that layer */
+    .layer-NAV .keypos-31 rect,
+    .layer-MEDIA .keypos-32 rect,
+    .layer-NUM .keypos-35 rect,
+    .layer-SYM .keypos-33 rect,
+    .layer-FUN .keypos-21 rect {
+      fill: #FF9800 !important;
+      stroke: #E65100 !important;
+      stroke-width: 3 !important;
+    }
+    .layer-NAV .keypos-31 text,
+    .layer-MEDIA .keypos-32 text,
+    .layer-NUM .keypos-35 text,
+    .layer-SYM .keypos-33 text,
+    .layer-FUN .keypos-21 text {
+      fill: white !important;
+      font-weight: bold !important;
+    }
+
+    /* Make sure ghost keys (on other layers) are clearly different */
+    .key.ghost rect {
+      opacity: 0.3 !important;
+    }
