@@ -28,7 +28,7 @@
     KC_LBRC,  KC_4,     KC_5,     KC_6,     KC_RBRC,  U_NA,     U_NA,     U_NA,     U_NA,     U_NA, \
     KC_SCLN,  KC_1,     KC_2,     KC_3,     KC_EQL,   U_NA,     KC_LSFT,  KC_LCTL,  KC_LALT,  KC_LGUI, \
     KC_GRV,   KC_7,     KC_8,     KC_9,     KC_BSLS,  U_NA,     U_NA,     U_NA,     KC_ALGR,  U_NA, \
-                        KC_DOT,   KC_0,     KC_MINS,  U_NA,     U_NA,     U_NA
+                        KC_COLN,  KC_0,     KC_MINS,  U_NA,     U_NA,     U_NA
 
 #define LAYER_SYM \
     KC_LCBR,  KC_DLR,   KC_PERC,  KC_CIRC,  KC_RCBR,  U_NA,     U_NA,     U_NA,     U_NA,     U_NA, \
