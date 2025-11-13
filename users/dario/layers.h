@@ -13,7 +13,7 @@
                                           KC_ENT,            LT(NAV, KC_SPC),   LT(MEDIA, KC_TAB),                    LT(SYM, KC_DEL),   KC_LSFT,           LT(NUM, KC_BSPC)
 
 #define LAYER_NAV \
-    U_NA,    U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA,     U_NA, \
+    U_NA,    U_NA,     U_NA,     U_NA,     U_NA,     KC_ESC,   U_NA,     U_NA,     U_NA,     U_NA, \
     KC_LGUI, KC_LALT,  KC_LCTL,  KC_LSFT,  U_NA,     KC_CAPS,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT, \
     U_NA,    U_NA,     U_NA,     U_NA,     U_NA,     KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END, \
                        U_NA,     U_NA,     U_NA,     KC_DEL,   KC_ENT,   KC_BSPC
