@@ -44,18 +44,47 @@ jobs:
   build-qmk:
     name: 'Build QMK Firmware'
     needs: generate-keymaps
-    uses: qmk/.github/.github/workflows/qmk_userspace_build.yml@main
-    with:
-      qmk_repo: qmk/qmk_firmware
-      qmk_ref: master
-      # Set QMK_USERSPACE to the qmk/ subdirectory
-      userspace_path: qmk
+    runs-on: ubuntu-latest
+    container: qmkfm/qmk_cli
+    steps:
+      - name: Disable safe.directory check
+        run: git config --global --add safe.directory '*'
 
-  publish-qmk:
-    name: 'Publish QMK Firmware'
-    uses: qmk/.github/.github/workflows/qmk_userspace_publish.yml@main
-    if: always() && !cancelled()
-    needs: build-qmk
+      - name: Checkout QMK firmware
+        uses: actions/checkout@v4
+        with:
+          repository: qmk/qmk_firmware
+          submodules: recursive
+          path: qmk_firmware
+
+      - name: Checkout userspace
+        uses: actions/checkout@v4
+        with:
+          path: userspace
+
+      - name: Set QMK_USERSPACE environment variable
+        run: echo "QMK_USERSPACE=$GITHUB_WORKSPACE/userspace/qmk" >> $GITHUB_ENV
+
+      - name: Build firmware binaries
+        run: |
+          cd qmk_firmware
+          qmk userspace-compile -e DUMP_CI_METADATA=yes
+        env:
+          QMK_USERSPACE: ${{ github.workspace }}/userspace/qmk
+
+      - name: Upload firmware binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: qmk-firmware
+          path: qmk_firmware/*.hex
+          if-no-files-found: ignore
+
+      - name: Upload firmware UF2 files
+        uses: actions/upload-artifact@v4
+        with:
+          name: qmk-firmware-uf2
+          path: qmk_firmware/*.uf2
+          if-no-files-found: ignore
 
   # ZMK build will be added here when ZMK boards are configured
   # build-zmk:
