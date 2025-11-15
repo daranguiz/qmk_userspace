@@ -1,0 +1,13 @@
+This file triggers CI/CD testing for T072.
+Test timestamp: 2025-11-15
+
+The workflow should:
+1. Generate keymaps from config/keymap.yaml
+2. Build QMK firmware for all configured boards
+3. Publish artifacts
+
+Expected boards to build:
+- Bastard Keyboards Skeletyl (QMK)
+- Boardsource Lulu RP2040 (QMK)
+- Lily58 Rev1 (QMK)
+- Corne/CRKBD Rev1 (QMK)
