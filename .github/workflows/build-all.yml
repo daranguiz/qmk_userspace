@@ -72,18 +72,14 @@ jobs:
         env:
           QMK_USERSPACE: ${{ github.workspace }}/userspace/qmk
 
-      - name: Upload firmware binaries
+      - name: Upload all firmware binaries
         uses: actions/upload-artifact@v4
         with:
-          name: qmk-firmware
-          path: qmk_firmware/*.hex
-          if-no-files-found: ignore
-
-      - name: Upload firmware UF2 files
-        uses: actions/upload-artifact@v4
-        with:
-          name: qmk-firmware-uf2
-          path: qmk_firmware/*.uf2
+          name: firmware-binaries
+          path: |
+            qmk_firmware/*.hex
+            qmk_firmware/*.uf2
+            qmk_firmware/*.bin
           if-no-files-found: ignore
 
   # ZMK build will be added here when ZMK boards are configured
