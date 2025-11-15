@@ -1,0 +1,171 @@
+"""
+YAML configuration parser for unified keymap system
+
+This module handles parsing of:
+- config/keymap.yaml: Layer definitions
+- config/boards.yaml: Board inventory
+- config/aliases.yaml: Behavior aliases
+"""
+
+from pathlib import Path
+from typing import Dict, List
+import yaml
+
+from data_model import (
+    KeyGrid,
+    Layer,
+    LayerExtension,
+    Board,
+    BoardInventory,
+    KeymapConfiguration,
+    BehaviorAlias,
+    ValidationError
+)
+
+
+class YAMLConfigParser:
+    """Parser for YAML configuration files"""
+
+    @staticmethod
+    def parse_keymap(yaml_path: Path) -> KeymapConfiguration:
+        """
+        Parse config/keymap.yaml
+
+        Returns:
+            KeymapConfiguration with all layers loaded
+        """
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        if not data or 'layers' not in data:
+            raise ValidationError("keymap.yaml must contain 'layers' section")
+
+        layers = {}
+        for layer_name, layer_data in data['layers'].items():
+            # Parse core layout
+            if 'core' not in layer_data:
+                raise ValidationError(f"Layer {layer_name}: 'core' section is required")
+
+            core_rows = layer_data['core']
+            if not isinstance(core_rows, list):
+                raise ValidationError(f"Layer {layer_name}: 'core' must be a list of rows")
+
+            core = KeyGrid(rows=core_rows)
+
+            # Parse extensions (optional)
+            extensions = {}
+            if 'extensions' in layer_data:
+                for ext_type, ext_data in layer_data['extensions'].items():
+                    extension = LayerExtension(
+                        extension_type=ext_type,
+                        keys=ext_data
+                    )
+                    extension.validate()
+                    extensions[ext_type] = extension
+
+            # Create layer
+            layer = Layer(name=layer_name, core=core, extensions=extensions)
+            layers[layer_name] = layer
+
+        # Get metadata if present
+        metadata = data.get('metadata', {})
+
+        config = KeymapConfiguration(layers=layers, metadata=metadata)
+        config.validate()
+
+        return config
+
+    @staticmethod
+    def parse_boards(yaml_path: Path) -> BoardInventory:
+        """
+        Parse config/boards.yaml
+
+        Returns:
+            BoardInventory with all board configurations
+        """
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        if not data or 'boards' not in data:
+            raise ValidationError("boards.yaml must contain 'boards' section")
+
+        boards = {}
+        for board_id, board_data in data['boards'].items():
+            # Required fields
+            if 'name' not in board_data:
+                raise ValidationError(f"Board {board_id}: 'name' is required")
+            if 'firmware' not in board_data:
+                raise ValidationError(f"Board {board_id}: 'firmware' is required")
+
+            # Create board
+            board = Board(
+                id=board_id,
+                name=board_data['name'],
+                firmware=board_data['firmware'],
+                layout_size=board_data.get('layout_size', '3x5_3'),
+                extra_layers=board_data.get('extra_layers', []),
+                qmk_keyboard=board_data.get('qmk_keyboard'),
+                zmk_shield=board_data.get('zmk_shield')
+            )
+
+            board.validate()
+            boards[board_id] = board
+
+        inventory = BoardInventory(boards=boards)
+        inventory.validate()
+
+        return inventory
+
+    @staticmethod
+    def parse_aliases(yaml_path: Path) -> Dict[str, BehaviorAlias]:
+        """
+        Parse config/aliases.yaml
+
+        Returns:
+            Dictionary of BehaviorAlias objects indexed by alias name
+        """
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        if not data or 'behaviors' not in data:
+            raise ValidationError("aliases.yaml must contain 'behaviors' section")
+
+        aliases = {}
+        for alias_name, alias_data in data['behaviors'].items():
+            # Required fields
+            required = ['description', 'qmk_pattern', 'zmk_pattern', 'params']
+            for field in required:
+                if field not in alias_data:
+                    raise ValidationError(
+                        f"Alias {alias_name}: '{field}' is required"
+                    )
+
+            # Create alias
+            alias = BehaviorAlias(
+                alias_name=alias_name,
+                description=alias_data['description'],
+                params=alias_data['params'],
+                qmk_pattern=alias_data['qmk_pattern'],
+                zmk_pattern=alias_data['zmk_pattern'],
+                firmware_support=alias_data.get('firmware_support', ['qmk', 'zmk'])
+            )
+
+            aliases[alias_name] = alias
+
+        return aliases
+
+    @staticmethod
+    def parse_special_keycodes(yaml_path: Path) -> Dict[str, Dict[str, str]]:
+        """
+        Parse special keycode mappings from config/aliases.yaml
+
+        Returns:
+            Dictionary of keycodes with their QMK and ZMK translations
+        """
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        if not data or 'keycodes' not in data:
+            return {}  # Optional section
+
+        return data['keycodes']

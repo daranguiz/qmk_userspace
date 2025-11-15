@@ -1,0 +1,41 @@
+# Firmware-agnostic behavior aliases
+# Used by the keymap generator to translate unified syntax to firmware-specific code
+
+behaviors:
+  hrm:
+    description: "Homerow mod (hold for modifier, tap for key)"
+    qmk_pattern: "{mod}_T(KC_{key})"
+    zmk_pattern: "&hrm {mod} {key}"
+    params: [mod, key]
+    firmware_support: [qmk, zmk]
+
+  lt:
+    description: "Layer-tap (hold for layer, tap for key)"
+    qmk_pattern: "LT({layer}, KC_{key})"
+    zmk_pattern: "&lt {layer} {key}"
+    params: [layer, key]
+    firmware_support: [qmk, zmk]
+
+  bt:
+    description: "Bluetooth control (ZMK-only)"
+    qmk_pattern: "KC_NO"  # Filtered for QMK
+    zmk_pattern: "&bt BT_{action}"
+    params: [action]
+    firmware_support: [zmk]  # ZMK only
+
+# Keycode mappings for special cases
+keycodes:
+  NONE:
+    qmk: "KC_NO"
+    zmk: "&none"
+    description: "No key action"
+
+  QK_BOOT:
+    qmk: "QK_BOOT"
+    zmk: "&bootloader"
+    description: "Bootloader key"
+
+  TRANS:
+    qmk: "KC_TRNS"
+    zmk: "&trans"
+    description: "Transparent (pass through to lower layer)"

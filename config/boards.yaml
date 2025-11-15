@@ -1,0 +1,23 @@
+# Board inventory and configuration
+# This is the single source of truth for which keyboards are supported
+
+boards:
+  skeletyl:
+    name: "Bastard Keyboards Skeletyl"
+    firmware: qmk
+    qmk_keyboard: "bastardkb/skeletyl/promicro"
+    layout_size: "3x5_3"  # 36-key base
+
+  lulu:
+    name: "Boardsource Lulu (RP2040)"
+    firmware: qmk
+    qmk_keyboard: "boardsource/lulu/rp2040"
+    layout_size: "custom_58"  # Custom 58-key layout
+    extra_layers: ["GAME"]
+
+  lily58:
+    name: "Lily58 Rev1"
+    firmware: qmk
+    qmk_keyboard: "lily58/rev1"
+    layout_size: "custom_58"  # Custom 58-key layout
+    extra_layers: ["GAME"]

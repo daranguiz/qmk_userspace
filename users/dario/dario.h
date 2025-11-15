@@ -3,12 +3,13 @@
 #include QMK_KEYBOARD_H
 
 // Layer definitions
+// NOTE: Order must match config/keymap.yaml layer order
 enum layers {
     BASE,
-    NUM,
-    SYM,
     NAV,
     MEDIA,
+    NUM,
+    SYM,
     FUN
 };
 

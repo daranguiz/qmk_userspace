@@ -1,0 +1,99 @@
+# Unified keymap configuration
+# Single source of truth for all keyboards
+# Generated keymaps: Run `python3 scripts/generate.py` to regenerate
+
+metadata:
+  description: "Miryoku-based Colemak layout with Mac clipboard shortcuts"
+  author: "Dario"
+  layout: "36-key 3x5_3 core with extensions for larger boards"
+
+layers:
+  BASE:
+    core:
+      # Left hand (3x5)
+      - [Q,            W,              F,              P,              G]
+      - [hrm:LGUI:A,   hrm:LALT:R,     hrm:LCTL:S,     hrm:LSFT:T,     D]
+      - [Z,            lt:FUN:X,       C,              V,              B]
+      # Right hand (3x5)
+      - [J,            L,              U,              Y,              QUOT]
+      - [H,            hrm:LSFT:N,     hrm:LCTL:E,     hrm:LALT:I,     hrm:LGUI:O]
+      - [K,            M,              COMM,           ALGR_T(KC_DOT), SLSH]
+      # Right thumb (3)
+      - [ENT,          lt:NAV:SPC,     lt:MEDIA:TAB]
+      # Left thumb (3)
+      - [lt:SYM:DEL,   LSFT,           lt:NUM:BSPC]
+
+  NAV:
+    core:
+      # Left hand
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [LGUI,    LALT,     LCTL,     LSFT,     NONE]
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      # Right hand
+      - [ESC,     NONE,     NONE,     NONE,     NONE]
+      - [CAPS,    LEFT,     DOWN,     UP,       RGHT]
+      - [INS,     HOME,     PGDN,     PGUP,     END]
+      # Right thumb (3)
+      - [NONE,    NONE,     NONE]
+      # Left thumb (3)
+      - [DEL,     ENT,      BSPC]
+
+  MEDIA:
+    core:
+      # Left hand
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [LGUI,    LALT,     LCTL,     LSFT,     NONE]
+      - [NONE,    ALGR,     NONE,     NONE,     NONE]
+      # Right hand
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [NONE,    MPRV,     VOLD,     VOLU,     MNXT]
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      # Right thumb (3)
+      - [NONE,    NONE,     NONE]
+      # Left thumb (3)
+      - [MSTP,    MPLY,     MUTE]
+
+  NUM:
+    core:
+      # Left hand
+      - [LBRC,    4,        5,        6,        RBRC]
+      - [SCLN,    1,        2,        3,        EQL]
+      - [GRV,     7,        8,        9,        BSLS]
+      # Right hand
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [NONE,    LSFT,     LCTL,     LALT,     LGUI]
+      - [NONE,    NONE,     NONE,     ALGR,     NONE]
+      # Right thumb (3)
+      - [COLN,    0,        MINS]
+      # Left thumb (3)
+      - [NONE,    NONE,     NONE]
+
+  SYM:
+    core:
+      # Left hand
+      - [LCBR,    DLR,      PERC,     CIRC,     RCBR]
+      - [COLN,    EXLM,     AT,       HASH,     PLUS]
+      - [TILD,    AMPR,     ASTR,     LPRN,     PIPE]
+      # Right hand
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [NONE,    LSFT,     LCTL,     LALT,     LGUI]
+      - [NONE,    NONE,     NONE,     ALGR,     NONE]
+      # Right thumb (3)
+      - [LPRN,    RPRN,     UNDS]
+      # Left thumb (3)
+      - [NONE,    NONE,     NONE]
+
+  FUN:
+    core:
+      # Left hand
+      - [F12,     F7,       F8,       F9,       PSCR]
+      - [F11,     F4,       F5,       F6,       SCRL]
+      - [F10,     F1,       F2,       F3,       PAUS]
+      # Right hand
+      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [NONE,    LSFT,     LCTL,     LALT,     LGUI]
+      - [NONE,    NONE,     NONE,     ALGR,     NONE]
+      # Right thumb (3)
+      - [APP,     SPC,      TAB]
+      # Left thumb (3)
+      - [NONE,    NONE,     NONE]
