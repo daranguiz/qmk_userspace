@@ -185,7 +185,9 @@ class ZMKTranslator:
         # For example, validate modifier names for homerow mods
         if alias_name == 'hrm':
             mod = parts[1]
-            valid_mods = ['LGUI', 'RGUI', 'LALT', 'RALT', 'LCTRL', 'RCTRL', 'LSHFT', 'RSHFT']
+            # Accept both QMK and ZMK modifier names
+            valid_mods = ['LGUI', 'RGUI', 'LALT', 'RALT', 'LCTRL', 'RCTRL', 'LSHFT', 'RSHFT',
+                         'LCTL', 'RCTL', 'LSFT', 'RSFT']  # Also accept QMK shorthand
             if mod not in valid_mods:
                 raise ValidationError(
                     f"Layer {layer_name}: Invalid modifier '{mod}' in '{unified}'. "

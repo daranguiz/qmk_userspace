@@ -1,0 +1,86 @@
+// AUTO-GENERATED - DO NOT EDIT
+// Generated from config/keymap.yaml
+// Board: Corne (CRKBD) - ZMK
+// Shield: corne
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
+            bindings = <
+                &kp TAB              &kp Q                &kp W                &kp F                &kp P                &kp G
+                &kp ESC              &hrm LGUI A          &hrm LALT R          &hrm LCTL S          &hrm LSFT T          &kp D
+                &kp LSFT             &kp Z                &lt 5 X              &kp C                &kp V                &kp B
+                &kp J                &kp L                &kp U                &kp Y                &kp QUOT             &kp BSLS
+                &kp H                &hrm LSFT N          &hrm LCTL E          &hrm LALT I          &hrm LGUI O          &kp MINS
+                &kp K                &kp M                &kp COMM             &kp ALGR_T(KC_DOT)   &kp SLSH             &kp RSFT
+                &kp ENT              &lt 1 SPC            &lt 2 TAB            &lt 4 DEL            &kp LSFT             &lt 3 BSPC
+            >;
+        };
+
+        nav_layer {
+            bindings = <
+                &none                &none                &none                &none                &none                &none
+                &none                &kp LGUI             &kp LALT             &kp LCTL             &kp LSFT             &none
+                &none                &none                &none                &none                &none                &none
+                &kp ESC              &none                &none                &none                &none                &none
+                &kp CAPS             &kp LEFT             &kp DOWN             &kp UP               &kp RGHT             &none
+                &kp INS              &kp HOME             &kp PGDN             &kp PGUP             &kp END              &none
+                &none                &none                &none                &kp DEL              &kp ENT              &kp BSPC
+            >;
+        };
+
+        media_layer {
+            bindings = <
+                &none                &none                &none                &none                &none                &none
+                &none                &kp LGUI             &kp LALT             &kp LCTL             &kp LSFT             &none
+                &none                &none                &kp ALGR             &bt BT_prev          &bt BT_next          &bt BT_clear
+                &none                &none                &none                &none                &none                &none
+                &none                &kp MPRV             &kp VOLD             &kp VOLU             &kp MNXT             &none
+                &none                &none                &none                &none                &none                &none
+                &none                &none                &none                &kp MSTP             &kp MPLY             &kp MUTE
+            >;
+        };
+
+        num_layer {
+            bindings = <
+                &none                &kp LBRC             &kp 4                &kp 5                &kp 6                &kp RBRC
+                &none                &kp SCLN             &kp 1                &kp 2                &kp 3                &kp EQL
+                &none                &kp GRV              &kp 7                &kp 8                &kp 9                &kp BSLS
+                &none                &none                &none                &none                &none                &none
+                &none                &kp LSFT             &kp LCTL             &kp LALT             &kp LGUI             &none
+                &none                &none                &none                &kp ALGR             &none                &none
+                &kp COLN             &kp 0                &kp MINS             &none                &none                &none
+            >;
+        };
+
+        sym_layer {
+            bindings = <
+                &none                &kp LCBR             &kp DLR              &kp PERC             &kp CIRC             &kp RCBR
+                &none                &kp COLN             &kp EXLM             &kp AT               &kp HASH             &kp PLUS
+                &none                &kp TILD             &kp AMPR             &kp ASTR             &kp LPRN             &kp PIPE
+                &none                &none                &none                &none                &none                &none
+                &none                &kp LSFT             &kp LCTL             &kp LALT             &kp LGUI             &none
+                &none                &none                &none                &kp ALGR             &none                &none
+                &kp LPRN             &kp RPRN             &kp UNDS             &none                &none                &none
+            >;
+        };
+
+        fun_layer {
+            bindings = <
+                &none                &kp F12              &kp F7               &kp F8               &kp F9               &kp PSCR
+                &none                &kp F11              &kp F4               &kp F5               &kp F6               &kp SCRL
+                &none                &kp F10              &kp F1               &kp F2               &kp F3               &kp PAUS
+                &none                &none                &none                &none                &bootloader          &none
+                &none                &kp LSFT             &kp LCTL             &kp LALT             &kp LGUI             &none
+                &none                &none                &none                &kp ALGR             &none                &none
+                &kp APP              &kp SPC              &kp TAB              &none                &none                &none
+            >;
+        };
+    };
+};

@@ -156,7 +156,7 @@ for board in boards:
 - Board references extensions via `boards.yaml` (clear ownership)
 - Gaming layers handled via `extra_layers` in board config
 
-**Architecture improvement**: Extension system is more structured than ad-hoc wrapper macros.
+**Architecture improvement**: Code generation eliminates need for wrapper macros - generator brute-forces complete keymaps for each board size, automatically padding from 36-key core to target board size (36, 42, 58 keys).
 
 ### Principle IV: Keyboard Inventory Transparency
 **Status**: ✅ PASS (MACHINE-READABLE NOW)

@@ -42,15 +42,26 @@ class YAMLConfigParser:
 
         layers = {}
         for layer_name, layer_data in data['layers'].items():
-            # Parse core layout
-            if 'core' not in layer_data:
-                raise ValidationError(f"Layer {layer_name}: 'core' section is required")
+            core = None
+            full_layout = None
 
-            core_rows = layer_data['core']
-            if not isinstance(core_rows, list):
-                raise ValidationError(f"Layer {layer_name}: 'core' must be a list of rows")
+            # Parse core layout (for normal layers)
+            if 'core' in layer_data:
+                core_rows = layer_data['core']
+                if not isinstance(core_rows, list):
+                    raise ValidationError(f"Layer {layer_name}: 'core' must be a list of rows")
+                core = KeyGrid(rows=core_rows)
 
-            core = KeyGrid(rows=core_rows)
+            # Parse full_layout (for special layers like GAME)
+            if 'full_layout' in layer_data:
+                full_rows = layer_data['full_layout']
+                if not isinstance(full_rows, list):
+                    raise ValidationError(f"Layer {layer_name}: 'full_layout' must be a list of rows")
+                full_layout = KeyGrid(rows=full_rows)
+
+            # Validate that at least one layout type is provided
+            if core is None and full_layout is None:
+                raise ValidationError(f"Layer {layer_name}: must have either 'core' or 'full_layout'")
 
             # Parse extensions (optional)
             extensions = {}
@@ -64,7 +75,7 @@ class YAMLConfigParser:
                     extensions[ext_type] = extension
 
             # Create layer
-            layer = Layer(name=layer_name, core=core, extensions=extensions)
+            layer = Layer(name=layer_name, core=core, full_layout=full_layout, extensions=extensions)
             layers[layer_name] = layer
 
         # Get metadata if present

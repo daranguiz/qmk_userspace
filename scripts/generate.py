@@ -31,6 +31,7 @@ from qmk_translator import QMKTranslator
 from zmk_translator import ZMKTranslator
 from layer_compiler import LayerCompiler
 from qmk_generator import QMKGenerator
+from zmk_generator import ZMKGenerator
 from file_writer import FileSystemWriter
 from validator import ConfigValidator
 
@@ -105,8 +106,12 @@ class KeymapGenerator:
             # Compile all layers for this board
             compiled_layers = []
             for layer in self.keymap_config.layers.values():
-                # Skip layers not in board's layer list (for board-specific layers)
-                # For now, we generate all layers (no GAME layer yet)
+                # Check if this is a board-specific layer
+                # If the layer has full_layout, it's only for boards with extra_layers
+                if layer.full_layout is not None:
+                    # Skip if board doesn't explicitly request this layer
+                    if layer.name not in board.extra_layers:
+                        continue
 
                 compiled_layer = self.compiler.compile_layer(
                     layer, board, board.firmware
@@ -149,8 +154,23 @@ class KeymapGenerator:
 
     def _generate_zmk(self, board, compiled_layers):
         """Generate ZMK keymap files"""
-        # TODO: Implement ZMK generator (Phase 3)
-        print(f"  ⚠️  ZMK generation not yet implemented (Phase 3)")
+        generator = ZMKGenerator()
+        output_dir = self.repo_root / board.get_output_directory()
+
+        # Generate keymap file
+        keymap_content = generator.generate_keymap(board, compiled_layers)
+        visualization = generator.generate_visualization(board, compiled_layers)
+
+        # Prepare files to write
+        files = {
+            f"{board.zmk_shield}.keymap": keymap_content,
+            "README.md": f"# {board.name} - ZMK Keymap\n\n{visualization}"
+        }
+
+        # Write files
+        FileSystemWriter.write_all(output_dir, files)
+
+        print(f"  📝 Wrote {len(files)} files to {output_dir}")
 
     def generate_all(self) -> int:
         """

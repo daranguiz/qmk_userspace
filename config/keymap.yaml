@@ -23,6 +23,12 @@ layers:
       # Left thumb (3)
       - [lt:SYM:DEL,   LSFT,           lt:NUM:BSPC]
 
+    # Extensions for larger boards
+    extensions:
+      3x6_3:  # Corne/CRKBD (42-key): adds outer pinky column
+        outer_pinky_left: [TAB, ESC, LSFT]      # 3 keys for left outer column
+        outer_pinky_right: [BSLS, MINS, RSFT]   # 3 keys for right outer column
+
   NAV:
     core:
       # Left hand
@@ -38,12 +44,17 @@ layers:
       # Left thumb (3)
       - [DEL,     ENT,      BSPC]
 
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
+
   MEDIA:
     core:
       # Left hand
       - [NONE,    NONE,     NONE,     NONE,     NONE]
       - [LGUI,    LALT,     LCTL,     LSFT,     NONE]
-      - [NONE,    ALGR,     NONE,     NONE,     NONE]
+      - [NONE,    ALGR,     bt:prev,  bt:next,  bt:clear]
       # Right hand
       - [NONE,    NONE,     NONE,     NONE,     NONE]
       - [NONE,    MPRV,     VOLD,     VOLU,     MNXT]
@@ -52,6 +63,11 @@ layers:
       - [NONE,    NONE,     NONE]
       # Left thumb (3)
       - [MSTP,    MPLY,     MUTE]
+
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
 
   NUM:
     core:
@@ -68,6 +84,11 @@ layers:
       # Left thumb (3)
       - [NONE,    NONE,     NONE]
 
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
+
   SYM:
     core:
       # Left hand
@@ -83,6 +104,11 @@ layers:
       # Left thumb (3)
       - [NONE,    NONE,     NONE]
 
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
+
   FUN:
     core:
       # Left hand
@@ -90,10 +116,37 @@ layers:
       - [F11,     F4,       F5,       F6,       SCRL]
       - [F10,     F1,       F2,       F3,       PAUS]
       # Right hand
-      - [NONE,    NONE,     NONE,     NONE,     NONE]
+      - [NONE,    NONE,     NONE,     NONE,     QK_BOOT]
       - [NONE,    LSFT,     LCTL,     LALT,     LGUI]
       - [NONE,    NONE,     NONE,     ALGR,     NONE]
       # Right thumb (3)
       - [APP,     SPC,      TAB]
       # Left thumb (3)
       - [NONE,    NONE,     NONE]
+
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
+
+  # GAME layer - Full 58-key layout for Lulu/Lily58
+  # This layer is only used on boards with extra_layers: ["GAME"]
+  # Uses traditional QWERTY layout with number row for gaming
+  GAME:
+    # Note: This is a FULL 58-key layout, not a 36-key core
+    # The generator will use this directly for 58-key boards
+    # No extensions allowed when using full_layout
+    full_layout:
+      # Row 0: Number row (12 keys)
+      - [ESC,     1,        2,        3,        4,        5]         # Left number row
+      - [6,       7,        8,        9,        0,        MINS]      # Right number row
+      # Row 1-3: Main QWERTY (36 keys with pinky columns)
+      - [TAB,     Q,        W,        E,        R,        T]         # Left row 1
+      - [Y,       U,        I,        O,        P,        BSLS]      # Right row 1
+      - [LCTL,    A,        S,        D,        F,        G]         # Left row 2
+      - [H,       J,        K,        L,        SCLN,     QUOT]      # Right row 2
+      - [LSFT,    Z,        X,        C,        V,        B]         # Left row 3
+      - [N,       M,        COMM,     DOT,      SLSH,     RSFT]      # Right row 3
+      # Row 4: Thumbs and extras (10 keys)
+      - [LGUI,    LALT,     SPC,      SPC,      SPC]                # Left thumb row
+      - [ENT,     ENT,      BSPC,     RALT,     RGUI]               # Right thumb row

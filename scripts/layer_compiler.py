@@ -34,8 +34,8 @@ class LayerCompiler:
         Compile a layer for a specific board and firmware
 
         This applies the following transformations:
-        1. Start with the 36-key core layout
-        2. Apply extensions based on board requirements
+        1. Start with either core or full_layout
+        2. Apply extensions/padding based on board requirements
         3. Translate keycodes to firmware-specific syntax
         4. Validate complex keybindings
 
@@ -50,32 +50,23 @@ class LayerCompiler:
         Raises:
             ValidationError: If compilation fails
         """
-        # 1. Start with core layout (36 keys)
-        keycodes = layer.core.flatten()
+        # 1. Get initial keycodes
+        if layer.full_layout is not None:
+            # Use full_layout directly (for special layers like GAME)
+            keycodes = layer.full_layout.flatten()
+        else:
+            # Use core layout and pad to board size
+            keycodes = layer.core.flatten()
+            keycodes = self._pad_layout_for_board(keycodes, board, layer)
 
-        # 2. Apply extensions if board requires them
-        extensions_to_apply = board.get_extensions()
-        for ext_name in extensions_to_apply:
-            if ext_name in layer.extensions:
-                extension = layer.extensions[ext_name]
-                ext_keys = self.get_extension_keys(extension)
-                keycodes.extend(ext_keys)
-            else:
-                # Board requires extension but layer doesn't define it
-                # Fill with NONE
-                if ext_name == "3x5_3_pinky":
-                    keycodes.extend(["NONE", "NONE"])  # 2 extra keys
-                elif ext_name == "3x6_3":
-                    keycodes.extend(["NONE"] * 6)  # 6 extra keys (3 per side)
-
-        # 3. Select translator based on firmware
+        # 2. Select translator based on firmware
         translator = self.qmk_translator if firmware == "qmk" else self.zmk_translator
 
-        # 4. Validate complex keybindings before translation
+        # 3. Validate complex keybindings before translation
         for keycode in keycodes:
             translator.validate_keybinding(keycode, layer.name)
 
-        # 5. Translate keycodes
+        # 4. Translate keycodes
         translated = [translator.translate(kc) for kc in keycodes]
 
         return CompiledLayer(
@@ -114,5 +105,160 @@ class LayerCompiler:
                 result.extend(right_keys)
             else:
                 result.append(right_keys)
+
+        return result
+
+    def _pad_layout_for_board(
+        self,
+        keycodes: List[str],
+        board: Board,
+        layer: Layer
+    ) -> List[str]:
+        """
+        Pad the 36-key core layout to match the board's physical size.
+
+        Uses brute-force code generation: expands core layout with KC_NO
+        padding or applies optional extensions if defined.
+
+        Args:
+            keycodes: Core 36-key layout
+            board: Target board
+            layer: Current layer
+
+        Returns:
+            Padded keycode list matching board's physical size
+        """
+        layout_size = board.layout_size
+
+        # 36-key boards: no padding needed
+        if layout_size == "3x5_3":
+            return keycodes
+
+        # 42-key boards (3x6_3): add outer pinky column (3 keys per side)
+        # Need to interleave the extension keys into the 3x5 matrix
+        elif layout_size == "3x6_3":
+            # Get extension keys (6 total: 3 left, 3 right)
+            if "3x6_3" in layer.extensions:
+                ext = layer.extensions["3x6_3"]
+                left_pinky = ext.keys.get("outer_pinky_left", ["NONE"] * 3)
+                right_pinky = ext.keys.get("outer_pinky_right", ["NONE"] * 3)
+            else:
+                left_pinky = ["NONE"] * 3
+                right_pinky = ["NONE"] * 3
+
+            # Interleave extension keys into the matrix
+            # Core layout: left 3x5 (0-14), right 3x5 (15-29), thumbs 3+3 (30-35)
+            # Target layout: left 3x6 (rows with pinky), right 3x6 (rows with pinky), thumbs 3+3
+            result = []
+
+            # Left hand: 3 rows of 6 (add pinky column to each row)
+            for row in range(3):
+                result.append(left_pinky[row])  # Left outer pinky
+                result.extend(keycodes[row*5:(row+1)*5])  # Main 5 keys
+
+            # Right hand: 3 rows of 6 (add pinky column to each row)
+            for row in range(3):
+                result.extend(keycodes[15 + row*5:15 + (row+1)*5])  # Main 5 keys
+                result.append(right_pinky[row])  # Right outer pinky
+
+            # Thumbs (unchanged from core)
+            result.extend(keycodes[30:36])
+
+            return result
+
+        # 38-key boards (3x5_3_pinky): add 2 keys (1 per side)
+        elif layout_size == "3x5_3_pinky":
+            if "3x5_3_pinky" in layer.extensions:
+                ext_keys = self.get_extension_keys(layer.extensions["3x5_3_pinky"])
+                return keycodes + ext_keys
+            else:
+                # No extension defined - pad with NONE
+                return keycodes + ["NONE"] * 2
+
+        # 58-key boards (custom_58): Lulu, Lily58
+        # These have: 12 number row + 30 main (3x5x2) + 2 outer pinky + 8 thumbs (4x2)
+        # We need to map our 36-key core into this 58-key matrix
+        elif layout_size == "custom_58":
+            return self._pad_to_58_keys(keycodes, layer, board)
+
+        # Unknown layout - just return core
+        else:
+            return keycodes
+
+    def _pad_to_58_keys(
+        self,
+        keycodes: List[str],
+        layer: Layer,
+        board: Board
+    ) -> List[str]:
+        """
+        Pad 36-key core to 58-key layout (Lulu/Lily58).
+
+        Lulu/Lily58 physical layout (from info.json):
+        - 6x4 matrix per side = 24 keys per side
+        - Left side: rows 0-4, columns 0-5 (matrix positions)
+        - Right side: rows 5-9, columns 0-5 (matrix positions)
+        - Total: 58 keys
+
+        Row breakdown:
+        - Row 0 (number row): 6 keys left + 6 keys right = 12 keys (NONE)
+        - Rows 1-3 (main 3x5): 15 keys left + 15 keys right = 30 keys (from core 0-29)
+        - Row 4 (thumb row): 5 keys left + 5 keys right = 10 keys
+          - Left: outer 2 NONE + inner 3 from core[30:33]
+          - Right: inner 3 from core[33:36] + outer 2 NONE
+
+        We also need 6 outer pinky column keys (3 per side) for rows 1-3
+
+        Total mapping:
+        - Number row (12): NONE
+        - Left pinky col (3): NONE (rows 1-3, col 0)
+        - Left main 3x5 (15): from core 0-14
+        - Right main 3x5 (15): from core 15-29
+        - Right pinky col (3): NONE (rows 1-3, col 5)
+        - Left thumb row (5): NONE, NONE, core[30], core[31], core[32]
+        - Right thumb row (5): core[33], core[34], core[35], NONE, NONE
+
+        Total: 12 + 3 + 15 + 15 + 3 + 5 + 5 = 58 ✓
+
+        Args:
+            keycodes: 36-key core layout
+            layer: Current layer
+            board: Board configuration
+
+        Returns:
+            58-key padded layout
+        """
+        result = []
+
+        # Row 0: Number row (12 keys) - all NONE
+        result.extend(["NONE"] * 6)  # Left number row
+        result.extend(["NONE"] * 6)  # Right number row
+
+        # Rows 1-3: Main finger keys with outer pinky columns
+        # Our core is organized as: left hand (0-14), right hand (15-29)
+        # But we need to interleave pinky columns
+
+        # Split core into left and right hands
+        left_core = keycodes[0:15]   # Left 3x5
+        right_core = keycodes[15:30]  # Right 3x5
+
+        # Process rows 1-3 (3 rows of 6 keys each per side)
+        for row in range(3):
+            # Left side: outer pinky (NONE) + main 5 keys
+            result.append("NONE")
+            result.extend(left_core[row*5:(row+1)*5])
+
+            # Right side: main 5 keys + outer pinky (NONE)
+            result.extend(right_core[row*5:(row+1)*5])
+            result.append("NONE")
+
+        # Row 4: Thumb row (5 keys per side)
+        # Left thumbs: 2 NONE + 3 from core
+        result.extend(["NONE"] * 2)
+        result.extend(keycodes[30:33])
+
+        # Right thumbs: 3 from core + 2 NONE
+        result.extend(keycodes[33:36])
+        result.extend(["NONE"] * 2)
 
         return result

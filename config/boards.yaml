@@ -21,3 +21,15 @@ boards:
     qmk_keyboard: "lily58/rev1"
     layout_size: "custom_58"  # Custom 58-key layout
     extra_layers: ["GAME"]
+
+  corne_zmk:
+    name: "Corne (CRKBD) - ZMK"
+    firmware: zmk
+    zmk_shield: "corne"
+    layout_size: "3x6_3"  # 42-key (3x6 + 3 thumbs per side)
+
+  corne_qmk:
+    name: "Corne (CRKBD) - QMK"
+    firmware: qmk
+    qmk_keyboard: "crkbd/rev1"
+    layout_size: "3x6_3"  # 42-key (3x6 + 3 thumbs per side)

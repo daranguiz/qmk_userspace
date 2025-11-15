@@ -62,11 +62,26 @@ class QMKGenerator:
         """
         # Generate layer definitions
         layer_defs = []
+        layer_names = [layer.name for layer in compiled_layers]
+
         for layer in compiled_layers:
             formatted = self.format_layer_definition(board, layer)
             layer_defs.append(f"    [{layer.name}] = {formatted},")
 
         layers_code = "\n".join(layer_defs)
+
+        # Check if we need additional layer definitions (for board-specific layers like GAME)
+        has_extra_layers = len(board.extra_layers) > 0
+        extra_layers_code = ""
+        if has_extra_layers:
+            # Define extra layer enum values after the standard layers
+            extra_layers_list = ", ".join(board.extra_layers)
+            extra_layers_code = f"""
+// Board-specific layers (extend standard enum from dario.h)
+enum {{
+    {extra_layers_list} = FUN + 1  // Continue from last standard layer
+}};
+"""
 
         return f"""// AUTO-GENERATED - DO NOT EDIT
 // Generated from config/keymap.yaml by scripts/generate.py
@@ -74,7 +89,7 @@ class QMKGenerator:
 // Firmware: QMK
 
 #include "dario.h"
-
+{extra_layers_code}
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 {layers_code}
 }};
@@ -177,12 +192,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
         """
         Format custom layout (e.g., Lulu, Lily58)
 
-        For custom layouts, we use the board-specific LAYOUT macro directly
+        For custom_58 layouts, we expect 58 keys total.
+        Just format them in rows for readability.
         """
-        # For now, just format as comma-separated list
-        # TODO: Add board-specific formatting if needed
-        formatted = ", ".join(keycodes)
-        return f"LAYOUT(\n        {formatted}\n    )"
+        num_keys = len(keycodes)
+
+        # Format in rows of 6 for readability
+        rows = []
+        for i in range(0, num_keys, 6):
+            row = keycodes[i:i+6]
+            rows.append("        " + ", ".join(f"{k:20}" for k in row) + ("," if i + 6 < num_keys else ""))
+
+        return f"LAYOUT(\n" + "\n".join(rows) + "\n    )"
 
 
     def generate_config_h(
@@ -196,9 +217,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 // Board: {board.name}
 
 #pragma once
-
-// Layer enums are defined in keymap.c via dario.h include
-// Config-specific settings can be added here
 
 // Include global QMK config if it exists
 #ifdef __has_include

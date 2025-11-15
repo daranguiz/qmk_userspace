@@ -4,9 +4,6 @@
 
 #pragma once
 
-// Layer enums are defined in keymap.c via dario.h include
-// Config-specific settings can be added here
-
 // Include global QMK config if it exists
 #ifdef __has_include
 #  if __has_include("../../../qmk/config/global/config.h")

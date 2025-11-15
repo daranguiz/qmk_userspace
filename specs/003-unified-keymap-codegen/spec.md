@@ -34,24 +34,28 @@
    - **36-key (3x5_3)**: Base layout (e.g., Skeletyl)
    - **38-key (3x5_3_pinky)**: 36-key + 1 outer pinky key per side (hypothetical example)
    - **42-key (3x6_3)**: 36-key + full outer pinky column (3 keys per side) (e.g., Corne)
-   - **58-key**: Completely different layout with number row (e.g., Lulu, Lily58 - uses board-specific wrappers, not extensions)
+   - **58-key**: Custom layout with number row (e.g., Lulu, Lily58 - padded from 36-key core with KC_NO)
 
-   **Approach**: Per-layer optional extensions grouped by layout notation
+   **Approach**: Brute-force code generation with automatic padding
    - Core layout: 36 keys (3x5_3) as the minimal common denominator
    - Each layer can optionally define extension groups (e.g., `extensions.3x5_3_pinky`, `extensions.3x6_3`)
    - Extension names use layout notation matching QMK conventions (rows×cols or variants)
    - Each extension group defines position-based keys (e.g., `outer_pinky_left`, `outer_pinky_right`)
-   - Boards reference which extension groups to include during generation
+   - **Code generator pads the layout to match each board's physical size**
+   - Generator outputs complete keymap with all keys (no wrapper macros needed)
+   - For boards without extensions defined, extra positions are filled with KC_NO
    - All keyboard sizes are defined in one place, making it easy to maintain consistency
 
    **Why this approach**:
+   - **Codegen eliminates need for manual code sharing** - wrapper macros were a workaround for manual layouts
+   - Generator ensures consistency automatically by expanding from single source
    - 38/42-key boards feel like "36-key plus extras" rather than different layouts
    - Different layers can use extra keys differently (BASE vs NAV might want different outer pinky keys)
    - 38-key has single outer pinky key per side; 42-key has full pinky column (3 keys per side)
    - No wasted definitions on smaller boards
    - Scales to different extension patterns (thumb keys vs pinky columns vs both)
    - Makes conflicts impossible by construction for small additions
-   - For large differences (58-key gaming layer), allow pure board-level overrides
+   - For large differences (58-key), generator pads 36-key core to 58 keys with KC_NO
 
    **YAML Schema Example**:
    ```yaml

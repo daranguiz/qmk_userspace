@@ -80,24 +80,36 @@ class ConfigValidator:
         Raises:
             ValidationError: If validation fails
         """
-        # Validate core layout
-        if not layer.core:
-            raise ValidationError(f"Layer {layer_name}: core layout is required")
+        # Validate layer has either core or full_layout
+        if not layer.core and not layer.full_layout:
+            raise ValidationError(f"Layer {layer_name}: must have either 'core' or 'full_layout'")
 
-        # Validate core has exactly 36 keys
-        flat_core = layer.core.flatten()
-        if len(flat_core) != 36:
-            raise ValidationError(
-                f"Layer {layer_name}: core must have exactly 36 keys, found {len(flat_core)}"
-            )
-
-        # Validate all keycodes are strings
-        for i, keycode in enumerate(flat_core):
-            if not isinstance(keycode, str):
+        # Validate core has exactly 36 keys (if provided)
+        if layer.core:
+            flat_core = layer.core.flatten()
+            if len(flat_core) != 36:
                 raise ValidationError(
-                    f"Layer {layer_name}: keycode at position {i} must be a string, "
-                    f"got {type(keycode).__name__}"
+                    f"Layer {layer_name}: core must have exactly 36 keys, found {len(flat_core)}"
                 )
+
+            # Validate all keycodes are strings
+            for i, keycode in enumerate(flat_core):
+                if not isinstance(keycode, str):
+                    raise ValidationError(
+                        f"Layer {layer_name}: keycode at position {i} must be a string, "
+                        f"got {type(keycode).__name__}"
+                    )
+
+        # Validate full_layout if provided
+        if layer.full_layout:
+            flat_full = layer.full_layout.flatten()
+            # Validate all keycodes in full_layout are strings
+            for i, keycode in enumerate(flat_full):
+                if not isinstance(keycode, str):
+                    raise ValidationError(
+                        f"Layer {layer_name}: full_layout keycode at position {i} must be a string, "
+                        f"got {type(keycode).__name__}"
+                    )
 
         # Validate extensions
         for ext_name, extension in layer.extensions.items():

@@ -102,16 +102,38 @@ class Layer:
 
     Fields:
     - name: Layer identifier (e.g., "BASE", "NAV")
-    - core: The 36-key core layout (required)
+    - core: The 36-key core layout (optional if full_layout is provided)
+    - full_layout: Complete keyboard layout (for special layers like GAME)
     - extensions: Optional extensions for larger boards
     """
     name: str
-    core: KeyGrid  # 36 keys in 4 rows (3x5 left, 3x5 right, 3+3 thumbs)
+    core: Optional[KeyGrid] = None  # 36 keys in 4 rows (3x5 left, 3x5 right, 3+3 thumbs)
+    full_layout: Optional[KeyGrid] = None  # Full layout for special layers (e.g., 58 keys)
     extensions: Dict[str, LayerExtension] = field(default_factory=dict)
 
     def validate(self):
         """Validate layer structure"""
-        if len(self.core.flatten()) != 36:
+        # Either core or full_layout must be provided (but not both)
+        if self.core is None and self.full_layout is None:
+            raise ValidationError(
+                f"Layer {self.name} must have either 'core' or 'full_layout' defined"
+            )
+
+        # Cannot have both core and full_layout
+        if self.core is not None and self.full_layout is not None:
+            raise ValidationError(
+                f"Layer {self.name} cannot have both 'core' and 'full_layout' - choose one"
+            )
+
+        # If using full_layout, extensions are not allowed
+        if self.full_layout is not None and len(self.extensions) > 0:
+            raise ValidationError(
+                f"Layer {self.name} uses 'full_layout' - extensions are not allowed. "
+                f"Full layouts must specify all keys directly."
+            )
+
+        # If core is provided, validate it's 36 keys
+        if self.core is not None and len(self.core.flatten()) != 36:
             raise ValidationError(
                 f"Layer {self.name} core must have exactly 36 keys, found {len(self.core.flatten())}"
             )

@@ -1,0 +1,217 @@
+"""
+ZMK keymap generator
+
+Generates ZMK devicetree (.keymap) files from compiled layers
+"""
+
+from typing import List, Dict
+from pathlib import Path
+from data_model import CompiledLayer, Board
+
+
+class ZMKGenerator:
+    """Generate ZMK devicetree keymap files"""
+
+    def __init__(self):
+        pass
+
+    def generate_keymap(self, board: Board, compiled_layers: List[CompiledLayer]) -> str:
+        """
+        Generate .keymap devicetree file for ZMK
+
+        Args:
+            board: Board configuration
+            compiled_layers: List of compiled layers (already translated to ZMK syntax)
+
+        Returns:
+            Complete .keymap file content as string
+        """
+        # Generate layer definitions
+        layer_defs = []
+        for layer in compiled_layers:
+            layer_def = self._format_layer_definition(layer)
+            layer_defs.append(layer_def)
+
+        layers_code = "\n\n".join(layer_defs)
+
+        # Generate complete keymap file
+        return f"""// AUTO-GENERATED - DO NOT EDIT
+// Generated from config/keymap.yaml
+// Board: {board.name}
+// Shield: {board.zmk_shield}
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {{
+    keymap {{
+        compatible = "zmk,keymap";
+
+{layers_code}
+    }};
+}};
+"""
+
+    def _format_layer_definition(self, layer: CompiledLayer) -> str:
+        """
+        Format a single layer as ZMK devicetree node
+
+        Args:
+            layer: Compiled layer with ZMK keycodes
+
+        Returns:
+            Layer definition as string
+        """
+        layer_name = layer.name.lower()
+        bindings = self._format_bindings(layer.keycodes)
+
+        return f"""        {layer_name}_layer {{
+            bindings = <
+{bindings}
+            >;
+        }};"""
+
+    def _format_bindings(self, keycodes: List[str]) -> str:
+        """
+        Format keycodes as ZMK bindings with proper indentation
+
+        Args:
+            keycodes: List of ZMK keycodes (e.g., "&kp A", "&hrm LGUI A")
+
+        Returns:
+            Formatted bindings string
+        """
+        # Group into rows for visual layout (3x5_3 layout)
+        # For now, handle 36-key layout
+        if len(keycodes) == 36:
+            rows = [
+                keycodes[0:5],   # Left hand row 1
+                keycodes[5:10],  # Left hand row 2
+                keycodes[10:15], # Left hand row 3
+                keycodes[15:20], # Right hand row 1
+                keycodes[20:25], # Right hand row 2
+                keycodes[25:30], # Right hand row 3
+                keycodes[30:33], # Left thumbs
+                keycodes[33:36], # Right thumbs
+            ]
+        else:
+            # For other layouts, just chunk into rows of 6
+            rows = []
+            chunk_size = 6
+            for i in range(0, len(keycodes), chunk_size):
+                rows.append(keycodes[i:i+chunk_size])
+
+        # Format with proper indentation
+        formatted_rows = []
+        for row in rows:
+            # Use 20-character width for alignment (ZMK bindings can be long)
+            formatted_row = "                " + " ".join(f"{kc:20}" for kc in row)
+            formatted_rows.append(formatted_row.rstrip())  # Remove trailing spaces
+
+        return "\n".join(formatted_rows)
+
+    def generate_visualization(self, board: Board, compiled_layers: List[CompiledLayer]) -> str:
+        """
+        Generate ASCII art visualization of keymap
+
+        Args:
+            board: Board configuration
+            compiled_layers: List of compiled layers
+
+        Returns:
+            ASCII art as string (for README or comments)
+        """
+        lines = []
+        lines.append(f"# Keymap Visualization: {board.name}")
+        lines.append("")
+
+        for layer in compiled_layers:
+            lines.append(f"## {layer.name} Layer")
+            lines.append("")
+
+            # For 36-key layout
+            if len(layer.keycodes) == 36:
+                lines.append("```")
+                lines.append("Left Hand              Right Hand")
+                lines.append("╭─────────────────╮    ╭─────────────────╮")
+
+                # Row 1
+                left_r1 = layer.keycodes[0:5]
+                right_r1 = layer.keycodes[15:20]
+                lines.append(f"│ {' '.join(f'{self._simplify_keycode(k):4}' for k in left_r1)} │    │ {' '.join(f'{self._simplify_keycode(k):4}' for k in right_r1)} │")
+
+                # Row 2
+                left_r2 = layer.keycodes[5:10]
+                right_r2 = layer.keycodes[20:25]
+                lines.append(f"│ {' '.join(f'{self._simplify_keycode(k):4}' for k in left_r2)} │    │ {' '.join(f'{self._simplify_keycode(k):4}' for k in right_r2)} │")
+
+                # Row 3
+                left_r3 = layer.keycodes[10:15]
+                right_r3 = layer.keycodes[25:30]
+                lines.append(f"│ {' '.join(f'{self._simplify_keycode(k):4}' for k in left_r3)} │    │ {' '.join(f'{self._simplify_keycode(k):4}' for k in right_r3)} │")
+
+                lines.append("╰─────────────────╯    ╰─────────────────╯")
+
+                # Thumbs
+                left_thumbs = layer.keycodes[30:33]
+                right_thumbs = layer.keycodes[33:36]
+                lines.append(f"      {' '.join(f'{self._simplify_keycode(k):4}' for k in left_thumbs)}              {' '.join(f'{self._simplify_keycode(k):4}' for k in right_thumbs)}")
+                lines.append("```")
+            else:
+                # Generic layout
+                lines.append("```")
+                for i, kc in enumerate(layer.keycodes):
+                    if i % 6 == 0 and i > 0:
+                        lines.append("")
+                    lines.append(f"{i:2d}: {kc}")
+                lines.append("```")
+
+            lines.append("")
+
+        return "\n".join(lines)
+
+    def _simplify_keycode(self, zmk_keycode: str) -> str:
+        """
+        Simplify ZMK keycode for visualization
+
+        Args:
+            zmk_keycode: Full ZMK keycode (e.g., "&kp A", "&hrm LGUI A")
+
+        Returns:
+            Simplified string for display
+        """
+        # Remove & prefix
+        kc = zmk_keycode.lstrip('&')
+
+        # Handle simple keycodes
+        if kc.startswith('kp '):
+            return kc[3:]  # Remove "kp "
+
+        # Handle behaviors - just show behavior name
+        if ' ' in kc:
+            behavior, *params = kc.split()
+            if behavior == 'hrm':
+                # hrm LGUI A -> A/GUI
+                return f"{params[1]}/{params[0][1:]}"  # A/GUI
+            elif behavior == 'lt':
+                # lt NAV SPC -> SPC/NAV
+                return f"{params[1]}/{params[0]}"
+            elif behavior == 'bt':
+                # bt BT_NXT -> BT→
+                action_map = {
+                    'BT_NXT': 'BT→',
+                    'BT_PRV': 'BT←',
+                    'BT_CLR': 'BT×'
+                }
+                return action_map.get(params[0], 'BT')
+            else:
+                return behavior.upper()
+
+        # None/transparent
+        if kc == 'none':
+            return '___'
+        if kc == 'trans':
+            return '▽▽▽'
+
+        return kc.upper()[:4]

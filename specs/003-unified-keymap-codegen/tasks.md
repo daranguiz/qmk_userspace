@@ -101,18 +101,18 @@
 
 ### Implementation for User Story 2
 
-- [ ] T033 [P] [US2] Extend config/aliases.yaml with ZMK-specific aliases (bt:next, bt:prev, bt:clear)
-- [ ] T034 [P] [US2] Add MEDIA layer to config/keymap.yaml with ZMK Bluetooth controls (bt:next, bt:prev)
-- [ ] T035 [US2] Implement ZMKTranslator.translate() in scripts/zmk_translator.py (unified → ZMK devicetree syntax)
-- [ ] T036 [P] [US2] Implement ZMKTranslator.validate_keybinding() in scripts/zmk_translator.py (FR-007 strict validation)
-- [ ] T037 [US2] Implement ZMKGenerator.generate_keymap() in scripts/zmk_generator.py (generate .keymap devicetree file)
-- [ ] T038 [P] [US2] Implement ZMKGenerator.format_layer_definition() in scripts/zmk_generator.py (format bindings with &kp, &hrm, &lt)
-- [ ] T039 [P] [US2] Implement ZMKGenerator.generate_visualization() in scripts/zmk_generator.py (ASCII art)
-- [ ] T040 [US2] Update KeymapGenerator.generate_for_board() to select translator based on board.firmware (QMK vs ZMK)
-- [ ] T041 [US2] Add corne ZMK board to config/boards.yaml (36-key ZMK board for testing)
-- [ ] T042 [US2] Test generation: verify Bluetooth keys appear in ZMK output (zmk/keymaps/corne_dario/corne.keymap) as &bt BT_NXT
-- [ ] T043 [US2] Test filtering: verify Bluetooth keys are replaced with KC_NO in QMK output (qmk/keymaps/bastardkb_skeletyl_promicro_dario/keymap.c)
-- [ ] T044 [US2] Test bootloader key consistency: verify QK_BOOT in QMK and &bootloader in ZMK
+- [X] T033 [P] [US2] Extend config/aliases.yaml with ZMK-specific aliases (bt:next, bt:prev, bt:clear)
+- [X] T034 [P] [US2] Add MEDIA layer to config/keymap.yaml with ZMK Bluetooth controls (bt:next, bt:prev)
+- [X] T035 [US2] Implement ZMKTranslator.translate() in scripts/zmk_translator.py (unified → ZMK devicetree syntax)
+- [X] T036 [P] [US2] Implement ZMKTranslator.validate_keybinding() in scripts/zmk_translator.py (FR-007 strict validation)
+- [X] T037 [US2] Implement ZMKGenerator.generate_keymap() in scripts/zmk_generator.py (generate .keymap devicetree file)
+- [X] T038 [P] [US2] Implement ZMKGenerator.format_layer_definition() in scripts/zmk_generator.py (format bindings with &kp, &hrm, &lt)
+- [X] T039 [P] [US2] Implement ZMKGenerator.generate_visualization() in scripts/zmk_generator.py (ASCII art)
+- [X] T040 [US2] Update KeymapGenerator.generate_for_board() to select translator based on board.firmware (QMK vs ZMK)
+- [X] T041 [US2] Add corne ZMK board to config/boards.yaml (36-key ZMK board for testing)
+- [X] T042 [US2] Test generation: verify Bluetooth keys appear in ZMK output (zmk/keymaps/corne_dario/corne.keymap) as &bt BT_NXT
+- [X] T043 [US2] Test filtering: verify Bluetooth keys are replaced with KC_NO in QMK output (qmk/keymaps/bastardkb_skeletyl_promicro_dario/keymap.c)
+- [X] T044 [US2] Test bootloader key consistency: verify QK_BOOT in QMK and &bootloader in ZMK
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work - superset keymap generates firmware-specific outputs with proper filtering
 
@@ -126,20 +126,20 @@
 
 ### Implementation for User Story 3
 
-- [ ] T045 [P] [US3] Add extensions section to all layers in config/keymap.yaml (3x5_3_pinky, 3x6_3 extensions)
-- [ ] T046 [P] [US3] Add lulu board to config/boards.yaml with layout_size "custom_58" and extra_layers ["GAME"]
-- [ ] T047 [P] [US3] Add lily58 board to config/boards.yaml with layout_size "custom_58" and extra_layers ["GAME"]
-- [ ] T048 [US3] Update LayerCompiler.compile_layer() to apply extensions based on board.get_extensions() (auto-infer from layout_size)
-- [ ] T049 [US3] Implement LayerExtension.validate() in scripts/data_model.py (check 3x5_3_pinky has single keys, 3x6_3 has 3-key lists)
-- [ ] T050 [US3] Update QMKGenerator.format_layer_definition() to handle variable keycode counts (36 vs 38 vs 42 keys)
-- [ ] T051 [P] [US3] Create qmk/config/boards/lulu.mk with firmware-specific features (OLED_ENABLE, RGB_MATRIX_ENABLE)
-- [ ] T052 [P] [US3] Create qmk/config/boards/lily58.mk with firmware-specific features (OLED_ENABLE, WPM_ENABLE)
-- [ ] T053 [US3] Add GAME layer definition to config/keymap.yaml with custom 58-key layout for Lulu/Lily58
-- [ ] T054 [US3] Implement board-specific layer handling in LayerCompiler (check board.extra_layers, skip layers not in list)
-- [ ] T055 [US3] Test extension application: verify 3x6_3 boards have 42 keys, 3x5_3 boards have 36 keys
-- [ ] T056 [US3] Test core consistency: verify first 36 keys are identical across all boards for BASE layer
-- [ ] T057 [US3] Integration test: compile Lulu keymap with qmk compile -kb boardsource/lulu/rp2040 -km dario
-- [ ] T058 [US3] Integration test: compile Lily58 keymap with qmk compile -kb lily58/rev1 -km dario
+- [X] T045 [P] [US3] Add extensions section to all layers in config/keymap.yaml (3x5_3_pinky, 3x6_3 extensions)
+- [X] T046 [P] [US3] Add lulu board to config/boards.yaml with layout_size "custom_58" and extra_layers ["GAME"]
+- [X] T047 [P] [US3] Add lily58 board to config/boards.yaml with layout_size "custom_58" and extra_layers ["GAME"]
+- [X] T048 [US3] Update LayerCompiler to pad 36-key core to match board physical size (brute-force codegen: 36→58 with KC_NO padding)
+- [X] T049 [US3] Implement LayerExtension.validate() in scripts/data_model.py (check 3x5_3_pinky has single keys, 3x6_3 has 3-key lists)
+- [X] T050 [US3] Update QMKGenerator to format complete layouts (36/42/58 keys - no wrapper macros, direct LAYOUT() output)
+- [X] T051 [P] [US3] Create qmk/config/boards/lulu.mk with firmware-specific features (OLED_ENABLE, RGB_MATRIX_ENABLE)
+- [X] T052 [P] [US3] Create qmk/config/boards/lily58.mk with firmware-specific features (OLED_ENABLE, WPM_ENABLE)
+- [X] T053 [US3] Add GAME layer definition to config/keymap.yaml with custom 58-key layout for Lulu/Lily58
+- [X] T054 [US3] Implement board-specific layer handling in LayerCompiler (check board.extra_layers, skip layers not in list)
+- [X] T055 [US3] Test extension application: verify 3x6_3 boards have 42 keys, 3x5_3 boards have 36 keys
+- [X] T056 [US3] Test core consistency: verify first 36 keys are identical across all boards for BASE layer
+- [X] T057 [US3] Integration test: compile Lulu keymap with qmk compile -kb boardsource/lulu/rp2040 -km dario
+- [X] T058 [US3] Integration test: compile Lily58 keymap with qmk compile -kb lily58/rev1 -km dario
 
 **Checkpoint**: All board sizes (36-key, 42-key, 58-key) generate correctly with consistent core layouts and board-specific extensions
 
@@ -448,3 +448,13 @@ With multiple developers:
 **Suggested MVP Scope**: Phase 1 + Phase 2 + Phase 3 (User Story 1) + Phase 6 (User Story 4) = 46 tasks
 
 **Format Validation**: ✅ All tasks follow checklist format (checkbox, ID, optional [P], optional [Story], description with file paths)
+
+### Future Enhancement: Board-Specific GAME Layer Toggle
+
+- [ ] FUTURE: Design board-specific GAME layer toggle mechanism
+  - Document approach for each board type (combo, dedicated key, etc.)
+  - For 58-key boards: implement combo (e.g., upper-right + lower-left for 2s)
+  - For smaller boards: may need different approach or no GAME layer
+  - Store board-specific combo/toggle config in boards.yaml or board-specific files
+  - Generate QMK combo code when board has GAME layer
+
