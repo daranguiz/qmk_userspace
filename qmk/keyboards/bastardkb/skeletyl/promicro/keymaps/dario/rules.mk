@@ -6,7 +6,7 @@
 USER_NAME := dario
 
 # Include board-specific features if they exist
--include $(USER_PATH)/../../qmk/config/boards/skeletyl.mk
+-include $(USER_PATH)/../../config/boards/skeletyl.mk
 
 # Include global QMK rules if they exist
--include $(USER_PATH)/../../qmk/config/global/rules.mk
+-include $(USER_PATH)/../../config/global/rules.mk

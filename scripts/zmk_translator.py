@@ -102,6 +102,41 @@ class ZMKTranslator:
         qmk_to_zmk = {
             'SLSH': 'FSLH',  # Forward slash
             'QUOT': 'SQT',   # Single quote (apostrophe)
+            'COMM': 'COMMA',
+            'RGHT': 'RIGHT',
+            'ALGR': 'RALT',
+            'BSLS': 'BSLH',  # Backslash
+            'GRV': 'GRAVE',
+            'DLR': 'DOLLAR',
+            'PERC': 'PERCENT',
+            'CIRC': 'CARET',
+            'AMPR': 'AMPERSAND',
+            'ASTR': 'ASTERISK',
+            'EXLM': 'EXCL',
+            'LCBR': 'LBRC',
+            'RCBR': 'RBRC',
+            'MINS': 'MINUS',
+            'UNDS': 'UNDERSCORE',
+            'MNXT': 'C_NEXT',
+            'MPRV': 'C_PREV',
+            'MSTP': 'C_STOP',
+            'MPLY': 'C_PLAY_PAUSE',
+            'MUTE': 'C_MUTE',
+            'PSCR': 'PRINTSCREEN',
+            'SCRL': 'SCROLLLOCK',
+            'ENT': 'ENTER',
+            'APP': 'K_APP',
+            # Explicit number mappings to avoid bare numeric tokens in DT
+            '0': 'N0',
+            '1': 'N1',
+            '2': 'N2',
+            '3': 'N3',
+            '4': 'N4',
+            '5': 'N5',
+            '6': 'N6',
+            '7': 'N7',
+            '8': 'N8',
+            '9': 'N9',
         }
         zmk_key = qmk_to_zmk.get(unified, unified)
 

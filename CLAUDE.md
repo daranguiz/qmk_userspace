@@ -53,33 +53,33 @@ export QMK_USERSPACE="$(realpath qmk)"
 
 ### Building Firmware
 
-Build all configured keyboards with visualization generation:
+**IMPORTANT**: Due to the unified config system structure, you **MUST** use `build_all.sh` to build firmware. This script sets the required `QMK_USERSPACE` environment variable and ensures the build environment is configured correctly. Running `qmk compile` or `make` directly will fail.
+
+Build all configured keyboards (QMK + ZMK) with visualization generation:
 ```bash
 ./build_all.sh
 ```
 
-Build all keyboards without visualization:
+This script:
+1. Sets `QMK_USERSPACE` to the correct path (`qmk/` subdirectory)
+2. Runs `python3 scripts/generate.py` to generate all keymaps
+3. Builds all QMK keyboards using `qmk compile`
+4. Builds all ZMK keyboards using Docker
+5. Generates visual keymap diagrams (SVG)
+6. Updates `KEYBOARDS.md` inventory
+
+**Do NOT use these commands directly** (they will fail without proper environment setup):
 ```bash
+# ❌ DON'T USE - will fail
 qmk userspace-compile
-```
-
-Build a specific keyboard:
-```bash
-# Bastard Keyboards Skeletyl
 qmk compile -kb bastardkb/skeletyl/promicro -km dario
-
-# Boardsource Lulu (RP2040)
-qmk compile -kb boardsource/lulu/rp2040 -km dario
-
-# Lily58
-qmk compile -kb lily58/rev1 -km dario
+make bastardkb/skeletyl/promicro:dario
 ```
 
-Alternatively, use make:
+If you need to build manually, you must set the environment variable first:
 ```bash
-make bastardkb/skeletyl/promicro:dario
-make boardsource/lulu/rp2040:dario
-make lily58/rev1:dario
+export QMK_USERSPACE="$(realpath qmk)"
+qmk compile -kb bastardkb/skeletyl/promicro -km dario
 ```
 
 ### Managing Build Targets

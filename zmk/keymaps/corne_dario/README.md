@@ -42,12 +42,12 @@
 
 30: &kp K
 31: &kp M
-32: &kp COMM
+32: &kp COMMA
 33: &kp DOT
 34: &kp FSLH
 35: &none
 
-36: &kp ENT
+36: &kp ENTER
 37: &lt NAV SPC
 38: &lt MEDIA TAB
 39: &lt SYM DEL
@@ -90,7 +90,7 @@
 25: &kp LEFT
 26: &kp DOWN
 27: &kp UP
-28: &kp RGHT
+28: &kp RIGHT
 29: &none
 
 30: &kp INS
@@ -104,7 +104,7 @@
 37: &none
 38: &none
 39: &kp DEL
-40: &kp ENT
+40: &kp ENTER
 41: &kp BSPC
 ```
 
@@ -127,7 +127,7 @@
 
 12: &none
 13: &none
-14: &kp ALGR
+14: &kp RALT
 15: &none
 16: &none
 17: &none
@@ -140,10 +140,10 @@
 23: &bt BT_SEL 0
 
 24: &none
-25: &kp MPRV
+25: &kp C_PREV
 26: &kp VOLD
 27: &kp VOLU
-28: &kp MNXT
+28: &kp C_NEXT
 29: &bt BT_SEL 0
 
 30: &none
@@ -156,9 +156,9 @@
 36: &none
 37: &none
 38: &none
-39: &kp MSTP
-40: &kp MPLY
-41: &kp MUTE
+39: &kp C_STOP
+40: &kp C_PLAY_PAUSE
+41: &kp C_MUTE
 ```
 
 ## NUM Layer
@@ -166,24 +166,24 @@
 ```
  0: &none
  1: &kp LBRC
- 2: &kp 4
- 3: &kp 5
- 4: &kp 6
+ 2: &kp N4
+ 3: &kp N5
+ 4: &kp N6
  5: &kp RBRC
 
  6: &none
  7: &kp SCLN
- 8: &kp 1
- 9: &kp 2
-10: &kp 3
+ 8: &kp N1
+ 9: &kp N2
+10: &kp N3
 11: &kp EQL
 
 12: &none
-13: &kp GRV
-14: &kp 7
-15: &kp 8
-16: &kp 9
-17: &kp BSLS
+13: &kp GRAVE
+14: &kp N7
+15: &kp N8
+16: &kp N9
+17: &kp BSLH
 
 18: &none
 19: &none
@@ -202,13 +202,13 @@
 30: &none
 31: &none
 32: &none
-33: &kp ALGR
+33: &kp RALT
 34: &none
 35: &none
 
 36: &kp COLN
-37: &kp 0
-38: &kp MINS
+37: &kp N0
+38: &kp MINUS
 39: &none
 40: &none
 41: &none
@@ -218,23 +218,23 @@
 
 ```
  0: &none
- 1: &kp LCBR
- 2: &kp DLR
- 3: &kp PERC
- 4: &kp CIRC
- 5: &kp RCBR
+ 1: &kp LBRC
+ 2: &kp DOLLAR
+ 3: &kp PERCENT
+ 4: &kp CARET
+ 5: &kp RBRC
 
  6: &none
  7: &kp COLN
- 8: &kp EXLM
+ 8: &kp EXCL
  9: &kp AT
 10: &kp HASH
 11: &kp PLUS
 
 12: &none
 13: &kp TILD
-14: &kp AMPR
-15: &kp ASTR
+14: &kp AMPERSAND
+15: &kp ASTERISK
 16: &kp LPRN
 17: &kp PIPE
 
@@ -255,13 +255,13 @@
 30: &none
 31: &none
 32: &none
-33: &kp ALGR
+33: &kp RALT
 34: &none
 35: &none
 
 36: &kp LPRN
 37: &kp RPRN
-38: &kp UNDS
+38: &kp UNDERSCORE
 39: &none
 40: &none
 41: &none
@@ -275,14 +275,14 @@
  2: &kp F7
  3: &kp F8
  4: &kp F9
- 5: &kp PSCR
+ 5: &kp PRINTSCREEN
 
  6: &none
  7: &kp F11
  8: &kp F4
  9: &kp F5
 10: &kp F6
-11: &kp SCRL
+11: &kp SCROLLLOCK
 
 12: &none
 13: &kp F10
@@ -308,11 +308,11 @@
 30: &none
 31: &none
 32: &none
-33: &kp ALGR
+33: &kp RALT
 34: &none
 35: &none
 
-36: &kp APP
+36: &kp K_APP
 37: &kp SPC
 38: &kp TAB
 39: &none

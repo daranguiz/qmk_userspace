@@ -6,7 +6,7 @@
 USER_NAME := dario
 
 # Include board-specific features if they exist
--include $(USER_PATH)/../../qmk/config/boards/corne_qmk.mk
+-include $(USER_PATH)/../../config/boards/corne_qmk.mk
 
 # Include global QMK rules if they exist
--include $(USER_PATH)/../../qmk/config/global/rules.mk
+-include $(USER_PATH)/../../config/global/rules.mk

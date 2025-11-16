@@ -220,8 +220,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 
 // Include global QMK config if it exists
 #ifdef __has_include
-#  if __has_include("../../../qmk/config/global/config.h")
-#    include "../../../qmk/config/global/config.h"
+#  if __has_include("../../../../../../config/global/config.h")
+#    include "../../../../../../config/global/config.h"
 #  endif
 #endif
 """
@@ -236,10 +236,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 USER_NAME := dario
 
 # Include board-specific features if they exist
--include $(USER_PATH)/../../qmk/config/boards/{board.id}.mk
+-include $(USER_PATH)/../../config/boards/{board.id}.mk
 
 # Include global QMK rules if they exist
--include $(USER_PATH)/../../qmk/config/global/rules.mk
+-include $(USER_PATH)/../../config/global/rules.mk
 """
 
     def generate_visualization(
