@@ -16,7 +16,8 @@ class ZMKTranslator:
         self,
         aliases: Optional[Dict[str, BehaviorAlias]] = None,
         special_keycodes: Optional[Dict[str, Dict[str, str]]] = None,
-        layer_indices: Optional[Dict[str, int]] = None
+        layer_indices: Optional[Dict[str, int]] = None,
+        layout_size: Optional[str] = None
     ):
         """
         Initialize translator with behavior aliases and special keycodes
@@ -25,10 +26,13 @@ class ZMKTranslator:
             aliases: Dictionary of BehaviorAlias objects
             special_keycodes: Dictionary of special keycode mappings
             layer_indices: Dictionary mapping layer names to indices (for &lt)
+            layout_size: Board layout size (e.g., "3x5_3", "3x6_3") for position-aware translation
         """
         self.aliases = aliases or {}
         self.special_keycodes = special_keycodes or {}
         self.layer_indices = layer_indices or {}
+        self.layout_size = layout_size
+        self.current_key_index = 0  # Track current key position for context-aware translation
 
     def translate(self, unified) -> str:
         """
@@ -75,8 +79,34 @@ class ZMKTranslator:
             }
             return qk_map.get(unified, '&none')
 
+        # Handle Bluetooth keycodes (ZMK-specific)
+        if unified.startswith('BT_'):
+            bt_map = {
+                'BT_SEL_0': '&bt BT_SEL 0',
+                'BT_SEL_1': '&bt BT_SEL 1',
+                'BT_SEL_2': '&bt BT_SEL 2',
+                'BT_SEL_3': '&bt BT_SEL 3',
+                'BT_SEL_4': '&bt BT_SEL 4',
+                'BT_CLR': '&bt BT_CLR',
+                'BT_NXT': '&bt BT_NXT',
+                'BT_PRV': '&bt BT_PRV',
+            }
+            return bt_map.get(unified, '&none')
+
+        # Handle RGB keycodes (QMK-specific, filter out for ZMK)
+        if unified.startswith('RM_') or unified.startswith('RGB_'):
+            # RGB keycodes don't exist in ZMK, return none
+            return '&none'
+
+        # Map QMK keycodes to ZMK equivalents
+        qmk_to_zmk = {
+            'SLSH': 'FSLH',  # Forward slash
+            'QUOT': 'SQT',   # Single quote (apostrophe)
+        }
+        zmk_key = qmk_to_zmk.get(unified, unified)
+
         # Simple keycode: A -> &kp A
-        return f"&kp {unified}"
+        return f"&kp {zmk_key}"
 
     def _translate_alias(self, unified: str) -> str:
         """
@@ -118,14 +148,16 @@ class ZMKTranslator:
         params = {}
         for i, param_name in enumerate(alias.params):
             param_value = parts[i + 1]
-
-            # Special handling for layer-tap: convert layer name to index
-            if alias_name == 'lt' and param_name == 'layer':
-                if param_value in self.layer_indices:
-                    param_value = str(self.layer_indices[param_value])
-                # Otherwise use the raw value (might be a number already)
-
+            # ZMK uses layer name #defines (e.g., &lt FUN X), not numeric indices
+            # The #defines are generated in the keymap file header
             params[param_name] = param_value
+
+        # Special handling for hrm: use position-aware behavior (hml vs hmr)
+        if alias_name == 'hrm':
+            is_left_hand = self._is_left_hand_key(self.current_key_index)
+            behavior = 'hml' if is_left_hand else 'hmr'
+            # Return position-specific behavior instead of generic hrm
+            return f"&{behavior} {params['mod']} {params['key']}"
 
         # Translate using alias pattern
         return alias.translate_zmk(**params)
@@ -202,3 +234,32 @@ class ZMKTranslator:
             layer_names: Ordered list of layer names
         """
         self.layer_indices = {name: idx for idx, name in enumerate(layer_names)}
+
+    def set_key_index(self, index: int):
+        """
+        Set current key index for position-aware translation
+
+        Args:
+            index: Current key position in the layout (0-based)
+        """
+        self.current_key_index = index
+
+    def _is_left_hand_key(self, key_index: int) -> bool:
+        """
+        Determine if a key position is on the left hand
+
+        Args:
+            key_index: Key position (0-based)
+
+        Returns:
+            True if key is on left hand, False if on right hand
+        """
+        if self.layout_size == "3x5_3":
+            # 36 keys: 0-14 left hand (3x5), 15-29 right hand (3x5), 30-32 left thumbs, 33-35 right thumbs
+            return key_index < 15 or (30 <= key_index < 33)
+        elif self.layout_size == "3x6_3":
+            # 42 keys: 0-17 left hand (3x6), 18-35 right hand (3x6), 36-38 left thumbs, 39-41 right thumbs
+            return key_index < 18 or (36 <= key_index < 39)
+        else:
+            # Default: assume first half is left hand
+            return key_index < 21  # Default to 42-key layout

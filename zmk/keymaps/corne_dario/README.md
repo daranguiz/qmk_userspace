@@ -12,16 +12,16 @@
  4: &kp P
  5: &kp G
 
- 6: &none
- 7: &hrm LGUI A
- 8: &hrm LALT R
- 9: &hrm LCTL S
-10: &hrm LSFT T
+ 6: &kp LBRC
+ 7: &hml LGUI A
+ 8: &hml LALT R
+ 9: &hml LCTL S
+10: &hml LSFT T
 11: &kp D
 
 12: &none
 13: &kp Z
-14: &lt 5 X
+14: &lt FUN X
 15: &kp C
 16: &kp V
 17: &kp B
@@ -30,35 +30,35 @@
 19: &kp L
 20: &kp U
 21: &kp Y
-22: &kp QUOT
+22: &kp SQT
 23: &none
 
 24: &kp H
-25: &hrm LSFT N
-26: &hrm LCTL E
-27: &hrm LALT I
-28: &hrm LGUI O
-29: &none
+25: &hmr LSFT N
+26: &hmr LCTL E
+27: &hmr LALT I
+28: &hmr LGUI O
+29: &kp RBRC
 
 30: &kp K
 31: &kp M
 32: &kp COMM
-33: &mt RALT DOT
-34: &kp SLSH
+33: &kp DOT
+34: &kp FSLH
 35: &none
 
 36: &kp ENT
-37: &lt 1 SPC
-38: &lt 2 TAB
-39: &lt 4 DEL
+37: &lt NAV SPC
+38: &lt MEDIA TAB
+39: &lt SYM DEL
 40: &kp LSFT
-41: &lt 3 BSPC
+41: &lt NUM BSPC
 ```
 
 ## NAV Layer
 
 ```
- 0: &none
+ 0: &bootloader
  1: &none
  2: &none
  3: &none
@@ -111,7 +111,7 @@
 ## MEDIA Layer
 
 ```
- 0: &none
+ 0: &bootloader
  1: &none
  2: &none
  3: &none
@@ -132,26 +132,26 @@
 16: &none
 17: &none
 
-18: &kp RM_TOGG
-19: &kp RM_NEXT
-20: &kp RM_HUEU
-21: &kp RM_SATU
-22: &kp RM_VALU
-23: &none
+18: &none
+19: &none
+20: &none
+21: &none
+22: &none
+23: &bt BT_SEL 0
 
 24: &none
 25: &kp MPRV
 26: &kp VOLD
 27: &kp VOLU
 28: &kp MNXT
-29: &none
+29: &bt BT_SEL 0
 
 30: &none
 31: &none
 32: &none
 33: &none
 34: &none
-35: &none
+35: &bt BT_CLR
 
 36: &none
 37: &none
@@ -190,7 +190,7 @@
 20: &none
 21: &none
 22: &none
-23: &none
+23: &bootloader
 
 24: &none
 25: &kp LSFT
@@ -243,7 +243,7 @@
 20: &none
 21: &none
 22: &none
-23: &none
+23: &bootloader
 
 24: &none
 25: &kp LSFT
@@ -296,7 +296,7 @@
 20: &none
 21: &none
 22: &none
-23: &none
+23: &bootloader
 
 24: &none
 25: &kp LSFT

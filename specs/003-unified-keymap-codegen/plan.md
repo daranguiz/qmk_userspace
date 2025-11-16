@@ -263,13 +263,17 @@ keyboard-config/            # Root (renamed from qmk_userspace)
 │           └── lily58.mk
 │
 ├── zmk/                    # ✨ NEW: ZMK-specific files (migrated from separate repo)
+│   ├── build.yaml          # ZMK build targets (board/shield combinations)
+│   ├── build_zmk.sh        # ✨ NEW: Docker-based local ZMK build script
+│   │
 │   ├── keymaps/            # GENERATED: ZMK keymaps (auto-generated, do not edit)
 │   │   ├── corne_dario/
 │   │   │   ├── corne.keymap      # Generated from config/keymap.yaml
-│   │   │   └── corne.conf        # Generated settings
+│   │   │   └── README.md         # Generated with ASCII art visualization
 │   │   └── [other_zmk_boards]/
 │   │
 │   └── config/             # MANUAL: ZMK-specific settings (user-editable)
+│       ├── west.yml        # Points to local ZMK repository for builds
 │       ├── global/         # Shared ZMK behaviors
 │       │   ├── behaviors.dtsi    # Homerow mod behaviors (&hrm)
 │       │   └── settings.conf     # Global ZMK settings
@@ -305,6 +309,56 @@ keyboard-config/            # Root (renamed from qmk_userspace)
 - **Board inventory centralized**: `config/boards.yaml` maps keyboards to extensions
 - **Generator scripts in Python**: Better YAML parsing, string templating, and testing than Bash
 - **Existing QMK userspace**: `users/dario/` directory becomes obsolete (replaced by generator templates)
+
+## Build Process
+
+### QMK Build Process
+
+**Local Builds**:
+1. Run `python3 scripts/generate.py` to generate all QMK keymaps
+2. Run `qmk userspace-compile` to build all configured boards
+3. Or use `./build_all.sh` which runs both steps automatically
+
+**CI/CD** (GitHub Actions):
+- Uses existing QMK build action
+- Generates keymaps first, then compiles firmware
+- Uploads `.hex`/`.bin`/`.uf2` files as artifacts
+
+### ZMK Build Process
+
+**Local Builds** (Docker-based):
+1. Run `python3 scripts/generate.py` to generate all ZMK keymaps
+2. Run `zmk/build_zmk.sh` to build ZMK firmware using Docker
+3. Docker process:
+   - Pulls `zmkfirmware/zmk-build-arm:stable` image (or uses cached version)
+   - Mounts local `~/git/zmk` repository as `/workspaces/zmk`
+   - Mounts `qmk_userspace/zmk/config/` as ZMK config directory
+   - Runs `west build` for each board/shield in `zmk/build.yaml`
+   - Copies `.uf2` files to `firmware/` directory
+   - Cleans up container
+
+**Build Configuration**:
+- `zmk/build.yaml`: Lists board/shield combinations to build
+  ```yaml
+  include:
+    - board: nice_nano_v2
+      shield: corne_left
+    - board: nice_nano_v2
+      shield: corne_right
+  ```
+- `zmk/config/west.yml`: Points to ZMK repository for west builds
+- `zmk/config/boards/<board>.conf`: Board-specific ZMK settings
+
+**CI/CD** (GitHub Actions):
+- Uses ZMK's official reusable workflow: `zmkfirmware/zmk/.github/workflows/build-user-config.yml@main`
+- Automatically reads `zmk/build.yaml` for build targets
+- Generates keymaps first, then builds firmware
+- Uploads `.uf2` files as artifacts
+
+**Split Keyboard Handling**:
+- For split keyboards (Corne, Lily58, etc.), both left and right halves are built separately
+- Each half is a separate entry in `zmk/build.yaml`
+- Firmware files are named: `<keyboard>_left.uf2` and `<keyboard>_right.uf2`
 
 ## Complexity Tracking
 

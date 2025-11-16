@@ -21,7 +21,7 @@ qmk compile -kb crkbd/rev1 -km dario
  3: KC_F
  4: KC_P
  5: KC_G
- 6: KC_NO
+ 6: KC_LBRC
  7: LGUI_T(KC_A)
  8: LALT_T(KC_R)
  9: LCTL_T(KC_S)
@@ -44,11 +44,11 @@ qmk compile -kb crkbd/rev1 -km dario
 26: LCTL_T(KC_E)
 27: LALT_T(KC_I)
 28: LGUI_T(KC_O)
-29: KC_NO
+29: KC_RBRC
 30: KC_K
 31: KC_M
 32: KC_COMM
-33: ALGR_T(KC_DOT)
+33: KC_DOT
 34: KC_SLSH
 35: KC_NO
 36: KC_ENT
@@ -62,7 +62,7 @@ qmk compile -kb crkbd/rev1 -km dario
 ## NAV Layer
 
 ```
- 0: KC_NO
+ 0: QK_BOOT
  1: KC_NO
  2: KC_NO
  3: KC_NO
@@ -109,7 +109,7 @@ qmk compile -kb crkbd/rev1 -km dario
 ## MEDIA Layer
 
 ```
- 0: KC_NO
+ 0: QK_BOOT
  1: KC_NO
  2: KC_NO
  3: KC_NO
@@ -132,19 +132,19 @@ qmk compile -kb crkbd/rev1 -km dario
 20: RM_HUEU
 21: RM_SATU
 22: RM_VALU
-23: KC_NO
+23: KC_BT_SEL_0
 24: KC_NO
 25: KC_MPRV
 26: KC_VOLD
 27: KC_VOLU
 28: KC_MNXT
-29: KC_NO
+29: KC_BT_SEL_0
 30: KC_NO
 31: KC_NO
 32: KC_NO
 33: KC_NO
 34: KC_NO
-35: KC_NO
+35: KC_BT_CLR
 36: KC_NO
 37: KC_NO
 38: KC_NO
@@ -179,7 +179,7 @@ qmk compile -kb crkbd/rev1 -km dario
 20: KC_NO
 21: KC_NO
 22: KC_NO
-23: KC_NO
+23: QK_BOOT
 24: KC_NO
 25: KC_LSFT
 26: KC_LCTL
@@ -226,7 +226,7 @@ qmk compile -kb crkbd/rev1 -km dario
 20: KC_NO
 21: KC_NO
 22: KC_NO
-23: KC_NO
+23: QK_BOOT
 24: KC_NO
 25: KC_LSFT
 26: KC_LCTL
@@ -273,7 +273,7 @@ qmk compile -kb crkbd/rev1 -km dario
 20: KC_NO
 21: KC_NO
 22: KC_NO
-23: KC_NO
+23: QK_BOOT
 24: KC_NO
 25: KC_LSFT
 26: KC_LCTL

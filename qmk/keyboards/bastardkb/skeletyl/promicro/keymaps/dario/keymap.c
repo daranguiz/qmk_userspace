@@ -12,7 +12,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Z                , LT(FUN, KC_X)       , KC_C                , KC_V                , KC_B                ,
         KC_J                , KC_L                , KC_U                , KC_Y                , KC_QUOT             ,
         KC_H                , LSFT_T(KC_N)        , LCTL_T(KC_E)        , LALT_T(KC_I)        , LGUI_T(KC_O)        ,
-        KC_K                , KC_M                , KC_COMM             , ALGR_T(KC_DOT)      , KC_SLSH             ,
+        KC_K                , KC_M                , KC_COMM             , KC_DOT              , KC_SLSH             ,
                               KC_ENT              , LT(NAV, KC_SPC)     , LT(MEDIA, KC_TAB)   ,
                               LT(SYM, KC_DEL)     , KC_LSFT             , LT(NUM, KC_BSPC)    
     ),

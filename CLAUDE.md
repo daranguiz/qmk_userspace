@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Working Principles for Claude
+
+**CRITICAL - Testing and Verification Standards**:
+- **A test failure is NEVER success**: If a build fails, a command errors, or a test doesn't run to completion successfully, the task is NOT complete
+- **"Verified" means it actually worked**: You cannot claim verification without seeing successful execution and output
+- **No assumptions or "probably works"**: If Docker isn't running, the network is down, or a dependency is missing, you MUST report the actual failure - not mark the task as complete
+- **Honest reporting required**: Report what actually happened, not what you hoped would happen
+- When a test cannot run due to external factors (missing dependencies, services down, etc.), clearly state: "Cannot complete test - [specific blocker]" and leave the task incomplete
+
+**CRITICAL - Local Build Requirements**:
+- **ALWAYS support local builds**: Local build capability is MANDATORY for all firmware (QMK, ZMK, etc.)
+- **GitHub Actions is NOT a development tool**: CI/CD is for artifacts and automation, NOT for development workflow
+- **Follow official tooling**: Use the official dev container approach for each firmware (e.g., ZMK's devcontainer setup)
+- **Never suggest "just use GitHub Actions"**: This is never an acceptable answer for local development
+
 ## About This Project
 
 This is a QMK External Userspace repository for custom keyboard firmware. It contains keymaps for multiple split ergonomic keyboards using a **unified keymap code generation system** based on Miryoku principles with Mac-specific clipboard shortcuts.

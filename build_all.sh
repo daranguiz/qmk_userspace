@@ -76,6 +76,26 @@ echo ""
 # Note: Keymap visualizations are now generated automatically by scripts/generate.py
 # during Phase 0 (no separate phase needed)
 
+# Build ZMK firmware
+echo "------------------------------------------------"
+echo "Phase 2: Building ZMK firmware (Docker)"
+echo "------------------------------------------------"
+echo ""
+
+if [ -f "zmk/build_zmk.sh" ]; then
+    echo -e "${BLUE}Running ZMK build script...${NC}"
+    if bash zmk/build_zmk.sh; then
+        echo -e "${GREEN}✓ ZMK builds successful${NC}"
+        echo ""
+    else
+        echo -e "${YELLOW}✗ ZMK builds failed (continuing anyway)${NC}"
+        echo ""
+    fi
+else
+    echo -e "${YELLOW}ZMK build script not found, skipping ZMK builds${NC}"
+    echo ""
+fi
+
 # Summary
 echo "================================================"
 echo "Build Summary"

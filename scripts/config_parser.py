@@ -47,10 +47,28 @@ class YAMLConfigParser:
 
             # Parse core layout (for normal layers)
             if 'core' in layer_data:
-                core_rows = layer_data['core']
-                if not isinstance(core_rows, list):
-                    raise ValidationError(f"Layer {layer_name}: 'core' must be a list of rows")
-                core = KeyGrid(rows=core_rows)
+                core_data = layer_data['core']
+
+                # Support both old format (list of rows) and new format (dict with left/right/thumbs)
+                if isinstance(core_data, list):
+                    # Old format: flat list of rows
+                    core = KeyGrid(rows=core_data)
+                elif isinstance(core_data, dict):
+                    # New format: explicit left/right/thumbs sections
+                    if 'left' not in core_data or 'right' not in core_data or 'thumbs' not in core_data:
+                        raise ValidationError(
+                            f"Layer {layer_name}: 'core' dict must have 'left', 'right', and 'thumbs' sections"
+                        )
+
+                    # Flatten to rows: left rows + right rows + thumb rows
+                    core_rows = (
+                        core_data['left'] +      # Left hand rows (3 rows for 3x5)
+                        core_data['right'] +     # Right hand rows (3 rows for 3x5)
+                        core_data['thumbs']      # Thumb rows (2 rows: left thumbs, right thumbs)
+                    )
+                    core = KeyGrid(rows=core_rows)
+                else:
+                    raise ValidationError(f"Layer {layer_name}: 'core' must be a list or dict")
 
             # Parse full_layout (for special layers like GAME)
             if 'full_layout' in layer_data:
@@ -77,6 +95,22 @@ class YAMLConfigParser:
             # Create layer
             layer = Layer(name=layer_name, core=core, full_layout=full_layout, extensions=extensions)
             layers[layer_name] = layer
+
+        # Validate extension consistency across all layers
+        # If any layer defines an extension type, ALL layers must define it
+        all_extension_types = set()
+        for layer in layers.values():
+            all_extension_types.update(layer.extensions.keys())
+
+        if all_extension_types:
+            # Check that all layers have all extension types
+            for layer_name, layer in layers.items():
+                missing_extensions = all_extension_types - set(layer.extensions.keys())
+                if missing_extensions:
+                    raise ValidationError(
+                        f"Layer {layer_name}: missing extension definitions for {missing_extensions}. "
+                        f"All layers must define the same extension types. Define them with NONE values if unused."
+                    )
 
         # Get metadata if present
         metadata = data.get('metadata', {})

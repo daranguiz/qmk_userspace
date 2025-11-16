@@ -21,7 +21,7 @@ qmk compile -kb bastardkb/skeletyl/promicro -km dario
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
 │ LGUI_T(KC_A) │ LALT_T(KC_R) │ LCTL_T(KC_S) │ LSFT_T(KC_T) │ KC_D    │   │ KC_H    │ LSFT_T(KC_N) │ LCTL_T(KC_E) │ LALT_T(KC_I) │ LGUI_T(KC_O) │
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
-│ KC_Z    │ LT(FUN, KC_X) │ KC_C    │ KC_V    │ KC_B    │   │ KC_K    │ KC_M    │ KC_COMM │ ALGR_T(KC_DOT) │ KC_SLSH │
+│ KC_Z    │ LT(FUN, KC_X) │ KC_C    │ KC_V    │ KC_B    │   │ KC_K    │ KC_M    │ KC_COMM │ KC_DOT  │ KC_SLSH │
 ╰─────────┴─────────┴─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┴─────────┴─────────╯
                               │ KC_ENT  │ LT(NAV, KC_SPC) │   │ KC_LSFT │ LT(NUM, KC_BSPC) │
                               │ LT(MEDIA, KC_TAB) │         │   │         │         │

@@ -66,8 +66,13 @@ class LayerCompiler:
         for keycode in keycodes:
             translator.validate_keybinding(keycode, layer.name)
 
-        # 4. Translate keycodes
-        translated = [translator.translate(kc) for kc in keycodes]
+        # 4. Translate keycodes (with position awareness for ZMK)
+        translated = []
+        for idx, kc in enumerate(keycodes):
+            # Set key index for position-aware translation (ZMK hrm -> hml/hmr)
+            if hasattr(translator, 'set_key_index'):
+                translator.set_key_index(idx)
+            translated.append(translator.translate(kc))
 
         return CompiledLayer(
             name=layer.name,

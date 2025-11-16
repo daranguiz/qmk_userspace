@@ -60,7 +60,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 42: KC_K
 43: KC_M
 44: KC_COMM
-45: ALGR_T(KC_DOT)
+45: KC_DOT
 46: KC_SLSH
 47: KC_NO
 48: KC_NO

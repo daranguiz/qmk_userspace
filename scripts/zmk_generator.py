@@ -26,10 +26,15 @@ class ZMKGenerator:
         Returns:
             Complete .keymap file content as string
         """
+        # Generate layer index #defines
+        layer_defines = ""
+        for idx, layer in enumerate(compiled_layers):
+            layer_defines += f"#define {layer.name} {idx}\n"
+
         # Generate layer definitions
         layer_defs = []
         for layer in compiled_layers:
-            layer_def = self._format_layer_definition(layer)
+            layer_def = self._format_layer_definition(layer, board)
             layer_defs.append(layer_def)
 
         layers_code = "\n\n".join(layer_defs)
@@ -43,7 +48,9 @@ class ZMKGenerator:
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include "dario_behaviors.dtsi"
 
+{layer_defines}
 / {{
     keymap {{
         compatible = "zmk,keymap";
@@ -53,18 +60,19 @@ class ZMKGenerator:
 }};
 """
 
-    def _format_layer_definition(self, layer: CompiledLayer) -> str:
+    def _format_layer_definition(self, layer: CompiledLayer, board: Board) -> str:
         """
         Format a single layer as ZMK devicetree node
 
         Args:
             layer: Compiled layer with ZMK keycodes
+            board: Board configuration (for layout size)
 
         Returns:
             Layer definition as string
         """
         layer_name = layer.name.lower()
-        bindings = self._format_bindings(layer.keycodes)
+        bindings = self._format_bindings(layer.keycodes, board.layout_size)
 
         return f"""        {layer_name}_layer {{
             bindings = <
@@ -72,42 +80,47 @@ class ZMKGenerator:
             >;
         }};"""
 
-    def _format_bindings(self, keycodes: List[str]) -> str:
+    def _format_bindings(self, keycodes: List[str], layout_size: str = "3x5_3") -> str:
         """
         Format keycodes as ZMK bindings with proper indentation
 
         Args:
-            keycodes: List of ZMK keycodes (e.g., "&kp A", "&hrm LGUI A")
+            keycodes: List of ZMK keycodes (e.g., "&kp A", "&hml LGUI A")
+            layout_size: Board layout size (e.g., "3x5_3", "3x6_3")
 
         Returns:
             Formatted bindings string
         """
-        # Group into rows for visual layout (3x5_3 layout)
-        # For now, handle 36-key layout
-        if len(keycodes) == 36:
+        # Format for Corne's physical layout (6 columns per row, 3 rows + 3 thumb keys)
+        if layout_size == "3x6_3" and len(keycodes) == 42:
+            # 3x6_3 layout: 6 columns, 3 rows per hand + 3 thumbs per hand
+            # Format as: left6 right6 | left6 right6 | left6 right6 | left3 right3
             rows = [
-                keycodes[0:5],   # Left hand row 1
-                keycodes[5:10],  # Left hand row 2
-                keycodes[10:15], # Left hand row 3
-                keycodes[15:20], # Right hand row 1
-                keycodes[20:25], # Right hand row 2
-                keycodes[25:30], # Right hand row 3
-                keycodes[30:33], # Left thumbs
-                keycodes[33:36], # Right thumbs
+                keycodes[0:6] + keycodes[18:24],    # Row 1: left 6 + right 6
+                keycodes[6:12] + keycodes[24:30],   # Row 2: left 6 + right 6
+                keycodes[12:18] + keycodes[30:36],  # Row 3: left 6 + right 6
+                keycodes[36:39] + keycodes[39:42],  # Thumbs: left 3 + right 3
+            ]
+        elif layout_size == "3x5_3" and len(keycodes) == 36:
+            # 3x5_3 layout: 5 columns, 3 rows per hand + 3 thumbs per hand
+            rows = [
+                keycodes[0:5] + keycodes[15:20],    # Row 1: left 5 + right 5
+                keycodes[5:10] + keycodes[20:25],   # Row 2: left 5 + right 5
+                keycodes[10:15] + keycodes[25:30],  # Row 3: left 5 + right 5
+                keycodes[30:33] + keycodes[33:36],  # Thumbs: left 3 + right 3
             ]
         else:
-            # For other layouts, just chunk into rows of 6
+            # Generic fallback: chunk into rows of 12 (or 10 for 3x5_3)
+            chunk_size = 12 if layout_size == "3x6_3" else 10
             rows = []
-            chunk_size = 6
             for i in range(0, len(keycodes), chunk_size):
                 rows.append(keycodes[i:i+chunk_size])
 
-        # Format with proper indentation
+        # Format with proper indentation (simple space separation)
         formatted_rows = []
         for row in rows:
-            # Use 20-character width for alignment (ZMK bindings can be long)
-            formatted_row = "                " + " ".join(f"{kc:20}" for kc in row)
-            formatted_rows.append(formatted_row.rstrip())  # Remove trailing spaces
+            formatted_row = " " * 16 + " ".join(row)
+            formatted_rows.append(formatted_row)
 
         return "\n".join(formatted_rows)
 

@@ -408,6 +408,31 @@ With multiple developers:
 
 ---
 
+## Phase 10: ZMK Build Integration (Cross-Cutting)
+
+**Purpose**: Enable local and CI/CD builds for ZMK firmware from this repository
+
+**Goal**: Allow building ZMK firmware using Docker without requiring separate zmk-config repo
+
+**Independent Test**: Run zmk/build_zmk.sh and verify .uf2 firmware files are generated, GitHub Actions builds ZMK firmware
+
+- [ ] T101 [P] Create zmk/build.yaml with ZMK build targets (board/shield combinations for corne)
+- [ ] T102 [P] Create zmk/config/west.yml pointing to local ZMK repository path
+- [ ] T103 [P] Create zmk/config/boards/corne.conf with board-specific ZMK settings
+- [ ] T104 Create zmk/build_zmk.sh Docker-based build script (mount ~/git/zmk, run west build, copy .uf2 files)
+- [ ] T105 Add execution permission to zmk/build_zmk.sh (chmod +x)
+- [ ] T106 Update build_all.sh to call zmk/build_zmk.sh after QMK builds
+- [ ] T107 Test local ZMK build: run zmk/build_zmk.sh and verify firmware/*.uf2 files created
+- [ ] T108 Update .github/workflows/build-all.yml to add ZMK build job using zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+- [ ] T109 Update .github/workflows/build-all.yml to upload ZMK firmware artifacts
+- [ ] T110 Test CI/CD: push to branch and verify GitHub Actions builds both QMK and ZMK firmware
+- [ ] T111 [P] Update CLAUDE.md with ZMK build instructions (local Docker and CI/CD)
+- [ ] T112 [P] Update KEYBOARDS.md generation to include ZMK build status
+
+**Checkpoint**: ZMK firmware builds work locally via Docker and in GitHub Actions
+
+---
+
 ## Notes
 
 - [P] tasks = different files, no dependencies - can run in parallel
@@ -433,8 +458,9 @@ With multiple developers:
 - **Phase 7 (User Story 5)**: 8 tasks
 - **Phase 8 (Visual Documentation)**: 6 tasks
 - **Phase 9 (Polish)**: 14 tasks
+- **Phase 10 (ZMK Build Integration)**: 12 tasks
 
-**Total**: 100 tasks
+**Total**: 112 tasks
 
 **Tasks per User Story**:
 - US1 (Core Generator): 14 tasks
