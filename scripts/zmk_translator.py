@@ -66,87 +66,41 @@ class ZMKTranslator:
         if ':' in unified:
             return self._translate_alias(unified)
 
-        # Handle KC_ prefixed keycodes: KC_A -> &kp A
-        if unified.startswith('KC_'):
-            key = unified[3:]  # Remove KC_ prefix
-            return f"&kp {key}"
+        # Look up common name in keycodes.yaml and return ZMK value
+        # keycodes.yaml uses common names (e.g., "A", "SLSH", "LGUI", "QK_BOOT", "BT_SEL_0")
+        if unified in self.special_keycodes:
+            value = self.special_keycodes[unified].get('zmk', '&none')
+            return value if value else "&none"
 
-        # Handle QK_ prefixed keycodes (QMK-specific)
-        if unified.startswith('QK_'):
-            # Map QMK-specific codes to ZMK equivalents
-            qk_map = {
-                'QK_BOOT': '&bootloader',
-                'QK_RBT': '&sys_reset',
-            }
-            return qk_map.get(unified, '&none')
+        # Unknown keycode - raise error instead of silent fallback
+        raise ValidationError(
+            f"Unknown keycode '{unified}' not found in keycodes.yaml. "
+            f"All keycodes must be defined in config/keycodes.yaml"
+        )
 
-        # Handle Bluetooth keycodes (ZMK-specific)
-        if unified.startswith('BT_'):
-            bt_map = {
-                'BT_SEL_0': '&bt BT_SEL 0',
-                'BT_SEL_1': '&bt BT_SEL 1',
-                'BT_SEL_2': '&bt BT_SEL 2',
-                'BT_SEL_3': '&bt BT_SEL 3',
-                'BT_SEL_4': '&bt BT_SEL 4',
-                'BT_CLR': '&bt BT_CLR',
-                'BT_NXT': '&bt BT_NXT',
-                'BT_PRV': '&bt BT_PRV',
-            }
-            return bt_map.get(unified, '&none')
+    def _translate_key_for_zmk(self, key: str) -> str:
+        """
+        Translate a key token to ZMK format, extracting just the key part
+        (no &kp prefix, used for parameters in behaviors like &hrm or &lt)
 
-        # Handle RGB keycodes (QMK-specific, filter out for ZMK)
-        if unified.startswith('RM_') or unified.startswith('RGB_'):
-            # RGB keycodes don't exist in ZMK, return none
-            return '&none'
+        Args:
+            key: Key token in common name format (e.g., "A", "SPC", "SLSH")
 
-        # Map QMK keycodes to ZMK equivalents
-        zmk_key = self._map_qmk_key_to_zmk(unified)
+        Returns:
+            ZMK key name (e.g., "A", "SPACE", "FSLH")
+        """
+        # keycodes.yaml uses common names (e.g., "SLSH", not "KC_SLSH")
+        if key in self.special_keycodes:
+            zmk_value = self.special_keycodes[key].get('zmk', '')
+            if zmk_value:
+                # Extract key from "&kp KEY" format
+                if zmk_value.startswith('&kp '):
+                    return zmk_value[4:]  # Remove "&kp " prefix
+                # For special cases like "&none", return as-is
+                return zmk_value
 
-        # Simple keycode: A -> &kp A
-        return f"&kp {zmk_key}"
-
-    def _map_qmk_key_to_zmk(self, key: str) -> str:
-        """Map QMK-style key tokens to ZMK equivalents (including nums/symbols)."""
-        qmk_to_zmk = {
-            'SLSH': 'FSLH',  # Forward slash
-            'QUOT': 'SQT',   # Single quote (apostrophe)
-            'COMM': 'COMMA',
-            'RGHT': 'RIGHT',
-            'ALGR': 'RALT',
-            'BSLS': 'BSLH',  # Backslash
-            'GRV': 'GRAVE',
-            'DLR': 'DOLLAR',
-            'PERC': 'PERCENT',
-            'CIRC': 'CARET',
-            'AMPR': 'AMPERSAND',
-            'ASTR': 'ASTERISK',
-            'EXLM': 'EXCL',
-            'LCBR': 'LBRC',
-            'RCBR': 'RBRC',
-            'MINS': 'MINUS',
-            'UNDS': 'UNDERSCORE',
-            'MNXT': 'C_NEXT',
-            'MPRV': 'C_PREV',
-            'MSTP': 'C_STOP',
-            'MPLY': 'C_PLAY_PAUSE',
-            'MUTE': 'C_MUTE',
-            'PSCR': 'PRINTSCREEN',
-            'SCRL': 'SCROLLLOCK',
-            'ENT': 'ENTER',
-            'APP': 'K_APP',
-            # Explicit number mappings to avoid bare numeric tokens in DT
-            '0': 'N0',
-            '1': 'N1',
-            '2': 'N2',
-            '3': 'N3',
-            '4': 'N4',
-            '5': 'N5',
-            '6': 'N6',
-            '7': 'N7',
-            '8': 'N8',
-            '9': 'N9',
-        }
-        return qmk_to_zmk.get(key, key)
+        # If not found, return key as-is (will become &kp <key>)
+        return key
 
     def _translate_alias(self, unified: str) -> str:
         """
@@ -166,10 +120,9 @@ class ZMKTranslator:
 
         # Check if alias exists
         if alias_name not in self.aliases:
-            # Unknown alias - might be a QMK-specific feature
-            if alias_name in ['rgb', 'bl']:  # QMK-specific
-                return "&none"  # Filter QMK-specific
-            raise ValidationError(f"Unknown behavior alias: {alias_name}")
+            # Unknown alias - return &none (will be filtered)
+            # Note: All known aliases should be defined in aliases.yaml
+            return "&none"
 
         alias = self.aliases[alias_name]
 
@@ -191,7 +144,8 @@ class ZMKTranslator:
             # ZMK uses layer name #defines (e.g., &lt FUN X), not numeric indices
             # The #defines are generated in the keymap file header
             if param_name == 'key':
-                params[param_name] = self._map_qmk_key_to_zmk(param_value)
+                # Translate key using keycodes.yaml if available
+                params[param_name] = self._translate_key_for_zmk(param_value)
             else:
                 params[param_name] = param_value
 
@@ -232,14 +186,9 @@ class ZMKTranslator:
 
         # Check if alias exists
         if alias_name not in self.aliases:
-            # Check for known QMK-only features
-            if alias_name in ['rgb', 'bl']:
-                # This is OK - will be filtered silently
-                return
-            raise ValidationError(
-                f"Layer {layer_name}: Unknown behavior alias '{alias_name}' "
-                f"in keycode '{unified}'"
-            )
+            # Unknown alias - silently accept (will be filtered during translation)
+            # Note: All known aliases should be defined in aliases.yaml
+            return
 
         alias = self.aliases[alias_name]
 

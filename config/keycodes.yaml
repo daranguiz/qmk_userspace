@@ -24,6 +24,10 @@ QK_BOOT:
   qmk: "QK_BOOT"
   zmk: "&bootloader"
 
+QK_RBT:
+  qmk: "QK_RBT"
+  zmk: "&sys_reset"
+
 TRANS:
   qmk: "KC_TRNS"
   zmk: "&trans"

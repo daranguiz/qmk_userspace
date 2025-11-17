@@ -59,25 +59,35 @@ class QMKTranslator:
         if ':' in unified:
             return self._translate_alias(unified)
 
-        # Handle already-prefixed keycodes (e.g., KC_A, QK_BOOT)
-        if unified.startswith('KC_') or unified.startswith('QK_'):
-            return unified
+        # Look up common name in keycodes.yaml and return QMK value
+        # keycodes.yaml uses common names (e.g., "A", "SLSH", "LGUI", "QK_BOOT", "RM_TOGG")
+        if unified in self.special_keycodes:
+            value = self.special_keycodes[unified].get('qmk', 'KC_NO')
+            return value if value else "KC_NO"
 
-        # Handle special QMK keycodes that don't use KC_ prefix
-        # RGB controls, RGB Matrix controls (these are actual keycodes without KC_ prefix)
-        special_prefixes = ['RGB_', 'RM_']
+        # Unknown keycode - raise error instead of silent fallback
+        raise ValidationError(
+            f"Unknown keycode '{unified}' not found in keycodes.yaml. "
+            f"All keycodes must be defined in config/keycodes.yaml"
+        )
 
-        # Check if it's a function-like macro (contains parentheses)
-        if '(' in unified:
-            return unified
+    def _get_valid_modifiers(self) -> list:
+        """
+        Get list of valid modifier keycodes from keycodes.yaml
 
-        # Check if it starts with any special prefix
-        for prefix in special_prefixes:
-            if unified.startswith(prefix):
-                return unified
-
-        # Simple keycode: A -> KC_A
-        return f"KC_{unified}"
+        Returns:
+            List of valid modifier names (e.g., ['LGUI', 'RGUI', 'LALT', ...])
+        """
+        # Derive modifiers from keycodes.yaml
+        # keycodes.yaml uses common names (LGUI, not KC_LGUI)
+        modifiers = []
+        for keycode in self.special_keycodes.keys():
+            # Look for Lxxx and Rxxx modifiers
+            if keycode.startswith('L') or keycode.startswith('R'):
+                # Check if it ends with GUI, ALT, CTL/CTRL, SFT/SHFT
+                if any(keycode.endswith(mod) for mod in ['GUI', 'ALT', 'CTL', 'CTRL', 'SFT', 'SHFT']):
+                    modifiers.append(keycode)
+        return modifiers
 
     def _translate_alias(self, unified: str) -> str:
         """
@@ -97,11 +107,9 @@ class QMKTranslator:
 
         # Check if alias exists
         if alias_name not in self.aliases:
-            # Unknown alias - might be a firmware-specific feature
-            # Check if it's a ZMK-only feature (starts with known ZMK prefixes)
-            if alias_name in ['bt', 'out', 'ext_power']:
-                return "KC_NO"  # Filter ZMK-specific
-            raise ValidationError(f"Unknown behavior alias: {alias_name}")
+            # Unknown alias - return KC_NO (will be filtered)
+            # Note: All known aliases should be defined in aliases.yaml
+            return "KC_NO"
 
         alias = self.aliases[alias_name]
 
@@ -151,14 +159,9 @@ class QMKTranslator:
 
         # Check if alias exists
         if alias_name not in self.aliases:
-            # Check for known ZMK-only features
-            if alias_name in ['bt', 'out', 'ext_power', 'rgb_ug', 'bl']:
-                # This is OK - will be filtered silently
-                return
-            raise ValidationError(
-                f"Layer {layer_name}: Unknown behavior alias '{alias_name}' "
-                f"in keycode '{unified}'"
-            )
+            # Unknown alias - silently accept (will be filtered during translation)
+            # Note: All known aliases should be defined in aliases.yaml
+            return
 
         alias = self.aliases[alias_name]
 
@@ -179,7 +182,7 @@ class QMKTranslator:
         # For example, validate modifier names for homerow mods
         if alias_name == 'hrm':
             mod = parts[1]
-            valid_mods = ['LGUI', 'RGUI', 'LALT', 'RALT', 'LCTL', 'RCTL', 'LSFT', 'RSFT']
+            valid_mods = self._get_valid_modifiers()
             if mod not in valid_mods:
                 raise ValidationError(
                     f"Layer {layer_name}: Invalid modifier '{mod}' in '{unified}'. "

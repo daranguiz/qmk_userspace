@@ -12,39 +12,25 @@ boards:
     name: "Boardsource Lulu (RP2040)"
     firmware: qmk
     qmk_keyboard: "boardsource/lulu/rp2040"
-    layout_size: "custom_58"  # Custom 58-key layout
+    layout_size: "custom_58_from_3x6"  # Use 3x6 logical layout, pad to 58
     extra_layers: ["GAME"]
 
   lily58:
     name: "Lily58 Rev1"
     firmware: qmk
     qmk_keyboard: "lily58/rev1"
-    layout_size: "custom_58"  # Custom 58-key layout
+    layout_size: "custom_58_from_3x6"  # Use 3x6 logical layout, pad to 58
     extra_layers: ["GAME"]
-
-  corne_zmk:
-    name: "Corne (CRKBD) - ZMK"
-    firmware: zmk
-    zmk_shield: "corne"
-    layout_size: "3x6_3"  # 42-key (3x6 + 3 thumbs per side)
-
-  corne_qmk:
-    name: "Corne (CRKBD) - QMK"
-    firmware: qmk
-    qmk_keyboard: "crkbd/rev1"
-    layout_size: "3x6_3"  # 42-key (3x6 + 3 thumbs per side)
 
   chocofi:
     name: "Chocofi"
     firmware: zmk
     zmk_shield: "corne"
     zmk_board: "nice_nano_v2"
-    layout_size: "3x5_3"
-
+    layout_size: "3x6_3"
 
   corneish_zen:
     name: "Corneish-Zen"
     firmware: zmk
-    zmk_board: "corneish_zen_v2"  # Integrated board, not a shield
+    zmk_shield: "corneish_zen"
     layout_size: "3x6_3"
-

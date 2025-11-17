@@ -256,7 +256,7 @@ class KeymapGenerator:
 
         # Generate visualizations (one per layout_size)
         print(f"\n📊 Generating keymap visualizations...")
-        visualizer = KeymapVisualizer(self.repo_root)
+        visualizer = KeymapVisualizer(self.repo_root, self.qmk_translator)
 
         if visualizer.is_available():
             viz_results = visualizer.generate_superset_visualizations(self.board_inventory)

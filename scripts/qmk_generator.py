@@ -120,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
         elif board.layout_size == "3x6_3":
             # 42-key split 3x6_3
             return self._format_split_3x6_3(keycodes)
-        elif board.layout_size.startswith("custom_"):
+        elif board.layout_size in ["custom_58", "custom_58_from_3x6"] or board.layout_size.startswith("custom_"):
             # Custom layout - use board-specific wrapper
             return self._format_custom_layout(board, keycodes)
         else:
@@ -197,11 +197,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
         """
         num_keys = len(keycodes)
 
-        # Format in rows of 6 for readability
+        # Lulu/Lily macro order: 12,12,12,14,8
+        row_breaks = [12, 12, 12, 14, 8]
         rows = []
-        for i in range(0, num_keys, 6):
-            row = keycodes[i:i+6]
-            rows.append("        " + ", ".join(f"{k:20}" for k in row) + ("," if i + 6 < num_keys else ""))
+        idx = 0
+        for width in row_breaks:
+            row = keycodes[idx:idx+width]
+            rows.append("        " + ", ".join(f"{k:20}" for k in row) + ",")
+            idx += width
+        if rows:
+            rows[-1] = rows[-1].rstrip(",")  # no trailing comma on last row
 
         return f"LAYOUT(\n" + "\n".join(rows) + "\n    )"
 

@@ -8,16 +8,18 @@ import shutil
 from pathlib import Path
 from typing import Optional, List, Dict
 from config_parser import YAMLConfigParser
+from qmk_translator import QMKTranslator
 
 
 class KeymapVisualizer:
     """Generate SVG visualizations of keymaps using keymap-drawer"""
 
-    def __init__(self, repo_root: Path):
+    def __init__(self, repo_root: Path, qmk_translator: Optional[QMKTranslator] = None):
         self.repo_root = repo_root
         self.output_dir = repo_root / "docs" / "keymaps"
         self.config_file = repo_root / ".keymap-drawer-config.yaml"
         self.config_dir = repo_root / "config"
+        self.qmk_translator = qmk_translator
 
         # Ensure output directory exists
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -36,27 +38,22 @@ class KeymapVisualizer:
         Returns:
             QMK-formatted keycode that keymap-drawer understands
         """
-        # Handle NONE -> empty string
-        if keycode in ["NONE", "U_NA", "U_NU", "U_NP"]:
-            return "KC_NO"  # keymap-drawer will render as blank with raw_binding_map
+        # If translator is available, use it for consistent translation
+        if self.qmk_translator:
+            return self.qmk_translator.translate(keycode)
 
-        # Handle home row mods: hrm:MOD:KEY -> MOD_T(KC_KEY)
+        # Fallback: basic translation if translator not provided
+        # (This maintains backward compatibility if visualizer is used standalone)
+        if keycode in ["NONE", "U_NA", "U_NU", "U_NP"]:
+            return "KC_NO"
         if keycode.startswith("hrm:"):
             parts = keycode.split(":")
             if len(parts) == 3:
-                mod = parts[1]  # LGUI, LALT, LCTL, LSFT
-                key = parts[2]  # A, R, S, T, etc.
-                return f"{mod}_T(KC_{key})"
-
-        # Handle layer taps: lt:LAYER:KEY -> LT(LAYER, KC_KEY)
+                return f"{parts[1]}_T(KC_{parts[2]})"
         if keycode.startswith("lt:"):
             parts = keycode.split(":")
             if len(parts) == 3:
-                layer = parts[1]  # NAV, NUM, SYM, etc.
-                key = parts[2]    # SPC, DEL, BSPC, etc.
-                return f"LT({layer}, KC_{key})"
-
-        # Standard keycodes - add KC_ prefix
+                return f"LT({parts[1]}, KC_{parts[2]})"
         return f"KC_{keycode}"
 
     def _reorder_keys_for_qmk(self, keycodes: List[str], layout_size: str) -> List[str]:

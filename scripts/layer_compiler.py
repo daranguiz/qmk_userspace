@@ -170,6 +170,10 @@ class LayerCompiler:
             result.extend(keycodes[30:36])
 
             return result
+        # 42->58 layout: use 3x6_3 logical layout then map into Lulu/Lily58 matrix
+        elif layout_size == "custom_58_from_3x6":
+            padded_42 = self._pad_to_3x6(keycodes, layer)
+            return self._pad_to_58_keys_from_3x6(padded_42, layer, board)
 
         # 38-key boards (3x5_3_pinky): add 2 keys (1 per side)
         elif layout_size == "3x5_3_pinky":
@@ -267,3 +271,59 @@ class LayerCompiler:
         result.extend(["NONE"] * 2)
 
         return result
+
+    def _pad_to_3x6(
+        self,
+        keycodes: List[str],
+        layer: Layer
+    ) -> List[str]:
+        """Helper: convert 36-key core to 42-key 3x6_3 with extensions if present."""
+        if "3x6_3" in layer.extensions:
+            ext = layer.extensions["3x6_3"]
+            left_pinky = ext.keys.get("outer_pinky_left", ["NONE"] * 3)
+            right_pinky = ext.keys.get("outer_pinky_right", ["NONE"] * 3)
+        else:
+            left_pinky = ["NONE"] * 3
+            right_pinky = ["NONE"] * 3
+
+        result = []
+        for row in range(3):
+            result.append(left_pinky[row])
+            result.extend(keycodes[row*5:(row+1)*5])
+        for row in range(3):
+            result.extend(keycodes[15 + row*5:15 + (row+1)*5])
+            result.append(right_pinky[row])
+        result.extend(keycodes[30:36])
+        return result
+
+    def _pad_to_58_keys_from_3x6(
+        self,
+        keycodes: List[str],
+        layer: Layer,
+        board: Board
+    ) -> List[str]:
+        """
+        Pad 42-key 3x6_3 layout into the Lulu/Lily58 58-key matrix.
+
+        Mapping:
+        - Row 0 (number row): 12 keys -> NONE (no numbers defined)
+        - Main rows (rows 1-3): take 42-key 3x6 data (already includes pinkies)
+          left 3x6 + right 3x6
+        - Row 3 has two center positions (LBRC/RBRC) between halves
+        - Thumb row (row 4): 8 keys -> map 6 thumbs, pad outermost with NONE
+        """
+        left_top = keycodes[0:6]
+        left_home = keycodes[6:12]
+        left_bottom = keycodes[12:18]
+        right_top = keycodes[18:24]
+        right_home = keycodes[24:30]
+        right_bottom = keycodes[30:36]
+        thumbs = keycodes[36:42]
+
+        row0 = ["NONE"] * 12
+        row1 = left_top + right_top
+        row2 = left_home + right_home
+        row3 = left_bottom + ["NONE", "NONE"] + right_bottom
+        row4 = ["NONE", thumbs[0], thumbs[1], thumbs[2], thumbs[3], thumbs[4], thumbs[5], "NONE"]
+
+        return row0 + row1 + row2 + row3 + row4
