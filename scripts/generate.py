@@ -248,16 +248,16 @@ class KeymapGenerator:
             print(f"❌ Failed: {failure_count} boards")
         print(f"{'='*60}")
 
-        # Generate visualizations for all boards
+        # Generate visualizations (one per layout_size)
         print(f"\n📊 Generating keymap visualizations...")
         visualizer = KeymapVisualizer(self.repo_root)
 
         if visualizer.is_available():
-            viz_results = visualizer.generate_all(self.board_inventory, compiled_layers_by_board)
+            viz_results = visualizer.generate_superset_visualizations(self.board_inventory)
             viz_success = sum(1 for path in viz_results.values() if path is not None)
 
             if viz_success > 0:
-                print(f"✅ Generated {viz_success} visualizations in docs/keymaps/")
+                print(f"✅ Generated {viz_success} layout visualizations in docs/keymaps/")
             else:
                 print(f"⚠️  No visualizations generated")
         else:

@@ -42,7 +42,8 @@ parse_config:
       tap: "Bksp"
       hold: "NUM"
 
-    # Miryoku custom keycodes
+    # Empty/blank keys
+    "KC_NO": ""
     "U_NA": ""
     "U_NU": ""
     "U_NP": ""
@@ -65,12 +66,20 @@ parse_config:
     "MS_WHLU": "W↑"
     "MS_WHLR": "W→"
 
-    # RGB controls
+    # RGB controls (QMK)
     "RM_TOGG": "RGB"
     "RM_NEXT": "Mode"
     "RM_HUEU": "Hue+"
     "RM_SATU": "Sat+"
     "RM_VALU": "Val+"
+
+    # Bluetooth controls (ZMK - shown in superset view)
+    "KC_BT_SEL_0": "BT 0"
+    "KC_BT_SEL_1": "BT 1"
+    "KC_BT_SEL_2": "BT 2"
+    "KC_BT_SEL_3": "BT 3"
+    "KC_BT_SEL_4": "BT 4"
+    "KC_BT_CLR": "BT Clr"
 
 draw_config:
   ortho_layout:

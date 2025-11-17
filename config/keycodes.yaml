@@ -1,0 +1,432 @@
+# Comprehensive Keycode Mapping
+#
+# Single source of truth for keycode translations across:
+# - Unified YAML format (keymap.yaml)
+# - QMK C code
+# - ZMK devicetree
+#
+# Format:
+#   <unified_name>:
+#     qmk: QMK keycode
+#     zmk: ZMK keycode
+#
+# Notes:
+# - If a keycode doesn't exist in a firmware, use empty string "" or omit
+# - Behaviors (hrm, lt, etc.) are defined in aliases.yaml
+# - Used by visualizer.py and should eventually replace hardcoded translator maps
+
+# Special keys
+NONE:
+  qmk: "KC_NO"
+  zmk: "&none"
+
+QK_BOOT:
+  qmk: "QK_BOOT"
+  zmk: "&bootloader"
+
+TRANS:
+  qmk: "KC_TRNS"
+  zmk: "&trans"
+
+# Alpha keys (A-Z)
+A:
+  qmk: "KC_A"
+  zmk: "&kp A"
+B:
+  qmk: "KC_B"
+  zmk: "&kp B"
+C:
+  qmk: "KC_C"
+  zmk: "&kp C"
+D:
+  qmk: "KC_D"
+  zmk: "&kp D"
+E:
+  qmk: "KC_E"
+  zmk: "&kp E"
+F:
+  qmk: "KC_F"
+  zmk: "&kp F"
+G:
+  qmk: "KC_G"
+  zmk: "&kp G"
+H:
+  qmk: "KC_H"
+  zmk: "&kp H"
+I:
+  qmk: "KC_I"
+  zmk: "&kp I"
+J:
+  qmk: "KC_J"
+  zmk: "&kp J"
+K:
+  qmk: "KC_K"
+  zmk: "&kp K"
+L:
+  qmk: "KC_L"
+  zmk: "&kp L"
+M:
+  qmk: "KC_M"
+  zmk: "&kp M"
+N:
+  qmk: "KC_N"
+  zmk: "&kp N"
+O:
+  qmk: "KC_O"
+  zmk: "&kp O"
+P:
+  qmk: "KC_P"
+  zmk: "&kp P"
+Q:
+  qmk: "KC_Q"
+  zmk: "&kp Q"
+R:
+  qmk: "KC_R"
+  zmk: "&kp R"
+S:
+  qmk: "KC_S"
+  zmk: "&kp S"
+T:
+  qmk: "KC_T"
+  zmk: "&kp T"
+U:
+  qmk: "KC_U"
+  zmk: "&kp U"
+V:
+  qmk: "KC_V"
+  zmk: "&kp V"
+W:
+  qmk: "KC_W"
+  zmk: "&kp W"
+X:
+  qmk: "KC_X"
+  zmk: "&kp X"
+Y:
+  qmk: "KC_Y"
+  zmk: "&kp Y"
+Z:
+  qmk: "KC_Z"
+  zmk: "&kp Z"
+
+# Number keys (0-9)
+"0":
+  qmk: "KC_0"
+  zmk: "&kp N0"
+"1":
+  qmk: "KC_1"
+  zmk: "&kp N1"
+"2":
+  qmk: "KC_2"
+  zmk: "&kp N2"
+"3":
+  qmk: "KC_3"
+  zmk: "&kp N3"
+"4":
+  qmk: "KC_4"
+  zmk: "&kp N4"
+"5":
+  qmk: "KC_5"
+  zmk: "&kp N5"
+"6":
+  qmk: "KC_6"
+  zmk: "&kp N6"
+"7":
+  qmk: "KC_7"
+  zmk: "&kp N7"
+"8":
+  qmk: "KC_8"
+  zmk: "&kp N8"
+"9":
+  qmk: "KC_9"
+  zmk: "&kp N9"
+
+# Function keys (F1-F12)
+F1:
+  qmk: "KC_F1"
+  zmk: "&kp F1"
+F2:
+  qmk: "KC_F2"
+  zmk: "&kp F2"
+F3:
+  qmk: "KC_F3"
+  zmk: "&kp F3"
+F4:
+  qmk: "KC_F4"
+  zmk: "&kp F4"
+F5:
+  qmk: "KC_F5"
+  zmk: "&kp F5"
+F6:
+  qmk: "KC_F6"
+  zmk: "&kp F6"
+F7:
+  qmk: "KC_F7"
+  zmk: "&kp F7"
+F8:
+  qmk: "KC_F8"
+  zmk: "&kp F8"
+F9:
+  qmk: "KC_F9"
+  zmk: "&kp F9"
+F10:
+  qmk: "KC_F10"
+  zmk: "&kp F10"
+F11:
+  qmk: "KC_F11"
+  zmk: "&kp F11"
+F12:
+  qmk: "KC_F12"
+  zmk: "&kp F12"
+
+# Punctuation & symbols
+QUOT:  # '
+  qmk: "KC_QUOT"
+  zmk: "&kp SQT"
+COMM:  # ,
+  qmk: "KC_COMM"
+  zmk: "&kp COMMA"
+DOT:  # .
+  qmk: "KC_DOT"
+  zmk: "&kp DOT"
+SLSH:  # /
+  qmk: "KC_SLSH"
+  zmk: "&kp FSLH"
+BSLS:  # \
+  qmk: "KC_BSLS"
+  zmk: "&kp BSLH"
+SCLN:  # ;
+  qmk: "KC_SCLN"
+  zmk: "&kp SEMI"
+COLN:  # :
+  qmk: "KC_COLN"
+  zmk: "&kp COLON"
+GRV:  # `
+  qmk: "KC_GRV"
+  zmk: "&kp GRAVE"
+TILD:  # ~
+  qmk: "KC_TILD"
+  zmk: "&kp TILDE"
+MINS:  # -
+  qmk: "KC_MINS"
+  zmk: "&kp MINUS"
+UNDS:  # _
+  qmk: "KC_UNDS"
+  zmk: "&kp UNDERSCORE"
+EQL:  # =
+  qmk: "KC_EQL"
+  zmk: "&kp EQUAL"
+PLUS:  # +
+  qmk: "KC_PLUS"
+  zmk: "&kp PLUS"
+
+# Brackets & braces
+LBRC:  # [
+  qmk: "KC_LBRC"
+  zmk: "&kp LBKT"
+RBRC:  # ]
+  qmk: "KC_RBRC"
+  zmk: "&kp RBKT"
+LCBR:  # {
+  qmk: "KC_LCBR"
+  zmk: "&kp LBRC"
+RCBR:  # }
+  qmk: "KC_RCBR"
+  zmk: "&kp RBRC"
+LPRN:  # (
+  qmk: "KC_LPRN"
+  zmk: "&kp LPAR"
+RPRN:  # )
+  qmk: "KC_RPRN"
+  zmk: "&kp RPAR"
+
+# Shifted symbols
+EXLM:  # !
+  qmk: "KC_EXLM"
+  zmk: "&kp EXCL"
+AT:  # @
+  qmk: "KC_AT"
+  zmk: "&kp AT"
+HASH:  # #
+  qmk: "KC_HASH"
+  zmk: "&kp HASH"
+DLR:  # $
+  qmk: "KC_DLR"
+  zmk: "&kp DOLLAR"
+PERC:  # %
+  qmk: "KC_PERC"
+  zmk: "&kp PERCENT"
+CIRC:  # ^
+  qmk: "KC_CIRC"
+  zmk: "&kp CARET"
+AMPR:  # &
+  qmk: "KC_AMPR"
+  zmk: "&kp AMPERSAND"
+ASTR:  # *
+  qmk: "KC_ASTR"
+  zmk: "&kp ASTERISK"
+PIPE:  # |
+  qmk: "KC_PIPE"
+  zmk: "&kp PIPE"
+
+# Modifiers
+LSFT:
+  qmk: "KC_LSFT"
+  zmk: "&kp LSHFT"
+RSFT:
+  qmk: "KC_RSFT"
+  zmk: "&kp RSHFT"
+LCTL:
+  qmk: "KC_LCTL"
+  zmk: "&kp LCTRL"
+RCTL:
+  qmk: "KC_RCTL"
+  zmk: "&kp RCTRL"
+LALT:
+  qmk: "KC_LALT"
+  zmk: "&kp LALT"
+RALT:
+  qmk: "KC_RALT"
+  zmk: "&kp RALT"
+LGUI:
+  qmk: "KC_LGUI"
+  zmk: "&kp LGUI"
+RGUI:
+  qmk: "KC_RGUI"
+  zmk: "&kp RGUI"
+ALGR:
+  qmk: "KC_ALGR"
+  zmk: "&kp RALT"
+
+# Navigation
+LEFT:
+  qmk: "KC_LEFT"
+  zmk: "&kp LEFT"
+DOWN:
+  qmk: "KC_DOWN"
+  zmk: "&kp DOWN"
+UP:
+  qmk: "KC_UP"
+  zmk: "&kp UP"
+RGHT:
+  qmk: "KC_RGHT"
+  zmk: "&kp RIGHT"
+HOME:
+  qmk: "KC_HOME"
+  zmk: "&kp HOME"
+END:
+  qmk: "KC_END"
+  zmk: "&kp END"
+PGUP:
+  qmk: "KC_PGUP"
+  zmk: "&kp PG_UP"
+PGDN:
+  qmk: "KC_PGDN"
+  zmk: "&kp PG_DN"
+
+# Editing
+ENT:
+  qmk: "KC_ENT"
+  zmk: "&kp ENTER"
+ESC:
+  qmk: "KC_ESC"
+  zmk: "&kp ESC"
+BSPC:
+  qmk: "KC_BSPC"
+  zmk: "&kp BSPC"
+DEL:
+  qmk: "KC_DEL"
+  zmk: "&kp DEL"
+TAB:
+  qmk: "KC_TAB"
+  zmk: "&kp TAB"
+SPC:
+  qmk: "KC_SPC"
+  zmk: "&kp SPACE"
+INS:
+  qmk: "KC_INS"
+  zmk: "&kp INS"
+
+# Lock keys
+CAPS:
+  qmk: "KC_CAPS"
+  zmk: "&kp CAPS"
+SCRL:
+  qmk: "KC_SCRL"
+  zmk: "&kp SCROLLLOCK"
+
+# System
+PSCR:
+  qmk: "KC_PSCR"
+  zmk: "&kp PRINTSCREEN"
+PAUS:
+  qmk: "KC_PAUS"
+  zmk: "&kp PAUSE_BREAK"
+APP:
+  qmk: "KC_APP"
+  zmk: "&kp K_APP"
+
+# Media keys
+MPLY:
+  qmk: "KC_MPLY"
+  zmk: "&kp C_PLAY_PAUSE"
+MSTP:
+  qmk: "KC_MSTP"
+  zmk: "&kp C_STOP"
+MNXT:
+  qmk: "KC_MNXT"
+  zmk: "&kp C_NEXT"
+MPRV:
+  qmk: "KC_MPRV"
+  zmk: "&kp C_PREV"
+VOLU:
+  qmk: "KC_VOLU"
+  zmk: "&kp C_VOL_UP"
+VOLD:
+  qmk: "KC_VOLD"
+  zmk: "&kp C_VOL_DN"
+MUTE:
+  qmk: "KC_MUTE"
+  zmk: "&kp C_MUTE"
+
+# RGB controls (QMK-only)
+RM_TOGG:
+  qmk: "RM_TOGG"
+  zmk: ""
+RM_NEXT:
+  qmk: "RM_NEXT"
+  zmk: ""
+RM_HUEU:
+  qmk: "RM_HUEU"
+  zmk: ""
+RM_SATU:
+  qmk: "RM_SATU"
+  zmk: ""
+RM_VALU:
+  qmk: "RM_VALU"
+  zmk: ""
+
+# Bluetooth controls (ZMK-only)
+BT_SEL_0:
+  qmk: ""
+  zmk: "&bt BT_SEL 0"
+BT_SEL_1:
+  qmk: ""
+  zmk: "&bt BT_SEL 1"
+BT_SEL_2:
+  qmk: ""
+  zmk: "&bt BT_SEL 2"
+BT_SEL_3:
+  qmk: ""
+  zmk: "&bt BT_SEL 3"
+BT_SEL_4:
+  qmk: ""
+  zmk: "&bt BT_SEL 4"
+BT_CLR:
+  qmk: ""
+  zmk: "&bt BT_CLR"
+BT_NXT:
+  qmk: ""
+  zmk: "&bt BT_NXT"
+BT_PRV:
+  qmk: ""
+  zmk: "&bt BT_PRV"

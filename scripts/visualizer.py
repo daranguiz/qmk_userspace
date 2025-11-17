@@ -7,6 +7,7 @@ import subprocess
 import shutil
 from pathlib import Path
 from typing import Optional, List, Dict
+from config_parser import YAMLConfigParser
 
 
 class KeymapVisualizer:
@@ -16,6 +17,7 @@ class KeymapVisualizer:
         self.repo_root = repo_root
         self.output_dir = repo_root / "docs" / "keymaps"
         self.config_file = repo_root / ".keymap-drawer-config.yaml"
+        self.config_dir = repo_root / "config"
 
         # Ensure output directory exists
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -23,6 +25,39 @@ class KeymapVisualizer:
     def is_available(self) -> bool:
         """Check if keymap-drawer CLI is available"""
         return shutil.which("keymap") is not None
+
+    def _translate_keycode_for_display(self, keycode: str) -> str:
+        """
+        Translate keymap.yaml format to QMK format for keymap-drawer
+
+        Args:
+            keycode: Raw keycode from keymap.yaml (e.g., "hrm:LGUI:A", "lt:NAV:SPC")
+
+        Returns:
+            QMK-formatted keycode that keymap-drawer understands
+        """
+        # Handle NONE -> empty string
+        if keycode in ["NONE", "U_NA", "U_NU", "U_NP"]:
+            return "KC_NO"  # keymap-drawer will render as blank with raw_binding_map
+
+        # Handle home row mods: hrm:MOD:KEY -> MOD_T(KC_KEY)
+        if keycode.startswith("hrm:"):
+            parts = keycode.split(":")
+            if len(parts) == 3:
+                mod = parts[1]  # LGUI, LALT, LCTL, LSFT
+                key = parts[2]  # A, R, S, T, etc.
+                return f"{mod}_T(KC_{key})"
+
+        # Handle layer taps: lt:LAYER:KEY -> LT(LAYER, KC_KEY)
+        if keycode.startswith("lt:"):
+            parts = keycode.split(":")
+            if len(parts) == 3:
+                layer = parts[1]  # NAV, NUM, SYM, etc.
+                key = parts[2]    # SPC, DEL, BSPC, etc.
+                return f"LT({layer}, KC_{key})"
+
+        # Standard keycodes - add KC_ prefix
+        return f"KC_{keycode}"
 
     def _reorder_keys_for_qmk(self, keycodes: List[str], layout_size: str) -> List[str]:
         """
@@ -194,29 +229,250 @@ class KeymapVisualizer:
             print(f"  ⚠️  Unexpected error during visualization: {e}")
             return None
 
+    def _build_superset_layer(self, layer, layout_size: str) -> List[str]:
+        """
+        Build a superset layer with all keycodes from keymap.yaml (no filtering)
+
+        Args:
+            layer: Layer object from keymap.yaml
+            layout_size: Layout size identifier (e.g., "3x5_3", "3x6_3")
+
+        Returns:
+            List of keycodes in our internal format (ready for QMK reordering)
+        """
+        keycodes = []
+
+        # Core layout is stored as KeyGrid with rows field
+        # Format: [L1, L2, L3, R1, R2, R3, LT, RT]
+        # where L1-L3 are left hand rows, R1-R3 are right hand rows, LT/RT are thumb rows
+        core_rows = layer.core.rows
+
+        # Flatten the core layout
+        # Left hand (rows 0-2)
+        for row in core_rows[0:3]:
+            keycodes.extend(row)
+
+        # Right hand (rows 3-5)
+        for row in core_rows[3:6]:
+            keycodes.extend(row)
+
+        # Thumbs (rows 6-7)
+        keycodes.extend(core_rows[6])  # Left thumbs
+        keycodes.extend(core_rows[7])  # Right thumbs
+
+        # Add extensions if present for this layout size
+        if layer.extensions and layout_size in layer.extensions:
+            ext = layer.extensions[layout_size]
+
+            if layout_size == "3x6_3":
+                # For 3x6_3, we need to insert outer pinky columns
+                # Original: [L1-L5, L6-L10, L11-L15, R1-R5, R6-R10, R11-R15, LT1-LT3, RT1-RT3]
+                # Need to insert outer columns to make it proper 3x6_3
+                left_outer = ext.keys.get('outer_pinky_left', ['NONE', 'NONE', 'NONE'])
+                right_outer = ext.keys.get('outer_pinky_right', ['NONE', 'NONE', 'NONE'])
+
+                # Rebuild with outer columns
+                # Split back into rows
+                left_rows = [keycodes[0:5], keycodes[5:10], keycodes[10:15]]
+                right_rows = [keycodes[15:20], keycodes[20:25], keycodes[25:30]]
+                thumbs_left = keycodes[30:33]
+                thumbs_right = keycodes[33:36]
+
+                # Add outer columns
+                keycodes = []
+                for i, row in enumerate(left_rows):
+                    keycodes.extend([left_outer[i]] + row)
+                for i, row in enumerate(right_rows):
+                    keycodes.extend(row + [right_outer[i]])
+                keycodes.extend(thumbs_left)
+                keycodes.extend(thumbs_right)
+
+        return keycodes
+
+    def generate_superset_visualizations(self, board_inventory) -> Dict[str, Optional[Path]]:
+        """
+        Generate one visualization per layout_size using keymap.yaml superset
+
+        Args:
+            board_inventory: BoardInventory object
+
+        Returns:
+            Dictionary mapping layout_size to generated SVG path (or None if failed)
+        """
+        if not self.is_available():
+            print("  ⚠️  keymap-drawer not available, skipping visualization")
+            return {}
+
+        # Load keymap config from YAML
+        keymap_config = YAMLConfigParser.parse_keymap(
+            self.config_dir / "keymap.yaml"
+        )
+
+        # Group boards by layout_size
+        layout_groups = {}
+        for board_id, board in board_inventory.boards.items():
+            size = board.layout_size
+            if size not in layout_groups:
+                layout_groups[size] = []
+            layout_groups[size].append(board)
+
+        results = {}
+
+        # Generate one visualization per layout size
+        for layout_size, boards in layout_groups.items():
+            # Skip custom layouts for now (they need special handling)
+            if layout_size.startswith("custom_"):
+                print(f"  ⏭️  Skipping {layout_size} layout (custom layouts not yet supported)")
+                continue
+
+            # Use the first board as a representative for QMK keyboard metadata
+            representative_board = boards[0]
+
+            print(f"  📊 Generating visualization for {layout_size} layout ({len(boards)} boards)")
+
+            # Build superset layers from keymap.yaml
+            superset_layers = []
+            for layer_name, layer in keymap_config.layers.items():
+                # Skip board-specific layers (those with full_layout)
+                # Only include universal layers or layers for this layout_size
+                if layer.full_layout is not None:
+                    # This is a custom layer (like GAME) - skip for now
+                    # TODO: Handle custom layers if needed
+                    continue
+
+                keycodes = self._build_superset_layer(layer, layout_size)
+                superset_layers.append({
+                    'name': layer_name,
+                    'keycodes': keycodes
+                })
+
+            # Generate visualization
+            svg_path = self._generate_for_layout_size(
+                layout_size,
+                representative_board,
+                superset_layers
+            )
+            results[layout_size] = svg_path
+
+        return results
+
+    def _generate_for_layout_size(self, layout_size: str, representative_board, superset_layers: List[Dict]) -> Optional[Path]:
+        """
+        Generate SVG visualization for a layout size
+
+        Args:
+            layout_size: Layout size identifier
+            representative_board: A board object to use for QMK metadata
+            superset_layers: List of dicts with 'name' and 'keycodes'
+
+        Returns:
+            Path to generated SVG file, or None if generation failed
+        """
+        # Output file paths
+        json_file = self.output_dir / f"layout_{layout_size}.json"
+        svg_file = self.output_dir / f"layout_{layout_size}.svg"
+
+        try:
+            # Determine QMK keyboard metadata
+            if representative_board.firmware == "qmk":
+                keyboard = representative_board.qmk_keyboard
+            else:
+                # For ZMK boards, use QMK equivalent
+                if layout_size == "3x6_3":
+                    keyboard = "crkbd/rev1"
+                elif layout_size == "3x5_3":
+                    keyboard = "bastardkb/skeletyl/promicro"
+                else:
+                    keyboard = representative_board.id
+
+            # Determine layout macro
+            if layout_size == "3x5_3":
+                layout = "LAYOUT_split_3x5_3"
+            elif layout_size == "3x6_3":
+                layout = "LAYOUT_split_3x6_3"
+            else:
+                layout = "LAYOUT"
+
+            # Convert to QMK JSON format
+            layers_json = []
+            for layer in superset_layers:
+                # Translate keycodes to QMK format for keymap-drawer
+                translated = [self._translate_keycode_for_display(kc) for kc in layer['keycodes']]
+                # Reorder keys for QMK layout
+                reordered = self._reorder_keys_for_qmk(translated, layout_size)
+                layers_json.append(reordered)
+
+            keymap_data = {
+                "keyboard": keyboard,
+                "keymap": "dario",
+                "layout": layout,
+                "layers": layers_json
+            }
+
+            # Write JSON file
+            json_file.write_text(json.dumps(keymap_data, indent=2))
+
+            # Parse with keymap-drawer
+            parse_cmd = ["keymap", "parse", "-q", str(json_file)]
+            if self.config_file.exists():
+                parse_cmd.insert(1, "-c")
+                parse_cmd.insert(2, str(self.config_file))
+
+            parse_result = subprocess.run(
+                parse_cmd,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+
+            parsed_keymap = parse_result.stdout
+
+            # Post-process: Rename layers from L0-L5 to friendly names
+            layer_names = [layer['name'] for layer in superset_layers]
+            for i, name in enumerate(layer_names):
+                parsed_keymap = parsed_keymap.replace(f"L{i}:", f"{name}:")
+
+            # Draw SVG
+            draw_cmd = ["keymap", "draw", "-"]
+            if self.config_file.exists():
+                draw_cmd.insert(1, "-c")
+                draw_cmd.insert(2, str(self.config_file))
+
+            draw_result = subprocess.run(
+                draw_cmd,
+                input=parsed_keymap,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+
+            # Write SVG file
+            svg_file.write_text(draw_result.stdout)
+
+            print(f"    ✅ {svg_file.name}")
+            return svg_file
+
+        except subprocess.CalledProcessError as e:
+            print(f"  ⚠️  Visualization generation failed for {layout_size}: {e}")
+            if e.stderr:
+                print(f"     {e.stderr}")
+            return None
+        except Exception as e:
+            print(f"  ⚠️  Unexpected error during visualization for {layout_size}: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+
     def generate_all(self, board_inventory, compiled_layers_by_board: Dict) -> dict:
         """
-        Generate visualizations for all boards
+        Generate visualizations for all boards (DEPRECATED - now generates per layout_size)
 
         Args:
             board_inventory: BoardInventory object
             compiled_layers_by_board: Dictionary mapping board_id -> list of CompiledLayer objects
 
         Returns:
-            Dictionary mapping board_id to generated SVG path (or None if failed)
+            Dictionary mapping layout_size to generated SVG path (or None if failed)
         """
-        if not self.is_available():
-            print("  ⚠️  keymap-drawer not available, skipping visualization")
-            return {}
-
-        results = {}
-
-        for board_id, board in board_inventory.boards.items():
-            if board_id in compiled_layers_by_board:
-                svg_path = self.generate_for_board(
-                    board,
-                    compiled_layers_by_board[board_id]
-                )
-                results[board_id] = svg_path
-
-        return results
+        # Call new superset visualization method
+        return self.generate_superset_visualizations(board_inventory)
