@@ -9,7 +9,7 @@ layers:
         - [Z              , X              , C              , V              , B              ]
       right:
         - [J              , L              , U              , Y              , QUOT           ]
-        - [H              , hrm:LSFT:N     , hrm:LCTL:E     , hrm:LALT:I     , hrm:LGUI:O     ]
+        - [H              , hrm:RSFT:N     , hrm:RCTL:E     , hrm:RALT:I     , hrm:RGUI:O     ]
         - [K              , M              , COMM           , DOT            , lt:FUN:SLSH    ]
       thumbs:
         - [ENT            , lt:NAV:SPC     , lt:MEDIA:TAB   ]
@@ -18,6 +18,9 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, LBRC, NONE]
         outer_pinky_right: [NONE, RBRC, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: LBRC
+        outer_pinky_right: RBRC
 
   NUM:
     core: # (3x5)
@@ -28,14 +31,17 @@ layers:
       right:
         - [NONE           , BT_SEL_0       , BT_SEL_1       , BT_SEL_2       , BT_CLR         ]
         - [NONE           , LSFT           , LCTL           , LALT           , LGUI           ]
-        - [NONE           , NONE           , NONE           , ALGR           , NONE           ]
+        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
       thumbs:
         - [COLN           , 0              , MINS           ]
         - [NONE           , NONE           , NONE           ]
     extensions:
       3x6_3:
         outer_pinky_left: [NONE, LCBR, NONE]
-        outer_pinky_right: [NONE, LCBR, NONE]
+        outer_pinky_right: [NONE, RCBR, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: LCBR
+        outer_pinky_right: RCBR
 
   SYM:
     core: # (3x5)
@@ -46,7 +52,7 @@ layers:
       right:
         - [NONE           , NONE           , NONE           , NONE           , QK_BOOT        ]
         - [NONE           , LSFT           , LCTL           , LALT           , LGUI           ]
-        - [NONE           , NONE           , NONE           , ALGR           , NONE           ]
+        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
       thumbs:
         - [LPRN           , RPRN           , UNDS           ]
         - [NONE           , NONE           , NONE           ]
@@ -54,6 +60,9 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: NONE
+        outer_pinky_right: NONE
 
   NAV:
     core: # (3x5)
@@ -72,13 +81,16 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: NONE
+        outer_pinky_right: NONE
 
   MEDIA:
     core: # (3x5)
       left:
         - [QK_BOOT        , NONE           , NONE           , NONE           , NONE           ]
         - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
-        - [NONE           , ALGR           , NONE           , NONE           , NONE           ]
+        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
       right:
         - [RM_TOGG        , RM_NEXT        , RM_HUEU        , RM_SATU        , RM_VALU        ]
         - [NONE           , MPRV           , VOLD           , VOLU           , MNXT           ]
@@ -90,6 +102,9 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: NONE
+        outer_pinky_right: NONE
 
   FUN:
     core: # (3x5)
@@ -108,4 +123,7 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: NONE
+        outer_pinky_right: NONE
 

@@ -52,7 +52,8 @@ class QMKTranslator:
 
         # Handle special keycodes
         if unified in self.special_keycodes:
-            return self.special_keycodes[unified].get('qmk', 'KC_NO')
+            value = self.special_keycodes[unified].get('qmk', 'KC_NO')
+            return value if value else "KC_NO"  # Treat empty string as unsupported
 
         # Handle aliased behaviors (e.g., hrm:LGUI:A, lt:NAV:SPC)
         if ':' in unified:

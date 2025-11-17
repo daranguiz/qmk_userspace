@@ -12,7 +12,7 @@
  4: &kp P
  5: &kp G
 
- 6: &kp LBRC
+ 6: &kp LBKT
  7: &hml LGUI A
  8: &hml LALT R
  9: &hml LCTL S
@@ -34,24 +34,24 @@
 23: &none
 
 24: &kp H
-25: &hmr LSFT N
-26: &hmr LCTL E
-27: &hmr LALT I
-28: &hmr LGUI O
-29: &kp RBRC
+25: &hmr RSFT N
+26: &hmr RCTL E
+27: &hmr RALT I
+28: &hmr RGUI O
+29: &kp RBKT
 
 30: &kp K
 31: &kp M
 32: &kp COMMA
 33: &kp DOT
-34: &lt FUN SLSH
+34: &lt FUN FSLH
 35: &none
 
 36: &kp ENTER
 37: &lt NAV SPC
 38: &lt MEDIA TAB
 39: &lt SYM DEL
-40: &kp LSFT
+40: &kp LSHFT
 41: &lt NUM BSPC
 ```
 
@@ -59,18 +59,18 @@
 
 ```
  0: &none
- 1: &kp LBRC
+ 1: &kp LBKT
  2: &kp N4
  3: &kp N5
  4: &kp N6
- 5: &kp RBRC
+ 5: &kp RBKT
 
  6: &kp LBRC
- 7: &kp SCLN
+ 7: &kp SEMI
  8: &kp N1
  9: &kp N2
 10: &kp N3
-11: &kp EQL
+11: &kp EQUAL
 
 12: &none
 13: &kp GRAVE
@@ -87,20 +87,20 @@
 23: &none
 
 24: &none
-25: &kp LSFT
-26: &kp LCTL
+25: &kp LSHFT
+26: &kp LCTRL
 27: &kp LALT
 28: &kp LGUI
-29: &kp LBRC
+29: &kp RBRC
 
 30: &none
 31: &none
 32: &none
-33: &kp RALT
+33: &none
 34: &none
 35: &none
 
-36: &kp COLN
+36: &kp COLON
 37: &kp N0
 38: &kp MINUS
 39: &none
@@ -119,17 +119,17 @@
  5: &kp RBRC
 
  6: &none
- 7: &kp COLN
+ 7: &kp COLON
  8: &kp EXCL
  9: &kp AT
 10: &kp HASH
 11: &kp PLUS
 
 12: &none
-13: &kp TILD
+13: &kp TILDE
 14: &kp AMPERSAND
 15: &kp ASTERISK
-16: &kp LPRN
+16: &kp LPAR
 17: &kp PIPE
 
 18: &none
@@ -140,8 +140,8 @@
 23: &none
 
 24: &none
-25: &kp LSFT
-26: &kp LCTL
+25: &kp LSHFT
+26: &kp LCTRL
 27: &kp LALT
 28: &kp LGUI
 29: &none
@@ -149,12 +149,12 @@
 30: &none
 31: &none
 32: &none
-33: &kp RALT
+33: &none
 34: &none
 35: &none
 
-36: &kp LPRN
-37: &kp RPRN
+36: &kp LPAR
+37: &kp RPAR
 38: &kp UNDERSCORE
 39: &none
 40: &none
@@ -174,8 +174,8 @@
  6: &none
  7: &kp LGUI
  8: &kp LALT
- 9: &kp LCTL
-10: &kp LSFT
+ 9: &kp LCTRL
+10: &kp LSHFT
 11: &none
 
 12: &none
@@ -201,8 +201,8 @@
 
 30: &kp INS
 31: &kp HOME
-32: &kp PGDN
-33: &kp PGUP
+32: &kp PG_DN
+33: &kp PG_UP
 34: &kp END
 35: &none
 
@@ -227,13 +227,13 @@
  6: &none
  7: &kp LGUI
  8: &kp LALT
- 9: &kp LCTL
-10: &kp LSFT
+ 9: &kp LCTRL
+10: &kp LSHFT
 11: &none
 
 12: &none
 13: &none
-14: &kp RALT
+14: &none
 15: &none
 16: &none
 17: &none
@@ -247,8 +247,8 @@
 
 24: &none
 25: &kp C_PREV
-26: &kp VOLD
-27: &kp VOLU
+26: &kp C_VOL_DN
+27: &kp C_VOL_UP
 28: &kp C_NEXT
 29: &none
 
@@ -289,7 +289,7 @@
 14: &kp F1
 15: &kp F2
 16: &kp F3
-17: &kp PAUS
+17: &kp PAUSE_BREAK
 
 18: &none
 19: &none
@@ -299,8 +299,8 @@
 23: &none
 
 24: &none
-25: &kp LSFT
-26: &kp LCTL
+25: &kp LSHFT
+26: &kp LCTRL
 27: &kp LALT
 28: &kp LGUI
 29: &none
@@ -313,7 +313,7 @@
 35: &none
 
 36: &kp K_APP
-37: &kp SPC
+37: &kp SPACE
 38: &kp TAB
 39: &none
 40: &none

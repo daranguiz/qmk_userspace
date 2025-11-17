@@ -66,9 +66,15 @@ class KeymapGenerator:
         self.aliases = YAMLConfigParser.parse_aliases(
             self.config_dir / "aliases.yaml"
         )
+        # Keycode map (firmware translations)
+        keycodes = YAMLConfigParser.parse_keycodes(
+            self.config_dir / "keycodes.yaml"
+        )
         self.special_keycodes = YAMLConfigParser.parse_special_keycodes(
             self.config_dir / "aliases.yaml"
         )
+        # Merge aliases.yaml special section over the general keycode map
+        self.special_keycodes = {**keycodes, **self.special_keycodes}
 
         self._log(f"✅ Loaded {len(self.keymap_config.layers)} layers, "
                   f"{len(self.board_inventory.boards)} boards")

@@ -16,6 +16,17 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Prefer Python 3.11 (PyYAML is installed there) but fall back to python3
+if command -v python3.11 >/dev/null 2>&1; then
+    PYTHON_BIN="python3.11"
+elif command -v python3 >/dev/null 2>&1; then
+    PYTHON_BIN="python3"
+else
+    echo -e "${YELLOW}✗ Python 3 is required but not found${NC}"
+    exit 1
+fi
+echo "Using Python interpreter: $PYTHON_BIN"
+
 # Clean and create output directory
 echo -e "${BLUE}Preparing output directory...${NC}"
 rm -rf "$OUTPUT_DIR"
@@ -37,7 +48,7 @@ echo "================================================"
 echo ""
 
 echo -e "${BLUE}Running keymap generator...${NC}"
-if python3 "$REPO_ROOT/scripts/generate.py"; then
+if "$PYTHON_BIN" "$REPO_ROOT/scripts/generate.py"; then
     echo -e "${GREEN}✓ Keymap generation successful${NC}"
     echo ""
     KEYGEN_SUCCESS=true

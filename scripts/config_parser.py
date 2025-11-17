@@ -215,3 +215,20 @@ class YAMLConfigParser:
             return {}  # Optional section
 
         return data['keycodes']
+
+    @staticmethod
+    def parse_keycodes(yaml_path: Path) -> Dict[str, Dict[str, str]]:
+        """
+        Parse comprehensive keycode mappings from config/keycodes.yaml
+
+        The YAML is a flat mapping of key name -> {qmk: "...", zmk: "..."}.
+        An empty string for a firmware means "not supported" and will be
+        filtered by the translators.
+        """
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        if not data or not isinstance(data, dict):
+            return {}
+
+        return data

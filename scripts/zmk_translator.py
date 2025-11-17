@@ -59,7 +59,8 @@ class ZMKTranslator:
 
         # Handle special keycodes
         if unified in self.special_keycodes:
-            return self.special_keycodes[unified].get('zmk', '&none')
+            value = self.special_keycodes[unified].get('zmk', '&none')
+            return value if value else "&none"  # Treat empty string as unsupported
 
         # Handle aliased behaviors (e.g., hrm:LGUI:A, lt:NAV:SPC)
         if ':' in unified:
@@ -99,6 +100,13 @@ class ZMKTranslator:
             return '&none'
 
         # Map QMK keycodes to ZMK equivalents
+        zmk_key = self._map_qmk_key_to_zmk(unified)
+
+        # Simple keycode: A -> &kp A
+        return f"&kp {zmk_key}"
+
+    def _map_qmk_key_to_zmk(self, key: str) -> str:
+        """Map QMK-style key tokens to ZMK equivalents (including nums/symbols)."""
         qmk_to_zmk = {
             'SLSH': 'FSLH',  # Forward slash
             'QUOT': 'SQT',   # Single quote (apostrophe)
@@ -138,10 +146,7 @@ class ZMKTranslator:
             '8': 'N8',
             '9': 'N9',
         }
-        zmk_key = qmk_to_zmk.get(unified, unified)
-
-        # Simple keycode: A -> &kp A
-        return f"&kp {zmk_key}"
+        return qmk_to_zmk.get(key, key)
 
     def _translate_alias(self, unified: str) -> str:
         """
@@ -185,7 +190,10 @@ class ZMKTranslator:
             param_value = parts[i + 1]
             # ZMK uses layer name #defines (e.g., &lt FUN X), not numeric indices
             # The #defines are generated in the keymap file header
-            params[param_name] = param_value
+            if param_name == 'key':
+                params[param_name] = self._map_qmk_key_to_zmk(param_value)
+            else:
+                params[param_name] = param_value
 
         # Special handling for hrm: use position-aware behavior (hml vs hmr)
         if alias_name == 'hrm':
