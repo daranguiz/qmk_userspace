@@ -16,8 +16,7 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ZMK_REPO="$HOME/git/zmk"
-ZMK_CONFIG="$SCRIPT_DIR/keymaps/corne_dario"
-OUTPUT_DIR="$REPO_ROOT/firmware"
+OUTPUT_DIR="$REPO_ROOT/out/zmk"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}ZMK Firmware Build (Dev Container)${NC}"
@@ -137,6 +136,28 @@ for i in "${!BOARDS[@]}"; do
         echo -e "${BLUE}Shield: $SHIELD${NC}"
     fi
     echo -e "${BLUE}========================================${NC}"
+
+    # Determine keymap directory based on shield or board name
+    # Shield names are like "corne_left" or "chocofi_right"
+    # Board names are like "corneish_zen_v2_left"
+    # Extract base name by removing _left/_right and version suffixes
+    if [ "$SHIELD" = "none" ]; then
+        # For integrated boards, extract from board name
+        BASE_NAME=$(echo "$BOARD" | sed 's/_v[0-9]_left$//' | sed 's/_v[0-9]_right$//' | sed 's/_left$//' | sed 's/_right$//')
+    else
+        # For shields, extract from shield name
+        BASE_NAME=$(echo "$SHIELD" | sed 's/_left$//' | sed 's/_right$//')
+    fi
+    ZMK_CONFIG="$SCRIPT_DIR/keymaps/${BASE_NAME}_dario"
+
+    if [ ! -d "$ZMK_CONFIG" ]; then
+        echo -e "${RED}ERROR: Keymap directory not found: $ZMK_CONFIG${NC}"
+        echo "Run 'python3 scripts/generate.py' to generate keymaps first"
+        FAILED_BUILDS+=("$BUILD_NAME")
+        continue
+    fi
+
+    echo -e "${BLUE}Keymap: $ZMK_CONFIG${NC}"
 
     # Copy config into container (keymap + behaviors)
     docker exec "$CONTAINER_ID" rm -rf /tmp/zmk-config

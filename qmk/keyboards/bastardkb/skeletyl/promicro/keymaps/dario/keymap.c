@@ -16,26 +16,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_ENT              , LT(NAV, KC_SPC)     , LT(MEDIA, KC_TAB)   ,
                               LT(SYM, KC_DEL)     , KC_LSFT             , LT(NUM, KC_BSPC)    
     ),
-    [NAV] = LAYOUT_split_3x5_3(
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_ESC              , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_CAPS             , KC_LEFT             , KC_DOWN             , KC_UP               , KC_RGHT             ,
-        KC_INS              , KC_HOME             , KC_PGDN             , KC_PGUP             , KC_END              ,
-                              KC_NO               , KC_NO               , KC_NO               ,
-                              KC_DEL              , KC_ENT              , KC_BSPC             
-    ),
-    [MEDIA] = LAYOUT_split_3x5_3(
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
-        KC_NO               , KC_ALGR             , KC_NO               , KC_NO               , KC_NO               ,
-        RM_TOGG             , RM_NEXT             , RM_HUEU             , RM_SATU             , RM_VALU             ,
-        KC_NO               , KC_MPRV             , KC_VOLD             , KC_VOLU             , KC_MNXT             ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-                              KC_NO               , KC_NO               , KC_NO               ,
-                              KC_MSTP             , KC_MPLY             , KC_MUTE             
-    ),
     [NUM] = LAYOUT_split_3x5_3(
         KC_LBRC             , KC_4                , KC_5                , KC_6                , KC_RBRC             ,
         KC_SCLN             , KC_1                , KC_2                , KC_3                , KC_EQL              ,
@@ -55,6 +35,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO               , KC_NO               , KC_NO               , KC_ALGR             , KC_NO               ,
                               KC_LPRN             , KC_RPRN             , KC_UNDS             ,
                               KC_NO               , KC_NO               , KC_NO               
+    ),
+    [NAV] = LAYOUT_split_3x5_3(
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_ESC              , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_CAPS             , KC_LEFT             , KC_DOWN             , KC_UP               , KC_RGHT             ,
+        KC_INS              , KC_HOME             , KC_PGDN             , KC_PGUP             , KC_END              ,
+                              KC_NO               , KC_NO               , KC_NO               ,
+                              KC_DEL              , KC_ENT              , KC_BSPC             
+    ),
+    [MEDIA] = LAYOUT_split_3x5_3(
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
+        KC_NO               , KC_ALGR             , KC_NO               , KC_NO               , KC_NO               ,
+        RM_TOGG             , RM_NEXT             , RM_HUEU             , RM_SATU             , RM_VALU             ,
+        KC_NO               , KC_MPRV             , KC_VOLD             , KC_VOLU             , KC_MNXT             ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+                              KC_NO               , KC_NO               , KC_NO               ,
+                              KC_MSTP             , KC_MPLY             , KC_MUTE             
     ),
     [FUN] = LAYOUT_split_3x5_3(
         KC_F12              , KC_F7               , KC_F8               , KC_F9               , KC_PSCR             ,

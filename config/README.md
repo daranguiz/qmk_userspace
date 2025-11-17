@@ -122,28 +122,65 @@ qmk flash -kb <keyboard> -km dario
 
 ## Adding a New Keyboard
 
-### Option 1: Manual (Full Control)
-1. Add board entry to `config/boards.yaml`
-2. Create board-specific config:
-   - QMK: `qmk/config/boards/<board>.mk`
-   - ZMK: `zmk/config/boards/<board>.conf`
-3. If board has extensions, add them to layers in `config/keymap.yaml`
-4. Run `python3 scripts/generate.py`
-5. Build and test
+**Quick checklist - nothing is optional unless marked:**
 
-### Option 2: Helper Script (Quick)
-```bash
-bash scripts/add_board.sh <board_id> <firmware> <keyboard_path> <layout_size>
-```
+1. **Add to `boards.yaml`** with all required fields:
+   ```yaml
+   <board_id>:
+     name: "Human-Readable Name"
+     firmware: qmk  # or zmk
+     # QMK boards need:
+     qmk_keyboard: "manufacturer/model/variant"
+     # ZMK boards need ONE of:
+     zmk_shield: "shield_name"      # For shields (e.g., corne, lily58)
+     zmk_board: "board_name"        # For integrated boards (e.g., corneish_zen_v2)
+     # All boards need:
+     layout_size: "3x5_3"           # or "3x6_3", "custom_58", etc.
+     extra_layers: []               # OPTIONAL: e.g., ["GAME"] for board-specific layers
+   ```
 
-Example:
-```bash
-bash scripts/add_board.sh \
-  corne \
-  zmk \
-  corne \
-  3x6_3
-```
+2. **Add firmware-specific config** (for hardware features like OLED, RGB, etc.):
+   - **QMK**: Create `qmk/config/boards/<board_id>.mk` with feature flags
+   - **ZMK**: Create `zmk/config/boards/<board_id>.conf` with ZMK settings
+
+3. **For QMK only**: Add to QMK build targets:
+   ```bash
+   qmk userspace-add -kb <qmk_keyboard_path> -km dario
+   ```
+
+4. **For ZMK only**: Add build targets to `zmk/build.yaml`:
+   ```yaml
+   include:
+     # For shields (most boards):
+     - board: nice_nano_v2
+       shield: <shield_name>_left
+     - board: nice_nano_v2
+       shield: <shield_name>_right
+     # For integrated boards:
+     - board: <board_name>_left
+     - board: <board_name>_right
+   ```
+
+5. **If board has extra keys beyond 36**: Add extensions to layers in `keymap.yaml`:
+   ```yaml
+   BASE:
+     core: [...]
+     extensions:
+       3x6_3:  # Must match layout_size in boards.yaml
+         outer_pinky_left: [TAB, GRV, CAPS]
+         outer_pinky_right: [QUOT, BSLS, ENT]
+   ```
+
+6. **Generate and build**:
+   ```bash
+   ./build_all.sh
+   ```
+
+**Common patterns:**
+- **36-key boards** (Skeletyl, Chocofi): `layout_size: "3x5_3"`, no extensions needed
+- **42-key boards** (Corne): `layout_size: "3x6_3"`, add `3x6_3` extensions if using outer columns
+- **Chocofi special case**: Uses `zmk_shield: "corne"` because it's electrically identical to Corne
+- **Integrated ZMK boards**: Use `zmk_board` instead of `zmk_shield` (e.g., Corneish Zen)
 
 ## Key Principles
 

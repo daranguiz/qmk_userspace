@@ -38,7 +38,6 @@ from zmk_generator import ZMKGenerator
 from file_writer import FileSystemWriter
 from validator import ConfigValidator
 from visualizer import KeymapVisualizer
-from generate_keyboards_md import generate_keyboards_md
 
 
 class KeymapGenerator:
@@ -263,17 +262,6 @@ class KeymapGenerator:
                 print(f"⚠️  No visualizations generated")
         else:
             print(f"⚠️  keymap-drawer not available, skipping visualization")
-
-        # Generate KEYBOARDS.md from boards.yaml (Principle IV)
-        print(f"\n📋 Updating KEYBOARDS.md...")
-        try:
-            generate_keyboards_md(
-                self.config_dir / "boards.yaml",
-                self.repo_root / "KEYBOARDS.md"
-            )
-            self._verbose("  ✅ KEYBOARDS.md updated")
-        except Exception as e:
-            print(f"⚠️  Failed to update KEYBOARDS.md: {e}")
 
         return 0 if failure_count == 0 else 1
 

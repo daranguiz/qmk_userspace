@@ -187,9 +187,9 @@ class ConfigValidator:
                     f"Board {board.id}: qmk_keyboard is required for QMK firmware"
                 )
         elif board.firmware == "zmk":
-            if not board.zmk_shield:
+            if not board.zmk_shield and not board.zmk_board:
                 raise ValidationError(
-                    f"Board {board.id}: zmk_shield is required for ZMK firmware"
+                    f"Board {board.id}: either zmk_shield or zmk_board is required for ZMK firmware"
                 )
         else:
             raise ValidationError(

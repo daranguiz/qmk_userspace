@@ -6,6 +6,7 @@ parse_config:
   mark_alternate_layer_activators: true
 
   # Specify which layer each named layer corresponds to
+  # CRITICAL: Order must match config/keymap.yaml and qmk/users/dario/dario.h enum
   layer_names:
     - BASE
     - NUM
@@ -80,6 +81,16 @@ draw_config:
 
   # Custom styling for held keys (layer activators)
   svg_extra_style: |
+    /* Remove underline from layer activator text */
+    text.layer-activator {
+      text-decoration: none !important;
+    }
+
+    /* Remove bold from hold text (layer names on modifier keys) */
+    text.hold {
+      font-weight: normal !important;
+    }
+
     /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green */
     .layer-BASE .keypos-21 rect,
     .layer-BASE .keypos-31 rect,
@@ -87,8 +98,7 @@ draw_config:
     .layer-BASE .keypos-33 rect,
     .layer-BASE .keypos-35 rect {
       fill: #4CAF50 !important;
-      stroke: #2E7D32 !important;
-      stroke-width: 3 !important;
+      stroke: none !important;
       opacity: 1 !important;
     }
     .layer-BASE .keypos-21 text,
@@ -97,7 +107,6 @@ draw_config:
     .layer-BASE .keypos-33 text,
     .layer-BASE .keypos-35 text {
       fill: white !important;
-      font-weight: bold !important;
     }
 
     /* Highlight home row mods (positions 10-13, 16-19) with lighter green stroke */
@@ -120,8 +129,7 @@ draw_config:
     .layer-SYM .keypos-33 rect,
     .layer-FUN .keypos-21 rect {
       fill: #FF9800 !important;
-      stroke: #E65100 !important;
-      stroke-width: 3 !important;
+      stroke: none !important;
     }
     .layer-NAV .keypos-31 text,
     .layer-MEDIA .keypos-32 text,
@@ -129,7 +137,6 @@ draw_config:
     .layer-SYM .keypos-33 text,
     .layer-FUN .keypos-21 text {
       fill: white !important;
-      font-weight: bold !important;
     }
 
     /* Make sure ghost keys (on other layers) are clearly different */

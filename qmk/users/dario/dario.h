@@ -6,10 +6,10 @@
 // NOTE: Order must match config/keymap.yaml layer order
 enum layers {
     BASE,
-    NAV,
-    MEDIA,
     NUM,
     SYM,
+    NAV,
+    MEDIA,
     FUN
 };
 

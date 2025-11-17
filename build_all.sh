@@ -8,12 +8,22 @@ echo ""
 
 # Get repo root
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OUTPUT_DIR="$REPO_ROOT/out"
 
 # Color codes for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
+
+# Clean and create output directory
+echo -e "${BLUE}Preparing output directory...${NC}"
+rm -rf "$OUTPUT_DIR"
+mkdir -p "$OUTPUT_DIR/qmk"
+mkdir -p "$OUTPUT_DIR/zmk"
+mkdir -p "$OUTPUT_DIR/visualizations"
+echo -e "${GREEN}✓ Output directory ready: $OUTPUT_DIR${NC}"
+echo ""
 
 # Track build results
 KEYGEN_SUCCESS=false
@@ -98,14 +108,24 @@ fi
 
 echo ""
 
+# Copy visualizations to output directory
+if [ -d "$REPO_ROOT/docs/keymaps" ]; then
+    cp -r "$REPO_ROOT/docs/keymaps"/*.svg "$OUTPUT_DIR/visualizations/" 2>/dev/null || true
+fi
+
 # Show all firmware files
-echo "All firmware files:"
-ls -lh "$REPO_ROOT"/*.hex "$REPO_ROOT"/*.uf2 2>/dev/null || echo "  (no firmware files found)"
-ls -lh "$REPO_ROOT/firmware"/*.uf2 2>/dev/null || echo "  (no ZMK firmware files found)"
+echo "Build artifacts in: $OUTPUT_DIR"
+echo ""
+echo "QMK firmware:"
+ls -lh "$OUTPUT_DIR/qmk"/*.hex "$OUTPUT_DIR/qmk"/*.uf2 2>/dev/null || echo "  (no QMK firmware files found)"
 
 echo ""
-echo "All visualizations:"
-ls -lh "$REPO_ROOT/docs/keymaps"/*.svg 2>/dev/null || echo "  (no visualizations found)"
+echo "ZMK firmware:"
+ls -lh "$OUTPUT_DIR/zmk"/*.uf2 2>/dev/null || echo "  (no ZMK firmware files found)"
+
+echo ""
+echo "Visualizations:"
+ls -lh "$OUTPUT_DIR/visualizations"/*.svg 2>/dev/null || echo "  (no visualizations found)"
 
 echo ""
 

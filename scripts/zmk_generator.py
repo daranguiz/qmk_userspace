@@ -40,10 +40,11 @@ class ZMKGenerator:
         layers_code = "\n\n".join(layer_defs)
 
         # Generate complete keymap file
+        shield_or_board = board.zmk_shield if board.zmk_shield else board.zmk_board
         return f"""// AUTO-GENERATED - DO NOT EDIT
 // Generated from config/keymap.yaml
 // Board: {board.name}
-// Shield: {board.zmk_shield}
+// Shield/Board: {shield_or_board}
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>

@@ -150,7 +150,8 @@ class YAMLConfigParser:
                 layout_size=board_data.get('layout_size', '3x5_3'),
                 extra_layers=board_data.get('extra_layers', []),
                 qmk_keyboard=board_data.get('qmk_keyboard'),
-                zmk_shield=board_data.get('zmk_shield')
+                zmk_shield=board_data.get('zmk_shield'),
+                zmk_board=board_data.get('zmk_board')
             )
 
             board.validate()

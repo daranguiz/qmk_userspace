@@ -62,13 +62,14 @@ Keyboards with keys beyond the core 36-key layout MAY add supplementary function
 At any point in time, it MUST be immediately obvious which keyboards are supported in this fork and where their configurations reside.
 
 **Implementation Rules:**
-- A `KEYBOARDS.md` file MUST exist in the repository root listing all personal keyboards
-- Each entry MUST include: keyboard name, path to keymap, hardware variant, key count, and status
-- The `build_lulu.sh` pattern (build scripts for specific keyboards) is ALLOWED in repository root
-- When a new keyboard is added, `KEYBOARDS.md` MUST be updated in the same commit
-- Deprecated or removed keyboards MUST be marked as such, not silently deleted from documentation
+- The `config/boards.yaml` file is the SINGLE SOURCE OF TRUTH for all keyboard inventory
+- Each entry MUST include: board ID, name, firmware type, layout size, and firmware-specific identifiers
+- The `build_all.sh` script MUST build all keyboards defined in `config/boards.yaml`
+- When a new keyboard is added, it MUST be added to `config/boards.yaml` and regenerated
+- Deprecated or removed keyboards MUST be removed from `config/boards.yaml`
+- NO duplicate inventory documentation (like KEYBOARDS.md) shall be maintained
 
-**Rationale:** Months may pass between keyboard usage. Clear inventory prevents confusion about which keyboards are configured, where their files are, and whether they're still maintained. This is particularly important when deciding whether to sync upstream changes that affect specific keyboards.
+**Rationale:** Months may pass between keyboard usage. A single, authoritative configuration file (`boards.yaml`) prevents documentation drift and ensures the build system and documentation are always in sync. Self-documenting configuration is superior to manually-maintained markdown.
 
 ### V. Visual Keymap Documentation (MANDATORY)
 

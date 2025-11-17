@@ -14,30 +14,6 @@ Left Hand              Right Hand
       ENTER SPC/NAV TAB/MEDIA              DEL/SYM LSFT BSPC/NUM
 ```
 
-## NUM Layer
-
-```
-Left Hand              Right Hand
-╭─────────────────╮    ╭─────────────────╮
-│ LBRC N4   N5   N6   RBRC │    │ ___  ___  ___  ___  ___  │
-│ SCLN N1   N2   N3   EQL  │    │ ___  LSFT LCTL LALT LGUI │
-│ GRAVE N7   N8   N9   BSLH │    │ ___  ___  ___  RALT ___  │
-╰─────────────────╯    ╰─────────────────╯
-      COLN N0   MINUS              ___  ___  ___ 
-```
-
-## SYM Layer
-
-```
-Left Hand              Right Hand
-╭─────────────────╮    ╭─────────────────╮
-│ LBRC DOLLAR PERCENT CARET RBRC │    │ ___  ___  ___  ___  ___  │
-│ COLN EXCL AT   HASH PLUS │    │ ___  LSFT LCTL LALT LGUI │
-│ TILD AMPERSAND ASTERISK LPRN PIPE │    │ ___  ___  ___  RALT ___  │
-╰─────────────────╯    ╰─────────────────╯
-      LPRN RPRN UNDERSCORE              ___  ___  ___ 
-```
-
 ## NAV Layer
 
 ```
@@ -60,6 +36,30 @@ Left Hand              Right Hand
 │ ___  RALT ___  ___  ___  │    │ ___  ___  ___  ___  ___  │
 ╰─────────────────╯    ╰─────────────────╯
       ___  ___  ___               C_STOP C_PLAY_PAUSE C_MUTE
+```
+
+## NUM Layer
+
+```
+Left Hand              Right Hand
+╭─────────────────╮    ╭─────────────────╮
+│ LBRC N4   N5   N6   RBRC │    │ ___  ___  ___  ___  ___  │
+│ SCLN N1   N2   N3   EQL  │    │ ___  LSFT LCTL LALT LGUI │
+│ GRAVE N7   N8   N9   BSLH │    │ ___  ___  ___  RALT ___  │
+╰─────────────────╯    ╰─────────────────╯
+      COLN N0   MINUS              ___  ___  ___ 
+```
+
+## SYM Layer
+
+```
+Left Hand              Right Hand
+╭─────────────────╮    ╭─────────────────╮
+│ LBRC DOLLAR PERCENT CARET RBRC │    │ ___  ___  ___  ___  ___  │
+│ COLN EXCL AT   HASH PLUS │    │ ___  LSFT LCTL LALT LGUI │
+│ TILD AMPERSAND ASTERISK LPRN PIPE │    │ ___  ___  ___  RALT ___  │
+╰─────────────────╯    ╰─────────────────╯
+      LPRN RPRN UNDERSCORE              ___  ___  ___ 
 ```
 
 ## FUN Layer

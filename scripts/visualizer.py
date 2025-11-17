@@ -160,6 +160,12 @@ class KeymapVisualizer:
 
             parsed_keymap = parse_result.stdout
 
+            # Post-process: Rename layers from L0-L5 to friendly names
+            # keymap-drawer's layer_names config doesn't actually rename layers in parse output
+            layer_names = ["BASE", "NUM", "SYM", "NAV", "MEDIA", "FUN"]
+            for i, name in enumerate(layer_names):
+                parsed_keymap = parsed_keymap.replace(f"L{i}:", f"{name}:")
+
             # Draw SVG
             draw_cmd = ["keymap", "draw", "-"]
             if self.config_file.exists():

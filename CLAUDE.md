@@ -61,12 +61,16 @@ Build all configured keyboards (QMK + ZMK) with visualization generation:
 ```
 
 This script:
-1. Sets `QMK_USERSPACE` to the correct path (`qmk/` subdirectory)
-2. Runs `python3 scripts/generate.py` to generate all keymaps
-3. Builds all QMK keyboards using `qmk compile`
-4. Builds all ZMK keyboards using Docker
-5. Generates visual keymap diagrams (SVG)
-6. Updates `KEYBOARDS.md` inventory
+1. Cleans and creates the `out/` directory for build artifacts
+2. Sets `QMK_USERSPACE` to the correct path (`qmk/` subdirectory)
+3. Runs `python3 scripts/generate.py` to generate all keymaps
+4. Builds all QMK keyboards using `qmk compile`
+5. Builds all ZMK keyboards using Docker
+6. Generates visual keymap diagrams (SVG)
+7. Collects all build artifacts in the `out/` directory:
+   - `out/qmk/` - QMK firmware files (.hex, .uf2)
+   - `out/zmk/` - ZMK firmware files (.uf2)
+   - `out/visualizations/` - Keymap visualizations (.svg)
 
 **Do NOT use these commands directly** (they will fail without proper environment setup):
 ```bash
@@ -175,12 +179,28 @@ The codebase uses a **single source of truth** approach for keymap definitions t
 **Note**: All changes must comply with the [project constitution](.specify/memory/constitution.md), which defines mandatory principles for upstream modularity, 36-key layout consistency, extension modularity, keyboard inventory transparency, and visual keymap documentation.
 
 ### Adding a New Keyboard
-1. Add board entry to `config/boards.yaml` with keyboard details (firmware, layout_size, features)
-2. If needed, create board-specific config in `qmk/config/boards/<board>.mk` for QMK-specific features
+
+**Note**: `config/boards.yaml` is the single source of truth for keyboard inventory (per Constitution Principle IV).
+
+1. Add board entry to `config/boards.yaml` with keyboard details:
+   ```yaml
+   <board_id>:
+     name: "Board Name"
+     firmware: qmk  # or zmk
+     qmk_keyboard: "manufacturer/board/variant"  # for QMK
+     # OR
+     zmk_shield: "shield_name"  # for ZMK shields
+     zmk_board: "board_name"    # for ZMK integrated boards
+     layout_size: "3x5_3"  # or 3x6_3, custom_*, etc.
+     extra_layers: []  # optional board-specific layers like GAME
+   ```
+2. If needed, create board-specific config:
+   - **QMK**: `qmk/config/boards/<board_id>.mk` for feature flags
+   - **ZMK**: `zmk/config/boards/<board_id>.conf` for ZMK settings
 3. If board has extensions, add them to layers in `config/keymap.yaml` under `extensions:`
 4. Run `python3 scripts/generate.py` to generate keymap files
-5. Add to build targets: `qmk userspace-add -kb <keyboard> -km dario`
-6. Build and test: `qmk compile -kb <keyboard> -km dario`
+5. For QMK boards, add to build targets: `qmk userspace-add -kb <keyboard> -km dario`
+6. Build and test with `./build_all.sh`
 
 ### Modifying the Shared Keymap
 - Edit `config/keymap.yaml` to change layer definitions
@@ -249,16 +269,23 @@ qmk_userspace/
 │   ├── layer_compiler.py             # Layer compilation logic
 │   └── data_model.py                 # Data structures
 │
+├── out/                              # Build artifacts (cleaned on each build)
+│   ├── qmk/                          # QMK firmware (.hex, .uf2)
+│   ├── zmk/                          # ZMK firmware (.uf2)
+│   └── visualizations/               # Keymap diagrams (.svg)
+│
 ├── build_all.sh                      # Build all keyboards (sets QMK_USERSPACE, runs generator)
-├── qmk.json                          # Build targets
-└── *.hex, *.uf2                      # Compiled firmware outputs
+└── qmk.json                          # QMK build targets
 ```
 
 **Key Points:**
 - **QMK userspace root is `qmk/`**: Set `QMK_USERSPACE` to this directory
 - **Clear firmware separation**: QMK files in `qmk/`, ZMK files in `zmk/`
 - **Unified config in `config/`**: Firmware-agnostic YAML configuration
+  - **`config/boards.yaml`**: Single source of truth for keyboard inventory (Constitution Principle IV)
+  - **`config/keymap.yaml`**: Single source of truth for keymap definitions
 - **Generated vs Manual**: Generated files are clearly marked with AUTO-GENERATED warnings
+- **Build artifacts in `out/`**: All firmware and visualizations collected in one place, cleaned on each build
 
 ## GitHub Actions
 

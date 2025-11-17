@@ -166,6 +166,7 @@ class Board:
     # Firmware-specific fields
     qmk_keyboard: Optional[str] = None
     zmk_shield: Optional[str] = None
+    zmk_board: Optional[str] = None  # For integrated ZMK boards (e.g., Corneish Zen)
 
     def get_extensions(self) -> List[str]:
         """Infer which extensions to apply based on layout_size"""
@@ -184,8 +185,8 @@ class Board:
         """Validate board configuration"""
         if self.firmware == "qmk" and not self.qmk_keyboard:
             raise ValidationError(f"Board {self.id}: qmk_keyboard required for QMK firmware")
-        if self.firmware == "zmk" and not self.zmk_shield:
-            raise ValidationError(f"Board {self.id}: zmk_shield required for ZMK firmware")
+        if self.firmware == "zmk" and not self.zmk_shield and not self.zmk_board:
+            raise ValidationError(f"Board {self.id}: either zmk_shield or zmk_board required for ZMK firmware")
 
     def get_output_directory(self) -> str:
         """Get the output directory for generated keymaps"""

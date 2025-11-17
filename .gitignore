@@ -5,7 +5,10 @@
 .DS_Store
 ._*
 
-# Firmware files
+# Build output directory
+out/
+
+# Legacy firmware files (scattered)
 *.hex
 *.bin
 *.uf2
