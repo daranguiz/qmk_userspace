@@ -91,6 +91,11 @@ draw_config:
     columns: 5
     thumbs: 3
 
+  # Glyph/icon dimensions (increased from defaults for better visibility)
+  glyph_tap_size: 18      # default: 14
+  glyph_hold_size: 15     # default: 12
+  glyph_shifted_size: 13  # default: 10
+
   # Custom styling for held keys (layer activators)
   svg_extra_style: |
     /* Remove underline from layer activator text */

@@ -21,8 +21,19 @@ class KeymapVisualizer:
         self.config_dir = repo_root / "config"
         self.qmk_translator = qmk_translator
 
+        # Load keycode display mappings
+        self.keycodes = self._load_keycodes()
+
         # Ensure output directory exists
         self.output_dir.mkdir(parents=True, exist_ok=True)
+
+    def _load_keycodes(self) -> Dict:
+        """Load keycodes.yaml for display name/glyph lookups"""
+        from config_parser import YAMLConfigParser
+        keycodes_path = self.config_dir / "keycodes.yaml"
+        if keycodes_path.exists():
+            return YAMLConfigParser.parse_keycodes(keycodes_path)
+        return {}
 
     def is_available(self) -> bool:
         """Check if keymap-drawer CLI is available"""
@@ -30,30 +41,51 @@ class KeymapVisualizer:
 
     def _translate_keycode_for_display(self, keycode: str) -> str:
         """
-        Translate keymap.yaml format to QMK format for keymap-drawer
+        Translate keymap.yaml format directly to keymap-drawer display format
+
+        This bypasses firmware-specific translation to show the superset view,
+        including ZMK-only keys like BT_SEL_0 that don't exist in QMK.
+
+        Checks keycodes.yaml for display_glyph or display_name overrides.
 
         Args:
             keycode: Raw keycode from keymap.yaml (e.g., "hrm:LGUI:A", "lt:NAV:SPC")
 
         Returns:
-            QMK-formatted keycode that keymap-drawer understands
+            Keycode string for keymap-drawer display
         """
-        # If translator is available, use it for consistent translation
-        if self.qmk_translator:
-            return self.qmk_translator.translate(keycode)
-
-        # Fallback: basic translation if translator not provided
-        # (This maintains backward compatibility if visualizer is used standalone)
+        # Handle special "no key" values
         if keycode in ["NONE", "U_NA", "U_NU", "U_NP"]:
             return "KC_NO"
+
+        # Handle home row mods: hrm:MOD:KEY -> MOD_T(KC_KEY)
         if keycode.startswith("hrm:"):
             parts = keycode.split(":")
             if len(parts) == 3:
-                return f"{parts[1]}_T(KC_{parts[2]})"
+                mod, key = parts[1], parts[2]
+                return f"{mod}_T(KC_{key})"
+
+        # Handle layer-tap: lt:LAYER:KEY -> LT(LAYER, KC_KEY)
         if keycode.startswith("lt:"):
             parts = keycode.split(":")
             if len(parts) == 3:
-                return f"LT({parts[1]}, KC_{parts[2]})"
+                layer, key = parts[1], parts[2]
+                return f"LT({layer}, KC_{key})"
+
+        # Check for custom display glyph/name in keycodes.yaml
+        if keycode in self.keycodes:
+            kc_data = self.keycodes[keycode]
+            # Glyph takes precedence over name
+            if isinstance(kc_data, dict) and "display_glyph" in kc_data:
+                return kc_data["display_glyph"]
+            if isinstance(kc_data, dict) and "display_name" in kc_data:
+                return kc_data["display_name"]
+
+        # QMK boot/reset
+        if keycode == "QK_BOOT":
+            return "QK_BOOT"
+
+        # Regular keycodes - prefix with KC_ for keymap-drawer
         return f"KC_{keycode}"
 
     def _reorder_keys_for_qmk(self, keycodes: List[str], layout_size: str) -> List[str]:

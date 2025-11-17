@@ -4,15 +4,20 @@
 # - Unified YAML format (keymap.yaml)
 # - QMK C code
 # - ZMK devicetree
+# - Keymap visualizations
 #
 # Format:
 #   <unified_name>:
 #     qmk: QMK keycode
 #     zmk: ZMK keycode
+#     display_name: Optional friendly text label for visualizations (e.g., "Vol+")
+#     display_glyph: Optional SVG icon for visualizations (e.g., "$$mdi:volume-plus$$")
 #
 # Notes:
 # - If a keycode doesn't exist in a firmware, use empty string "" or omit
 # - Behaviors (hrm, lt, etc.) are defined in aliases.yaml
+# - display_glyph takes precedence over display_name in visualizations
+# - If neither display field is set, the raw keycode name is used
 # - Used by visualizer.py and should eventually replace hardcoded translator maps
 
 # Special keys
@@ -23,6 +28,7 @@ NONE:
 QK_BOOT:
   qmk: "QK_BOOT"
   zmk: "&bootloader"
+  display_name: "DFU"
 
 QK_RBT:
   qmk: "QK_RBT"
@@ -276,27 +282,35 @@ PIPE:  # |
 LSFT:
   qmk: "KC_LSFT"
   zmk: "&kp LSHFT"
+  display_glyph: "$$mdi:apple-keyboard-shift$$"
 RSFT:
   qmk: "KC_RSFT"
   zmk: "&kp RSHFT"
+  display_glyph: "$$mdi:apple-keyboard-shift$$"
 LCTL:
   qmk: "KC_LCTL"
   zmk: "&kp LCTRL"
+  display_glyph: "$$mdi:apple-keyboard-control$$"
 RCTL:
   qmk: "KC_RCTL"
   zmk: "&kp RCTRL"
+  display_glyph: "$$mdi:apple-keyboard-control$$"
 LALT:
   qmk: "KC_LALT"
   zmk: "&kp LALT"
+  display_glyph: "$$mdi:apple-keyboard-option$$"
 RALT:
   qmk: "KC_RALT"
   zmk: "&kp RALT"
+  display_glyph: "$$mdi:apple-keyboard-option$$"
 LGUI:
   qmk: "KC_LGUI"
   zmk: "&kp LGUI"
+  display_glyph: "$$mdi:apple-keyboard-command$$"
 RGUI:
   qmk: "KC_RGUI"
   zmk: "&kp RGUI"
+  display_glyph: "$$mdi:apple-keyboard-command$$"
 ALGR:
   qmk: "KC_ALGR"
   zmk: "&kp RALT"
@@ -305,15 +319,19 @@ ALGR:
 LEFT:
   qmk: "KC_LEFT"
   zmk: "&kp LEFT"
+  display_glyph: "$$mdi:arrow-left-bold$$"
 DOWN:
   qmk: "KC_DOWN"
   zmk: "&kp DOWN"
+  display_glyph: "$$mdi:arrow-down-bold$$"
 UP:
   qmk: "KC_UP"
   zmk: "&kp UP"
+  display_glyph: "$$mdi:arrow-up-bold$$"
 RGHT:
   qmk: "KC_RGHT"
   zmk: "&kp RIGHT"
+  display_glyph: "$$mdi:arrow-right-bold$$"
 HOME:
   qmk: "KC_HOME"
   zmk: "&kp HOME"
@@ -323,29 +341,37 @@ END:
 PGUP:
   qmk: "KC_PGUP"
   zmk: "&kp PG_UP"
+  display_glyph: "$$mdi:transfer-up$$"
 PGDN:
   qmk: "KC_PGDN"
   zmk: "&kp PG_DN"
+  display_glyph: "$$mdi:transfer-down$$"
 
 # Editing
 ENT:
   qmk: "KC_ENT"
   zmk: "&kp ENTER"
+  display_glyph: "$$mdi:keyboard-return$$"
 ESC:
   qmk: "KC_ESC"
   zmk: "&kp ESC"
+  display_glyph: "ESC"
 BSPC:
   qmk: "KC_BSPC"
   zmk: "&kp BSPC"
+  display_glyph: "$$mdi:backspace$$"
 DEL:
   qmk: "KC_DEL"
   zmk: "&kp DEL"
+  display_glyph: "$$mdi:backspace-reverse-outline$$"
 TAB:
   qmk: "KC_TAB"
   zmk: "&kp TAB"
+  display_glyph: "$$mdi:keyboard-tab$$"
 SPC:
   qmk: "KC_SPC"
   zmk: "&kp SPACE"
+  display_glyph: "$$mdi:keyboard-space$$"
 INS:
   qmk: "KC_INS"
   zmk: "&kp INS"
@@ -354,6 +380,7 @@ INS:
 CAPS:
   qmk: "KC_CAPS"
   zmk: "&kp CAPS"
+  display_glyph: "$$mdi:apple-keyboard-caps$$"
 SCRL:
   qmk: "KC_SCRL"
   zmk: "&kp SCROLLLOCK"
@@ -373,64 +400,84 @@ APP:
 MPLY:
   qmk: "KC_MPLY"
   zmk: "&kp C_PLAY_PAUSE"
+  display_glyph: "$$mdi:play-pause$$"
 MSTP:
   qmk: "KC_MSTP"
   zmk: "&kp C_STOP"
+  display_glyph: "$$mdi:stop$$"
 MNXT:
   qmk: "KC_MNXT"
   zmk: "&kp C_NEXT"
+  display_glyph: "$$mdi:skip-next$$"
 MPRV:
   qmk: "KC_MPRV"
   zmk: "&kp C_PREV"
+  display_glyph: "$$mdi:skip-previous$$"
 VOLU:
   qmk: "KC_VOLU"
   zmk: "&kp C_VOL_UP"
+  display_glyph: "$$mdi:volume-plus$$"
 VOLD:
   qmk: "KC_VOLD"
   zmk: "&kp C_VOL_DN"
+  display_glyph: "$$mdi:volume-minus$$"
 MUTE:
   qmk: "KC_MUTE"
   zmk: "&kp C_MUTE"
+  display_glyph: "$$mdi:volume-mute$$"
 
 # RGB controls (QMK-only)
 RM_TOGG:
   qmk: "RM_TOGG"
   zmk: ""
+  display_glyph: "$$mdi:lightbulb$$"
 RM_NEXT:
   qmk: "RM_NEXT"
   zmk: ""
+  display_name: "Mode"
 RM_HUEU:
   qmk: "RM_HUEU"
   zmk: ""
+  display_name: "Hue+"
 RM_SATU:
   qmk: "RM_SATU"
   zmk: ""
+  display_name: "Sat+"
 RM_VALU:
   qmk: "RM_VALU"
   zmk: ""
+  display_name: "Val+"
 
 # Bluetooth controls (ZMK-only)
 BT_SEL_0:
   qmk: ""
   zmk: "&bt BT_SEL 0"
+  display_name: "BT 0"
 BT_SEL_1:
   qmk: ""
   zmk: "&bt BT_SEL 1"
+  display_name: "BT 1"
 BT_SEL_2:
   qmk: ""
   zmk: "&bt BT_SEL 2"
+  display_name: "BT 2"
 BT_SEL_3:
   qmk: ""
   zmk: "&bt BT_SEL 3"
+  display_name: "BT 3"
 BT_SEL_4:
   qmk: ""
   zmk: "&bt BT_SEL 4"
+  display_name: "BT 4"
 BT_CLR:
   qmk: ""
   zmk: "&bt BT_CLR"
+  display_glyph: "BT Clr"
 BT_NXT:
   qmk: ""
   zmk: "&bt BT_NXT"
+  display_name: "BT Next"
 BT_PRV:
   qmk: ""
   zmk: "&bt BT_PRV"
+  display_name: "BT Prev"
