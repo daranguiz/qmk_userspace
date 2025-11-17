@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-ZMK_REPO="$HOME/git/zmk"
+ZMK_REPO="${ZMK_REPO:-$HOME/git/zmk}"
 OUTPUT_DIR="$REPO_ROOT/out/zmk"
 
 echo -e "${BLUE}========================================${NC}"
@@ -26,8 +26,10 @@ echo ""
 # Verify ZMK repository exists
 if [ ! -d "$ZMK_REPO" ]; then
     echo -e "${RED}ERROR: ZMK repository not found at $ZMK_REPO${NC}"
-    echo "Please clone ZMK repository first:"
-    echo "  git clone https://github.com/zmkfirmware/zmk.git ~/git/zmk"
+    echo "Set ZMK_REPO to the ZMK firmware checkout, e.g.:"
+    echo "  ZMK_REPO=\$HOME/git/zmk ./build_all.sh"
+    echo "or clone the repository first:"
+    echo "  git clone https://github.com/zmkfirmware/zmk.git \"$ZMK_REPO\""
     exit 1
 fi
 

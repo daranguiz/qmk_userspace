@@ -25,7 +25,15 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install pyyaml pytest
+          python -m pip install --upgrade pip
+          python -m pip install qmk pyyaml pytest
+
+      - name: Install QMK toolchains
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-avr binutils-avr avr-libc dfu-programmer dfu-util \
+            gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
 
       - name: Checkout QMK firmware
         uses: actions/checkout@v4
@@ -34,12 +42,23 @@ jobs:
           submodules: recursive
           path: qmk_firmware
 
+      - name: Checkout ZMK firmware
+        uses: actions/checkout@v4
+        with:
+          repository: zmkfirmware/zmk
+          path: zmk
+
       - name: Set up Docker Buildx (for ZMK)
         uses: docker/setup-buildx-action@v3
+
+      - name: Install devcontainer CLI (for ZMK build)
+        run: npm install -g @devcontainers/cli
 
       - name: Build all firmwares
         run: |
           export QMK_FIRMWARE_PATH="${GITHUB_WORKSPACE}/qmk_firmware"
+          export QMK_HOME="${GITHUB_WORKSPACE}/qmk_firmware"
+          export ZMK_REPO="${GITHUB_WORKSPACE}/zmk"
           ./build_all.sh
 
       - name: Upload build artifacts
