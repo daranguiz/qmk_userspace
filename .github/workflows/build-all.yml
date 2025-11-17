@@ -11,8 +11,8 @@ permissions:
   contents: write
 
 jobs:
-  generate-keymaps:
-    name: 'Generate Keymaps from Unified Config'
+  build-all:
+    name: 'Build All Firmwares'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -27,29 +27,6 @@ jobs:
         run: |
           pip install pyyaml pytest
 
-      - name: Run keymap generator
-        run: |
-          python3 scripts/generate.py
-
-      - name: Upload generated keymaps
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-keymaps
-          path: |
-            qmk/keyboards/
-            qmk/users/
-            zmk/keymaps/
-          retention-days: 7
-
-  build-qmk:
-    name: 'Build QMK Firmware'
-    needs: generate-keymaps
-    runs-on: ubuntu-latest
-    container: qmkfm/qmk_cli
-    steps:
-      - name: Disable safe.directory check
-        run: git config --global --add safe.directory '*'
-
       - name: Checkout QMK firmware
         uses: actions/checkout@v4
         with:
@@ -57,46 +34,17 @@ jobs:
           submodules: recursive
           path: qmk_firmware
 
-      - name: Checkout userspace
-        uses: actions/checkout@v4
-        with:
-          path: userspace
+      - name: Set up Docker Buildx (for ZMK)
+        uses: docker/setup-buildx-action@v3
 
-      - name: Set QMK_USERSPACE environment variable
-        run: echo "QMK_USERSPACE=$GITHUB_WORKSPACE/userspace/qmk" >> $GITHUB_ENV
-
-      - name: Build firmware binaries
+      - name: Build all firmwares
         run: |
-          cd qmk_firmware
-          qmk userspace-compile -e DUMP_CI_METADATA=yes
-        env:
-          QMK_USERSPACE: ${{ github.workspace }}/userspace/qmk
+          export QMK_FIRMWARE_PATH="${GITHUB_WORKSPACE}/qmk_firmware"
+          ./build_all.sh
 
-      - name: Upload all firmware binaries
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: firmware-binaries
-          path: |
-            qmk_firmware/*.hex
-            qmk_firmware/*.uf2
-            qmk_firmware/*.bin
-          if-no-files-found: ignore
-
-  # ZMK build will be added here when ZMK boards are configured
-  # build-zmk:
-  #   name: 'Build ZMK Firmware'
-  #   needs: generate-keymaps
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout ZMK
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: zmkfirmware/zmk
-  #         path: zmk-firmware
-  #     - name: Download generated keymaps
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: generated-keymaps
-  #     - name: Build ZMK
-  #       run: |
-  #         # ZMK build commands here
+          name: firmware-build-output
+          path: out/
+          retention-days: 30
