@@ -29,6 +29,9 @@ parse_config:
     "LT(FUN, KC_X)":
       tap: "X"
       hold: "FUN"
+    "LT(FUN, KC_SLSH)":
+      tap: "/"
+      hold: "FUN"
     "LT(NAV, KC_SPC)":
       tap: "Space"
       hold: "NAV"
@@ -101,20 +104,20 @@ draw_config:
     }
 
     /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green */
-    .layer-BASE .keypos-21 rect,
     .layer-BASE .keypos-31 rect,
     .layer-BASE .keypos-32 rect,
     .layer-BASE .keypos-33 rect,
-    .layer-BASE .keypos-35 rect {
+    .layer-BASE .keypos-35 rect,
+    .layer-BASE .keypos-29 rect {
       fill: #4CAF50 !important;
       stroke: none !important;
       opacity: 1 !important;
     }
-    .layer-BASE .keypos-21 text,
     .layer-BASE .keypos-31 text,
     .layer-BASE .keypos-32 text,
     .layer-BASE .keypos-33 text,
-    .layer-BASE .keypos-35 text {
+    .layer-BASE .keypos-35 text,
+    .layer-BASE .keypos-29 text {
       fill: white !important;
     }
 
@@ -136,7 +139,7 @@ draw_config:
     .layer-MEDIA .keypos-32 rect,
     .layer-NUM .keypos-35 rect,
     .layer-SYM .keypos-33 rect,
-    .layer-FUN .keypos-21 rect {
+    .layer-FUN .keypos-29 rect {
       fill: #FF9800 !important;
       stroke: none !important;
     }
@@ -144,7 +147,7 @@ draw_config:
     .layer-MEDIA .keypos-32 text,
     .layer-NUM .keypos-35 text,
     .layer-SYM .keypos-33 text,
-    .layer-FUN .keypos-21 text {
+    .layer-FUN .keypos-29 text {
       fill: white !important;
     }
 

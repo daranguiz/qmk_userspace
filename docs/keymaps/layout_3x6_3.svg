@@ -135,20 +135,20 @@ text.hold {
 }
 
 /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green */
-.layer-BASE .keypos-21 rect,
 .layer-BASE .keypos-31 rect,
 .layer-BASE .keypos-32 rect,
 .layer-BASE .keypos-33 rect,
-.layer-BASE .keypos-35 rect {
+.layer-BASE .keypos-35 rect,
+.layer-BASE .keypos-29 rect {
   fill: #4CAF50 !important;
   stroke: none !important;
   opacity: 1 !important;
 }
-.layer-BASE .keypos-21 text,
 .layer-BASE .keypos-31 text,
 .layer-BASE .keypos-32 text,
 .layer-BASE .keypos-33 text,
-.layer-BASE .keypos-35 text {
+.layer-BASE .keypos-35 text,
+.layer-BASE .keypos-29 text {
   fill: white !important;
 }
 
@@ -170,7 +170,7 @@ text.hold {
 .layer-MEDIA .keypos-32 rect,
 .layer-NUM .keypos-35 rect,
 .layer-SYM .keypos-33 rect,
-.layer-FUN .keypos-21 rect {
+.layer-FUN .keypos-29 rect {
   fill: #FF9800 !important;
   stroke: none !important;
 }
@@ -178,7 +178,7 @@ text.hold {
 .layer-MEDIA .keypos-32 text,
 .layer-NUM .keypos-35 text,
 .layer-SYM .keypos-33 text,
-.layer-FUN .keypos-21 text {
+.layer-FUN .keypos-29 text {
   fill: white !important;
 }
 
@@ -333,10 +333,10 @@ text.hold {
 </g>
 <g transform="translate(756, 161)" class="key keypos-34">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">
-<tspan x="0" dy="-0.6em">LT(FUN,</tspan><tspan x="0" dy="1.2em">SLSH)</tspan>
-</text>
-</g>
+<text x="0" y="0" class="key tap">/</text>
+<a href="#FUN">
+<text x="0" y="24" class="key hold layer-activator">FUN</text>
+</a></g>
 <g transform="translate(812, 161)" class="key keypos-35">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
 </g>
