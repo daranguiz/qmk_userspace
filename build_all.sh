@@ -128,7 +128,10 @@ echo ""
 
 # Copy visualizations to output directory
 if [ -d "$REPO_ROOT/docs/keymaps" ]; then
-    cp -r "$REPO_ROOT/docs/keymaps"/*.svg "$OUTPUT_DIR/visualizations/" 2>/dev/null || true
+    # Copy main SVG visualizations (not the print splits)
+    cp "$REPO_ROOT/docs/keymaps"/layout_*[!1-9].svg "$OUTPUT_DIR/visualizations/" 2>/dev/null || true
+    # Copy PDF files
+    cp "$REPO_ROOT/docs/keymaps"/*.pdf "$OUTPUT_DIR/visualizations/" 2>/dev/null || true
 fi
 
 # Show all firmware files
