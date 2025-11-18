@@ -9,6 +9,10 @@ from pathlib import Path
 from typing import Optional, List, Dict
 from config_parser import YAMLConfigParser
 from qmk_translator import QMKTranslator
+from svglib.svglib import svg2rlg
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.graphics import renderPDF
 
 
 class KeymapVisualizer:
@@ -397,9 +401,96 @@ class KeymapVisualizer:
         Returns:
             Path to generated SVG file, or None if generation failed
         """
+        # Generate full visualization
+        svg_file = self._generate_svg_for_layers(layout_size, representative_board, superset_layers, suffix="")
+
+        # Generate split versions for printing (3 layers each)
+        print_svgs = []
+        if len(superset_layers) > 3:
+            first_half = superset_layers[:3]
+            second_half = superset_layers[3:]
+
+            svg1 = self._generate_svg_for_layers(layout_size, representative_board, first_half, suffix="_print1")
+            svg2 = self._generate_svg_for_layers(layout_size, representative_board, second_half, suffix="_print2")
+
+            if svg1:
+                print_svgs.append(svg1)
+            if svg2:
+                print_svgs.append(svg2)
+
+            # Combine into PDF
+            if print_svgs:
+                pdf_file = self._combine_svgs_to_pdf(layout_size, print_svgs)
+                if pdf_file:
+                    print(f"    📄 {pdf_file.name}")
+
+        return svg_file
+
+    def _combine_svgs_to_pdf(self, layout_size: str, svg_files: List[Path]) -> Optional[Path]:
+        """
+        Combine multiple SVG files into a single PDF for printing
+
+        Args:
+            layout_size: Layout size identifier
+            svg_files: List of SVG file paths to combine
+
+        Returns:
+            Path to generated PDF file, or None if generation failed
+        """
+        pdf_file = self.output_dir / f"layout_{layout_size}_print.pdf"
+
+        # Create PDF canvas
+        c = canvas.Canvas(str(pdf_file), pagesize=letter)
+        page_width, page_height = letter
+
+        for svg_path in svg_files:
+            # Render SVG to ReportLab drawing
+            drawing = svg2rlg(str(svg_path))
+
+            if drawing is None:
+                print(f"  ⚠️  Failed to load SVG: {svg_path}")
+                continue
+
+            # Scale to fit page (with margins)
+            margin = 36  # 0.5 inch margins
+            available_width = page_width - (2 * margin)
+            available_height = page_height - (2 * margin)
+
+            # Calculate scaling factor to fit page
+            scale_x = available_width / drawing.width
+            scale_y = available_height / drawing.height
+            scale = min(scale_x, scale_y, 1.0)  # Don't scale up, only down
+
+            # Center the drawing
+            scaled_width = drawing.width * scale
+            scaled_height = drawing.height * scale
+            x = margin + (available_width - scaled_width) / 2
+            y = margin + (available_height - scaled_height) / 2
+
+            # Draw on canvas
+            drawing.scale(scale, scale)
+            renderPDF.draw(drawing, c, x, y)
+            c.showPage()
+
+        c.save()
+        return pdf_file
+
+    def _generate_svg_for_layers(self, layout_size: str, representative_board, layers: List[Dict], suffix: str = "") -> Optional[Path]:
+        """
+        Generate SVG visualization for specific layers
+
+        Args:
+            layout_size: Layout size identifier
+            representative_board: A board object to use for QMK metadata
+            layers: List of dicts with 'name' and 'keycodes'
+            suffix: Optional suffix for filename (e.g., "_print1")
+
+        Returns:
+            Path to generated SVG file, or None if generation failed
+        """
         # Output file paths
-        json_file = self.output_dir / f"layout_{layout_size}.json"
-        svg_file = self.output_dir / f"layout_{layout_size}.svg"
+        json_file = self.output_dir / f"layout_{layout_size}{suffix}.json"
+        svg_file = self.output_dir / f"layout_{layout_size}{suffix}.svg"
 
         try:
             # Determine QMK keyboard metadata
@@ -424,7 +515,7 @@ class KeymapVisualizer:
 
             # Convert to QMK JSON format
             layers_json = []
-            for layer in superset_layers:
+            for layer in layers:
                 # Translate keycodes to QMK format for keymap-drawer
                 translated = [self._translate_keycode_for_display(kc) for kc in layer['keycodes']]
                 # Reorder keys for QMK layout
@@ -457,7 +548,7 @@ class KeymapVisualizer:
             parsed_keymap = parse_result.stdout
 
             # Post-process: Rename layers from L0-L5 to friendly names
-            layer_names = [layer['name'] for layer in superset_layers]
+            layer_names = [layer['name'] for layer in layers]
             for i, name in enumerate(layer_names):
                 parsed_keymap = parsed_keymap.replace(f"L{i}:", f"{name}:")
 
@@ -478,16 +569,19 @@ class KeymapVisualizer:
             # Write SVG file
             svg_file.write_text(draw_result.stdout)
 
-            print(f"    ✅ {svg_file.name}")
+            if suffix:
+                print(f"    ✅ {svg_file.name}")
+            else:
+                print(f"    ✅ {svg_file.name}")
             return svg_file
 
         except subprocess.CalledProcessError as e:
-            print(f"  ⚠️  Visualization generation failed for {layout_size}: {e}")
+            print(f"  ⚠️  Visualization generation failed for {layout_size}{suffix}: {e}")
             if e.stderr:
                 print(f"     {e.stderr}")
             return None
         except Exception as e:
-            print(f"  ⚠️  Unexpected error during visualization for {layout_size}: {e}")
+            print(f"  ⚠️  Unexpected error during visualization for {layout_size}{suffix}: {e}")
             import traceback
             traceback.print_exc()
             return None
