@@ -150,6 +150,7 @@ for i in "${!BOARDS[@]}"; do
         "$DOCKER_IMAGE" \
         sh -c "
             set -e
+            git config --global --add safe.directory /zmk
             west init -l app/ 2>/dev/null || true
             west update
             west build -p -s app -b $BOARD -- $SHIELD_ARG -DZMK_CONFIG=/config
