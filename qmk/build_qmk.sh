@@ -11,6 +11,30 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 OUTPUT_DIR="$REPO_ROOT/out/qmk"
 
+# Ensure QMK CLI points at this userspace (handles repo renames)
+CURRENT_OVERLAY="$(qmk config -ro user.overlay_dir 2>/dev/null | cut -d'=' -f2-)"
+if [ "$CURRENT_OVERLAY" != "$SCRIPT_DIR" ]; then
+    echo "Updating qmk config (user.overlay_dir) -> $SCRIPT_DIR"
+    qmk config user.overlay_dir="$SCRIPT_DIR"
+    echo ""
+fi
+
+# Prepare upstream qmk_firmware workspace
+QMK_HOME="$(qmk config -ro user.qmk_home 2>/dev/null | cut -d'=' -f2-)"
+if [ -n "$QMK_HOME" ] && [ -d "$QMK_HOME" ]; then
+    BUILD_DIR="$QMK_HOME/.build"
+    if [ -d "$BUILD_DIR" ]; then
+        if find "$BUILD_DIR" -maxdepth 1 -name "failed.log.*" | grep -q .; then
+            echo "Cleaning stale QMK failure logs..."
+            find "$BUILD_DIR" -maxdepth 1 -name "failed.log.*" -delete 2>/dev/null || true
+        fi
+        if grep -R "qmk_userspace" "$BUILD_DIR" >/dev/null 2>&1; then
+            echo "Removing stale dependency cache from previous repo name..."
+            rm -rf "$BUILD_DIR"
+        fi
+    fi
+fi
+
 # Set QMK_USERSPACE to this directory (qmk/)
 export QMK_USERSPACE="$SCRIPT_DIR"
 echo "QMK_USERSPACE set to: $QMK_USERSPACE"
