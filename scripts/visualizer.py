@@ -4,6 +4,7 @@ Keymap visualization generation using keymap-drawer
 
 import json
 import os
+import re
 import subprocess
 import shutil
 import tempfile
@@ -158,6 +159,41 @@ class KeymapVisualizer:
         finally:
             if temp_config.exists():
                 temp_config.unlink()
+
+    def _format_layer_labels(self, svg_content: str, layout_size: str) -> str:
+        """
+        Center layer labels between halves and enlarge text
+
+        Args:
+            svg_content: Raw SVG markup from keymap-drawer
+            layout_size: Layout identifier to determine positioning
+
+        Returns:
+            Updated SVG markup with formatted layer labels
+        """
+        label_layouts = {
+            # x coordinates account for the leading translate(30, 0) wrapping each layer group.
+            # Values = (canvas_width / 2) - 30 to place text at actual center line.
+            "3x6_3": {"x": 420, "y": 133, "font_size": 28},  # width=900
+            "3x5_3": {"x": 448, "y": 112, "font_size": 28},  # width=956
+        }
+        defaults = {"x": 420, "y": 120, "font_size": 26}
+        config = label_layouts.get(layout_size, defaults)
+
+        pattern = re.compile(
+            r'(?P<indent>\s*)<text x="[^"]+" y="[^"]+" class="label" id="(?P<id>[^"]+)">[^<]*</text>'
+        )
+
+        def _replace(match: re.Match) -> str:
+            indent = match.group("indent")
+            layer_id = match.group("id")
+            style = 'style="text-anchor: middle; dominant-baseline: middle;"'
+            return (
+                f'{indent}<text x="{config["x"]}" y="{config["y"]}" class="label" id="{layer_id}" '
+                f'text-anchor="middle" dominant-baseline="middle" font-size="{config["font_size"]}" {style}>{layer_id}</text>'
+            )
+
+        return pattern.sub(_replace, svg_content)
 
     def _translate_keycode_for_display(self, keycode: str) -> str:
         """
@@ -360,8 +396,12 @@ class KeymapVisualizer:
                     check=True
                 )
 
+                svg_output = self._format_layer_labels(
+                    draw_result.stdout, board.layout_size
+                )
+
                 # Write SVG file
-                svg_file.write_text(draw_result.stdout)
+                svg_file.write_text(svg_output)
 
             return svg_file
 
@@ -701,8 +741,12 @@ class KeymapVisualizer:
                     check=True
                 )
 
+                svg_output = self._format_layer_labels(
+                    draw_result.stdout, layout_size
+                )
+
                 # Write SVG file
-                svg_file.write_text(draw_result.stdout)
+                svg_file.write_text(svg_output)
 
             if suffix:
                 print(f"    ✅ {svg_file.name}")
