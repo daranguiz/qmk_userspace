@@ -37,7 +37,7 @@ layers:
 - Homerow mods: `hrm:LGUI:A` (hold for modifier, tap for key)
 - Layer-tap: `lt:NAV:SPC` (hold for layer, tap for key)
 - Bluetooth (ZMK only): `bt:next`, `bt:prev`, `bt:clear`
-- Special: `NONE` (no key), `QK_BOOT` (bootloader)
+- Special: `NONE` (no key), `DFU` (bootloader)
 
 ### `boards.yaml` - Board Inventory
 **Edit this when adding a new keyboard.**

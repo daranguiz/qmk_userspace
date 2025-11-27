@@ -63,7 +63,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 45: KC_M
 46: KC_COMM
 47: KC_DOT
-48: LT(FUN, KC_SLSH)
+48: KC_SLSH
 49: KC_NO
 50: KC_NO
 51: KC_ENT
@@ -163,7 +163,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 19: KC_NO
 20: KC_NO
 21: KC_NO
-22: QK_BOOT
+22: KC_NO
 23: KC_NO
 24: KC_NO
 25: KC_COLN
@@ -189,7 +189,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 45: KC_NO
 46: KC_NO
 47: KC_NO
-48: KC_NO
+48: QK_BOOT
 49: KC_NO
 50: KC_NO
 51: KC_LPRN
@@ -280,7 +280,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 10: KC_NO
 11: KC_NO
 12: KC_NO
-13: QK_BOOT
+13: KC_NO
 14: KC_NO
 15: KC_NO
 16: KC_NO
@@ -304,7 +304,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 34: KC_MNXT
 35: KC_NO
 36: KC_NO
-37: KC_NO
+37: QK_BOOT
 38: KC_NO
 39: KC_NO
 40: KC_NO

@@ -37,7 +37,7 @@ keycodes:
     zmk: "&none"
     description: "No key action"
 
-  QK_BOOT:
+  DFU:
     qmk: "QK_BOOT"
     zmk: "&bootloader"
     description: "Bootloader key"

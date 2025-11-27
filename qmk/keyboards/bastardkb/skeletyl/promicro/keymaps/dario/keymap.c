@@ -12,7 +12,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Z                , KC_X                , KC_C                , KC_V                , KC_B                ,
         KC_J                , KC_L                , KC_U                , KC_Y                , KC_QUOT             ,
         KC_H                , RSFT_T(KC_N)        , RCTL_T(KC_E)        , RALT_T(KC_I)        , RGUI_T(KC_O)        ,
-        KC_K                , KC_M                , KC_COMM             , KC_DOT              , LT(FUN, KC_SLSH)    ,
+        KC_K                , KC_M                , KC_COMM             , KC_DOT              , KC_SLSH             ,
                               KC_ENT              , LT(NAV, KC_SPC)     , LT(MEDIA, KC_TAB)   ,
                               LT(SYM, KC_DEL)     , KC_LSFT             , LT(NUM, KC_BSPC)    
     ),
@@ -30,9 +30,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCBR             , KC_DLR              , KC_PERC             , KC_CIRC             , KC_RCBR             ,
         KC_COLN             , KC_EXLM             , KC_AT               , KC_HASH             , KC_PLUS             ,
         KC_TILD             , KC_AMPR             , KC_ASTR             , KC_LPRN             , KC_PIPE             ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             ,
-        KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             ,
                               KC_LPRN             , KC_RPRN             , KC_UNDS             ,
                               KC_NO               , KC_NO               , KC_NO               
     ),
@@ -47,9 +47,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_DEL              , KC_ENT              , KC_BSPC             
     ),
     [MEDIA] = LAYOUT_split_3x5_3(
-        QK_BOOT             , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
+        QK_BOOT             , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_MPRV             , KC_VOLD             , KC_VOLU             , KC_MNXT             ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,

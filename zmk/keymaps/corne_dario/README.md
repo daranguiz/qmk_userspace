@@ -44,7 +44,7 @@
 31: &kp M
 32: &kp COMMA
 33: &kp DOT
-34: &lt FUN FSLH
+34: &kp FSLH
 35: &none
 
 36: &kp ENTER
@@ -80,10 +80,10 @@
 17: &kp BSLH
 
 18: &none
-19: &bt BT_SEL 0
-20: &bt BT_SEL 1
-21: &bt BT_SEL 2
-22: &bt BT_CLR
+19: &none
+20: &none
+21: &none
+22: &none
 23: &none
 
 24: &none
@@ -136,7 +136,7 @@
 19: &none
 20: &none
 21: &none
-22: &bootloader
+22: &none
 23: &none
 
 24: &none
@@ -150,7 +150,7 @@
 31: &none
 32: &none
 33: &none
-34: &none
+34: &bootloader
 35: &none
 
 36: &kp LPAR
@@ -165,11 +165,11 @@
 
 ```
  0: &none
- 1: &none
- 2: &none
- 3: &none
- 4: &none
- 5: &none
+ 1: &bt BT_SEL 0
+ 2: &bt BT_SEL 1
+ 3: &bt BT_SEL 2
+ 4: &bt BT_SEL 3
+ 5: &bt BT_CLR
 
  6: &none
  7: &kp LGUI
@@ -218,7 +218,7 @@
 
 ```
  0: &none
- 1: &bootloader
+ 1: &none
  2: &none
  3: &none
  4: &none
@@ -232,7 +232,7 @@
 11: &none
 
 12: &none
-13: &none
+13: &bootloader
 14: &none
 15: &none
 16: &none
