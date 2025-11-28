@@ -119,7 +119,7 @@
  5: &kp RBKT
 
  6: &kp LBRC
- 7: &kp SEMI
+ 7: &kp FSLH
  8: &kp N1
  9: &kp N2
 10: &kp N3
@@ -172,7 +172,7 @@
  5: &kp RBRC
 
  6: &none
- 7: &kp COLON
+ 7: &kp QUESTION
  8: &kp EXCL
  9: &kp AT
 10: &kp HASH
@@ -182,7 +182,7 @@
 13: &kp TILDE
 14: &kp AMPERSAND
 15: &kp ASTERISK
-16: &kp LPAR
+16: &kp QUESTION
 17: &kp PIPE
 
 18: &none

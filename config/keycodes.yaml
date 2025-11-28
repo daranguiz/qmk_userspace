@@ -201,6 +201,9 @@ DOT:  # .
 SLSH:  # /
   qmk: "KC_SLSH"
   zmk: "&kp FSLH"
+QUES:  # ?
+  qmk: "KC_QUES"
+  zmk: "&kp QUESTION"
 BSLS:  # \
   qmk: "KC_BSLS"
   zmk: "&kp BSLH"

@@ -47,7 +47,7 @@ layers:
     core: # (3x5)
       left:
         - [LBRC           , 4              , 5              , 6              , RBRC           ]
-        - [SCLN           , 1              , 2              , 3              , EQL            ]
+        - [SLSH           , 1              , 2              , 3              , EQL            ]
         - [GRV            , 7              , 8              , 9              , BSLS           ]
       right:
         - [NONE           , NONE           , NONE           , NONE           , NONE           ]
@@ -68,8 +68,8 @@ layers:
     core: # (3x5)
       left:
         - [LCBR           , DLR            , PERC           , CIRC           , RCBR           ]
-        - [COLN           , EXLM           , AT             , HASH           , PLUS           ]
-        - [TILD           , AMPR           , ASTR           , LPRN           , PIPE           ]
+        - [QUES           , EXLM           , AT             , HASH           , PLUS           ]
+        - [TILD           , AMPR           , ASTR           , QUES           , PIPE           ]
       right:
         - [NONE           , NONE           , NONE           , NONE           , NONE        ]
         - [NONE           , LSFT           , LCTL           , LALT           , LGUI           ]
