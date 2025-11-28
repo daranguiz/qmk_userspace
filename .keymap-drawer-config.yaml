@@ -8,7 +8,8 @@ parse_config:
   # Specify which layer each named layer corresponds to
   # CRITICAL: Order must match config/keymap.yaml and qmk/users/dario/dario.h enum
   layer_names:
-    - BASE
+    - BASE_COLEMAK
+    - BASE_GALLIUM
     - NUM
     - SYM
     - NAV
@@ -17,7 +18,8 @@ parse_config:
 
   # Custom layer names (for keys that reference layers)
   layer_legend_map:
-    "BASE": "BASE"
+    "BASE_COLEMAK": "Colemak"
+    "BASE_GALLIUM": "Gallium"
     "NAV": "NAV"
     "MEDIA": "MEDIA"
     "NUM": "NUM"
@@ -84,6 +86,10 @@ parse_config:
     "KC_BT_SEL_4": "BT 4"
     "KC_BT_CLR": "BT Clr"
 
+    # Default layer switching
+    "DF(BASE_COLEMAK)": "CLMK"
+    "DF(BASE_GALLIUM)": "GALM"
+
 draw_config:
   ortho_layout:
     split: true
@@ -108,33 +114,51 @@ draw_config:
       font-weight: normal !important;
     }
 
-    /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green */
-    .layer-BASE .keypos-31 rect,
-    .layer-BASE .keypos-32 rect,
-    .layer-BASE .keypos-33 rect,
-    .layer-BASE .keypos-35 rect,
-    .layer-BASE .keypos-29 rect {
+    /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green on all BASE layers */
+    .layer-BASE_COLEMAK .keypos-31 rect,
+    .layer-BASE_COLEMAK .keypos-32 rect,
+    .layer-BASE_COLEMAK .keypos-33 rect,
+    .layer-BASE_COLEMAK .keypos-35 rect,
+    .layer-BASE_COLEMAK .keypos-29 rect,
+    .layer-BASE_GALLIUM .keypos-31 rect,
+    .layer-BASE_GALLIUM .keypos-32 rect,
+    .layer-BASE_GALLIUM .keypos-33 rect,
+    .layer-BASE_GALLIUM .keypos-35 rect,
+    .layer-BASE_GALLIUM .keypos-29 rect {
       fill: #4CAF50 !important;
       stroke: none !important;
       opacity: 1 !important;
     }
-    .layer-BASE .keypos-31 text,
-    .layer-BASE .keypos-32 text,
-    .layer-BASE .keypos-33 text,
-    .layer-BASE .keypos-35 text,
-    .layer-BASE .keypos-29 text {
+    .layer-BASE_COLEMAK .keypos-31 text,
+    .layer-BASE_COLEMAK .keypos-32 text,
+    .layer-BASE_COLEMAK .keypos-33 text,
+    .layer-BASE_COLEMAK .keypos-35 text,
+    .layer-BASE_COLEMAK .keypos-29 text,
+    .layer-BASE_GALLIUM .keypos-31 text,
+    .layer-BASE_GALLIUM .keypos-32 text,
+    .layer-BASE_GALLIUM .keypos-33 text,
+    .layer-BASE_GALLIUM .keypos-35 text,
+    .layer-BASE_GALLIUM .keypos-29 text {
       fill: white !important;
     }
 
-    /* Highlight home row mods (positions 10-13, 16-19) with lighter green stroke */
-    .layer-BASE .keypos-10 rect,
-    .layer-BASE .keypos-11 rect,
-    .layer-BASE .keypos-12 rect,
-    .layer-BASE .keypos-13 rect,
-    .layer-BASE .keypos-16 rect,
-    .layer-BASE .keypos-17 rect,
-    .layer-BASE .keypos-18 rect,
-    .layer-BASE .keypos-19 rect {
+    /* Highlight home row mods (positions 10-13, 16-19) with lighter green stroke on all BASE layers */
+    .layer-BASE_COLEMAK .keypos-10 rect,
+    .layer-BASE_COLEMAK .keypos-11 rect,
+    .layer-BASE_COLEMAK .keypos-12 rect,
+    .layer-BASE_COLEMAK .keypos-13 rect,
+    .layer-BASE_COLEMAK .keypos-16 rect,
+    .layer-BASE_COLEMAK .keypos-17 rect,
+    .layer-BASE_COLEMAK .keypos-18 rect,
+    .layer-BASE_COLEMAK .keypos-19 rect,
+    .layer-BASE_GALLIUM .keypos-10 rect,
+    .layer-BASE_GALLIUM .keypos-11 rect,
+    .layer-BASE_GALLIUM .keypos-12 rect,
+    .layer-BASE_GALLIUM .keypos-13 rect,
+    .layer-BASE_GALLIUM .keypos-16 rect,
+    .layer-BASE_GALLIUM .keypos-17 rect,
+    .layer-BASE_GALLIUM .keypos-18 rect,
+    .layer-BASE_GALLIUM .keypos-19 rect {
       stroke: #66BB6A !important;
       stroke-width: 2 !important;
     }

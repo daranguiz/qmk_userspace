@@ -30,6 +30,13 @@ behaviors:
     params: [key]
     firmware_support: [qmk, zmk]
 
+  df:
+    description: "Set default layer (persistent layer switch)"
+    qmk_pattern: "DF({layer})"
+    zmk_pattern: "&to {layer}"
+    params: [layer]
+    firmware_support: [qmk, zmk]
+
 # Keycode mappings for special cases
 keycodes:
   NONE:

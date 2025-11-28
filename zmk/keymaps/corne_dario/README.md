@@ -2,7 +2,7 @@
 
 # Keymap Visualization: Chocofi
 
-## BASE Layer
+## BASE_COLEMAK Layer
 
 ```
  0: &none
@@ -45,6 +45,59 @@
 32: &kp COMMA
 33: &kp DOT
 34: &kp FSLH
+35: &none
+
+36: &kp ENTER
+37: &lt NAV SPACE
+38: &lt MEDIA TAB
+39: &lt SYM DEL
+40: &kp LSHFT
+41: &lt NUM BSPC
+```
+
+## BASE_GALLIUM Layer
+
+```
+ 0: &none
+ 1: &kp B
+ 2: &kp L
+ 3: &kp D
+ 4: &kp C
+ 5: &kp V
+
+ 6: &kp LBKT
+ 7: &hml LGUI N
+ 8: &hml LALT R
+ 9: &hml LCTL T
+10: &hml LSFT S
+11: &kp G
+
+12: &none
+13: &kp X
+14: &kp Q
+15: &kp M
+16: &kp W
+17: &kp Z
+
+18: &kp J
+19: &kp Y
+20: &kp O
+21: &kp U
+22: &kp COMMA
+23: &none
+
+24: &kp P
+25: &hmr RSFT H
+26: &hmr RCTL A
+27: &hmr RALT E
+28: &hmr RGUI I
+29: &kp RBKT
+
+30: &kp K
+31: &kp F
+32: &kp SQT
+33: &kp SEMI
+34: &kp DOT
 35: &none
 
 36: &kp ENTER
@@ -179,8 +232,8 @@
 11: &none
 
 12: &none
-13: &none
-14: &none
+13: &to BASE_COLEMAK
+14: &to BASE_GALLIUM
 15: &none
 16: &none
 17: &none

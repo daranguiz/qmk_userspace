@@ -30,9 +30,10 @@ class ConfigValidator:
         if not layers:
             raise ValidationError("At least one layer must be defined")
 
-        # BASE layer is required
-        if "BASE" not in layers:
-            raise ValidationError("BASE layer is required")
+        # At least one BASE layer is required (BASE, BASE_COLEMAK, BASE_GALLIUM, etc.)
+        base_layers = [name for name in layers if name.startswith("BASE")]
+        if not base_layers:
+            raise ValidationError("At least one BASE layer is required (e.g., BASE, BASE_COLEMAK, BASE_GALLIUM)")
 
         # Validate layer names are valid C identifiers
         for layer_name in layers:

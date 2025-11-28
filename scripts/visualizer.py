@@ -92,33 +92,51 @@ class KeymapVisualizer:
       font-weight: normal !important;
     }
 
-    /* Highlight layer-tap keys with bright green */
-    .layer-BASE .keypos-34 rect,
-    .layer-BASE .keypos-37 rect,
-    .layer-BASE .keypos-38 rect,
-    .layer-BASE .keypos-39 rect,
-    .layer-BASE .keypos-41 rect {
+    /* Highlight layer-tap keys with bright green on all BASE layers */
+    .layer-BASE_COLEMAK .keypos-34 rect,
+    .layer-BASE_COLEMAK .keypos-37 rect,
+    .layer-BASE_COLEMAK .keypos-38 rect,
+    .layer-BASE_COLEMAK .keypos-39 rect,
+    .layer-BASE_COLEMAK .keypos-41 rect,
+    .layer-BASE_GALLIUM .keypos-34 rect,
+    .layer-BASE_GALLIUM .keypos-37 rect,
+    .layer-BASE_GALLIUM .keypos-38 rect,
+    .layer-BASE_GALLIUM .keypos-39 rect,
+    .layer-BASE_GALLIUM .keypos-41 rect {
       fill: #4CAF50 !important;
       stroke: none !important;
       opacity: 1 !important;
     }
-    .layer-BASE .keypos-34 text,
-    .layer-BASE .keypos-37 text,
-    .layer-BASE .keypos-38 text,
-    .layer-BASE .keypos-39 text,
-    .layer-BASE .keypos-41 text {
+    .layer-BASE_COLEMAK .keypos-34 text,
+    .layer-BASE_COLEMAK .keypos-37 text,
+    .layer-BASE_COLEMAK .keypos-38 text,
+    .layer-BASE_COLEMAK .keypos-39 text,
+    .layer-BASE_COLEMAK .keypos-41 text,
+    .layer-BASE_GALLIUM .keypos-34 text,
+    .layer-BASE_GALLIUM .keypos-37 text,
+    .layer-BASE_GALLIUM .keypos-38 text,
+    .layer-BASE_GALLIUM .keypos-39 text,
+    .layer-BASE_GALLIUM .keypos-41 text {
       fill: white !important;
     }
 
-    /* Highlight home row mods with lighter green stroke */
-    .layer-BASE .keypos-13 rect,
-    .layer-BASE .keypos-14 rect,
-    .layer-BASE .keypos-15 rect,
-    .layer-BASE .keypos-16 rect,
-    .layer-BASE .keypos-19 rect,
-    .layer-BASE .keypos-20 rect,
-    .layer-BASE .keypos-21 rect,
-    .layer-BASE .keypos-22 rect {
+    /* Highlight home row mods with lighter green stroke on all BASE layers */
+    .layer-BASE_COLEMAK .keypos-13 rect,
+    .layer-BASE_COLEMAK .keypos-14 rect,
+    .layer-BASE_COLEMAK .keypos-15 rect,
+    .layer-BASE_COLEMAK .keypos-16 rect,
+    .layer-BASE_COLEMAK .keypos-19 rect,
+    .layer-BASE_COLEMAK .keypos-20 rect,
+    .layer-BASE_COLEMAK .keypos-21 rect,
+    .layer-BASE_COLEMAK .keypos-22 rect,
+    .layer-BASE_GALLIUM .keypos-13 rect,
+    .layer-BASE_GALLIUM .keypos-14 rect,
+    .layer-BASE_GALLIUM .keypos-15 rect,
+    .layer-BASE_GALLIUM .keypos-16 rect,
+    .layer-BASE_GALLIUM .keypos-19 rect,
+    .layer-BASE_GALLIUM .keypos-20 rect,
+    .layer-BASE_GALLIUM .keypos-21 rect,
+    .layer-BASE_GALLIUM .keypos-22 rect {
       stroke: #66BB6A !important;
       stroke-width: 2 !important;
     }
@@ -227,6 +245,13 @@ class KeymapVisualizer:
             if len(parts) == 3:
                 layer, key = parts[1], parts[2]
                 return f"LT({layer}, KC_{key})"
+
+        # Handle default layer switch: df:LAYER -> DF(LAYER)
+        if keycode.startswith("df:"):
+            parts = keycode.split(":")
+            if len(parts) == 2:
+                layer = parts[1]
+                return f"DF({layer})"
 
         # Check for custom display glyph/name in keycodes.yaml
         if keycode in self.keycodes:
@@ -523,6 +548,10 @@ class KeymapVisualizer:
                 if layer.full_layout is not None:
                     # This is a custom layer (like GAME) - skip for now
                     # TODO: Handle custom layers if needed
+                    continue
+
+                # Skip FUN layer from visualization
+                if layer_name == "FUN":
                     continue
 
                 keycodes = self._build_superset_layer(layer, layout_size)

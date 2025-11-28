@@ -12,7 +12,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 
 ## Layers
 
-## BASE Layer
+## BASE_COLEMAK Layer
 
 ```
  0: KC_NO
@@ -64,6 +64,69 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 46: KC_COMM
 47: KC_DOT
 48: KC_SLSH
+49: KC_NO
+50: KC_NO
+51: KC_ENT
+52: LT(NAV, KC_SPC)
+53: LT(MEDIA, KC_TAB)
+54: LT(SYM, KC_DEL)
+55: KC_LSFT
+56: LT(NUM, KC_BSPC)
+57: KC_NO
+```
+
+## BASE_GALLIUM Layer
+
+```
+ 0: KC_NO
+ 1: KC_NO
+ 2: KC_NO
+ 3: KC_NO
+ 4: KC_NO
+ 5: KC_NO
+ 6: KC_NO
+ 7: KC_NO
+ 8: KC_NO
+ 9: KC_NO
+10: KC_NO
+11: KC_NO
+12: KC_NO
+13: KC_B
+14: KC_L
+15: KC_D
+16: KC_C
+17: KC_V
+18: KC_J
+19: KC_Y
+20: KC_O
+21: KC_U
+22: KC_COMM
+23: KC_NO
+24: KC_LBRC
+25: LGUI_T(KC_N)
+26: LALT_T(KC_R)
+27: LCTL_T(KC_T)
+28: LSFT_T(KC_S)
+29: KC_G
+30: KC_P
+31: RSFT_T(KC_H)
+32: RCTL_T(KC_A)
+33: RALT_T(KC_E)
+34: RGUI_T(KC_I)
+35: KC_RBRC
+36: KC_NO
+37: KC_X
+38: KC_Q
+39: KC_M
+40: KC_W
+41: KC_Z
+42: KC_NO
+43: KC_NO
+44: KC_K
+45: KC_F
+46: KC_QUOT
+47: KC_SCLN
+48: KC_DOT
 49: KC_NO
 50: KC_NO
 51: KC_ENT
@@ -241,8 +304,8 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 34: KC_RGHT
 35: KC_NO
 36: KC_NO
-37: KC_NO
-38: KC_NO
+37: DF(BASE_COLEMAK)
+38: DF(BASE_GALLIUM)
 39: KC_NO
 40: KC_NO
 41: KC_NO

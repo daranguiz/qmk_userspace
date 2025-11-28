@@ -235,8 +235,11 @@ class KeymapConfiguration:
         """Validate keymap configuration"""
         if not self.layers:
             raise ValidationError("At least one layer must be defined")
-        if "BASE" not in self.layers:
-            raise ValidationError("BASE layer is required")
+
+        # At least one BASE layer is required (BASE, BASE_COLEMAK, BASE_GALLIUM, etc.)
+        base_layers = [name for name in self.layers if name.startswith("BASE")]
+        if not base_layers:
+            raise ValidationError("At least one BASE layer is required (e.g., BASE, BASE_COLEMAK, BASE_GALLIUM)")
 
         # Validate all layers
         for layer in self.layers.values():

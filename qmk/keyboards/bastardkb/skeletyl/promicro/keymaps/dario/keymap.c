@@ -6,13 +6,23 @@
 #include "dario.h"
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [BASE] = LAYOUT_split_3x5_3(
+    [BASE_COLEMAK] = LAYOUT_split_3x5_3(
         KC_Q                , KC_W                , KC_F                , KC_P                , KC_G                ,
         LGUI_T(KC_A)        , LALT_T(KC_R)        , LCTL_T(KC_S)        , LSFT_T(KC_T)        , KC_D                ,
         KC_Z                , KC_X                , KC_C                , KC_V                , KC_B                ,
         KC_J                , KC_L                , KC_U                , KC_Y                , KC_QUOT             ,
         KC_H                , RSFT_T(KC_N)        , RCTL_T(KC_E)        , RALT_T(KC_I)        , RGUI_T(KC_O)        ,
         KC_K                , KC_M                , KC_COMM             , KC_DOT              , KC_SLSH             ,
+                              KC_ENT              , LT(NAV, KC_SPC)     , LT(MEDIA, KC_TAB)   ,
+                              LT(SYM, KC_DEL)     , KC_LSFT             , LT(NUM, KC_BSPC)    
+    ),
+    [BASE_GALLIUM] = LAYOUT_split_3x5_3(
+        KC_B                , KC_L                , KC_D                , KC_C                , KC_V                ,
+        LGUI_T(KC_N)        , LALT_T(KC_R)        , LCTL_T(KC_T)        , LSFT_T(KC_S)        , KC_G                ,
+        KC_X                , KC_Q                , KC_M                , KC_W                , KC_Z                ,
+        KC_J                , KC_Y                , KC_O                , KC_U                , KC_COMM             ,
+        KC_P                , RSFT_T(KC_H)        , RCTL_T(KC_A)        , RALT_T(KC_E)        , RGUI_T(KC_I)        ,
+        KC_K                , KC_F                , KC_QUOT             , KC_SCLN             , KC_DOT              ,
                               KC_ENT              , LT(NAV, KC_SPC)     , LT(MEDIA, KC_TAB)   ,
                               LT(SYM, KC_DEL)     , KC_LSFT             , LT(NUM, KC_BSPC)    
     ),
@@ -39,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NAV] = LAYOUT_split_3x5_3(
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        DF(BASE_COLEMAK)    , DF(BASE_GALLIUM)    , KC_NO               , KC_NO               , KC_NO               ,
         KC_ESC              , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_CAPS             , KC_LEFT             , KC_DOWN             , KC_UP               , KC_RGHT             ,
         KC_INS              , KC_HOME             , KC_PGDN             , KC_PGUP             , KC_END              ,

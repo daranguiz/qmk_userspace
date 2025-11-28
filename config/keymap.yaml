@@ -1,7 +1,7 @@
 # Unified Keymap Configuration
 
 layers:
-  BASE:
+  BASE_COLEMAK:
     core: # (3x5)
       left:
         - [Q              , W              , F              , P              , G              ]
@@ -11,6 +11,27 @@ layers:
         - [J              , L              , U              , Y              , QUOT           ]
         - [H              , hrm:RSFT:N     , hrm:RCTL:E     , hrm:RALT:I     , hrm:RGUI:O     ]
         - [K              , M              , COMM           , DOT            , SLSH           ]
+      thumbs:
+        - [ENT            , lt:NAV:SPC     , lt:MEDIA:TAB   ]
+        - [lt:SYM:DEL     , LSFT           , lt:NUM:BSPC    ]
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, LBRC, NONE]
+        outer_pinky_right: [NONE, RBRC, NONE]
+      3x5_3_pinky:
+        outer_pinky_left: LBRC
+        outer_pinky_right: RBRC
+
+  BASE_GALLIUM:
+    core: # (3x5)
+      left:
+        - [B              , L              , D              , C              , V              ]
+        - [hrm:LGUI:N     , hrm:LALT:R     , hrm:LCTL:T     , hrm:LSFT:S     , G              ]
+        - [X              , Q              , M              , W              , Z              ]
+      right:
+        - [J              , Y              , O              , U              , COMM           ]
+        - [P              , hrm:RSFT:H     , hrm:RCTL:A     , hrm:RALT:E     , hrm:RGUI:I     ]
+        - [K              , F              , QUOT           , SCLN           , DOT            ]
       thumbs:
         - [ENT            , lt:NAV:SPC     , lt:MEDIA:TAB   ]
         - [lt:SYM:DEL     , LSFT           , lt:NUM:BSPC    ]
@@ -69,7 +90,7 @@ layers:
       left:
         - [BT_SEL_0       , BT_SEL_1       , BT_SEL_2       , BT_SEL_3       , BT_CLR         ]
         - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
-        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
+        - [df:BASE_COLEMAK, df:BASE_GALLIUM, NONE           , NONE           , NONE           ]
       right:
         - [ESC            , NONE           , NONE           , NONE           , NONE           ]
         - [CAPS           , LEFT           , DOWN           , UP             , RGHT           ]
