@@ -199,11 +199,11 @@
 28: &kp LGUI
 29: &none
 
-30: &none
+30: &bootloader
 31: &none
 32: &none
 33: &none
-34: &bootloader
+34: &none
 35: &none
 
 36: &kp LPAR
@@ -232,11 +232,11 @@
 11: &none
 
 12: &none
-13: &to BASE_COLEMAK
-14: &to BASE_GALLIUM
-15: &none
-16: &none
-17: &none
+13: &kp LG(Z)
+14: &kp LG(X)
+15: &kp LG(C)
+16: &kp LG(V)
+17: &kp LG(LS(Z))
 
 18: &kp ESC
 19: &none
@@ -271,8 +271,8 @@
 
 ```
  0: &none
- 1: &none
- 2: &none
+ 1: &to BASE_COLEMAK
+ 2: &to BASE_GALLIUM
  3: &none
  4: &none
  5: &none
@@ -285,11 +285,11 @@
 11: &none
 
 12: &none
-13: &bootloader
+13: &none
 14: &none
 15: &none
 16: &none
-17: &none
+17: &bootloader
 
 18: &none
 19: &none

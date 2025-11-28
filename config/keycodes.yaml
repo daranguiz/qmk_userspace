@@ -380,6 +380,28 @@ INS:
   qmk: "KC_INS"
   zmk: "&kp INS"
 
+# Clipboard shortcuts (Mac: Cmd+key)
+UNDO:
+  qmk: "LGUI(KC_Z)"
+  zmk: "&kp LG(Z)"
+  display_name: "Undo"
+REDO:
+  qmk: "SGUI(KC_Z)"
+  zmk: "&kp LG(LS(Z))"
+  display_name: "Redo"
+CUT:
+  qmk: "LGUI(KC_X)"
+  zmk: "&kp LG(X)"
+  display_name: "Cut"
+COPY:
+  qmk: "LGUI(KC_C)"
+  zmk: "&kp LG(C)"
+  display_name: "Copy"
+PASTE:
+  qmk: "LGUI(KC_V)"
+  zmk: "&kp LG(V)"
+  display_name: "Paste"
+
 # Lock keys
 CAPS:
   qmk: "KC_CAPS"

@@ -73,7 +73,7 @@ layers:
       right:
         - [NONE           , NONE           , NONE           , NONE           , NONE        ]
         - [NONE           , LSFT           , LCTL           , LALT           , LGUI           ]
-        - [NONE           , NONE           , NONE           , NONE           , DFU                ]
+        - [DFU            , NONE           , NONE           , NONE           , NONE                ]
       thumbs:
         - [LPRN           , RPRN           , UNDS           ]
         - [NONE           , NONE           , NONE           ]
@@ -90,7 +90,7 @@ layers:
       left:
         - [BT_SEL_0       , BT_SEL_1       , BT_SEL_2       , BT_SEL_3       , BT_CLR         ]
         - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
-        - [df:BASE_COLEMAK, df:BASE_GALLIUM, NONE           , NONE           , NONE           ]
+        - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:
         - [ESC            , NONE           , NONE           , NONE           , NONE           ]
         - [CAPS           , LEFT           , DOWN           , UP             , RGHT           ]
@@ -109,9 +109,9 @@ layers:
   MEDIA:
     core: # (3x5)
       left:
-        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
+        - [df:BASE_COLEMAK, df:BASE_GALLIUM, NONE           , NONE           , NONE           ]
         - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
-        - [DFU            , NONE           , NONE           , NONE           , NONE           ]
+        - [NONE           , NONE           , NONE           , NONE           , DFU           ]
       right:
         - [NONE           , NONE           , NONE           , NONE           , NONE]
         - [NONE           , MPRV           , VOLD           , VOLU           , MNXT           ]

@@ -42,14 +42,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TILD             , KC_AMPR             , KC_ASTR             , KC_LPRN             , KC_PIPE             ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             ,
+        QK_BOOT             , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
                               KC_LPRN             , KC_RPRN             , KC_UNDS             ,
                               KC_NO               , KC_NO               , KC_NO               
     ),
     [NAV] = LAYOUT_split_3x5_3(
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
-        DF(BASE_COLEMAK)    , DF(BASE_GALLIUM)    , KC_NO               , KC_NO               , KC_NO               ,
+        LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          ,
         KC_ESC              , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_CAPS             , KC_LEFT             , KC_DOWN             , KC_UP               , KC_RGHT             ,
         KC_INS              , KC_HOME             , KC_PGDN             , KC_PGUP             , KC_END              ,
@@ -57,9 +57,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_DEL              , KC_ENT              , KC_BSPC             
     ),
     [MEDIA] = LAYOUT_split_3x5_3(
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        DF(BASE_COLEMAK)    , DF(BASE_GALLIUM)    , KC_NO               , KC_NO               , KC_NO               ,
         KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
-        QK_BOOT             , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_MPRV             , KC_VOLD             , KC_VOLU             , KC_MNXT             ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,

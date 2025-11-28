@@ -72,7 +72,7 @@ qmk compile -kb bastardkb/skeletyl/promicro -km dario
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
 │ KC_COLN │ KC_EXLM │ KC_AT   │ KC_HASH │ KC_PLUS │   │ KC_NO   │ KC_LSFT │ KC_LCTL │ KC_LALT │ KC_LGUI │
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
-│ KC_TILD │ KC_AMPR │ KC_ASTR │ KC_LPRN │ KC_PIPE │   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ QK_BOOT │
+│ KC_TILD │ KC_AMPR │ KC_ASTR │ KC_LPRN │ KC_PIPE │   │ QK_BOOT │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │
 ╰─────────┴─────────┴─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┴─────────┴─────────╯
                               │ KC_LPRN │ KC_RPRN │   │ KC_NO   │ KC_NO   │
                               │ KC_UNDS │         │   │         │         │
@@ -89,7 +89,7 @@ qmk compile -kb bastardkb/skeletyl/promicro -km dario
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
 │ KC_LGUI │ KC_LALT │ KC_LCTL │ KC_LSFT │ KC_NO   │   │ KC_CAPS │ KC_LEFT │ KC_DOWN │ KC_UP   │ KC_RGHT │
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
-│ DF(BASE_COLEMAK) │ DF(BASE_GALLIUM) │ KC_NO   │ KC_NO   │ KC_NO   │   │ KC_INS  │ KC_HOME │ KC_PGDN │ KC_PGUP │ KC_END  │
+│ LGUI(KC_Z) │ LGUI(KC_X) │ LGUI(KC_C) │ LGUI(KC_V) │ SGUI(KC_Z) │   │ KC_INS  │ KC_HOME │ KC_PGDN │ KC_PGUP │ KC_END  │
 ╰─────────┴─────────┴─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┴─────────┴─────────╯
                               │ KC_NO   │ KC_NO   │   │ KC_ENT  │ KC_BSPC │
                               │ KC_NO   │         │   │         │         │
@@ -102,11 +102,11 @@ qmk compile -kb bastardkb/skeletyl/promicro -km dario
 ```
 
 ╭─────────┬─────────┬─────────┬─────────┬─────────╮   ╭─────────┬─────────┬─────────┬─────────┬─────────╮
-│ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │
+│ DF(BASE_COLEMAK) │ DF(BASE_GALLIUM) │ KC_NO   │ KC_NO   │ KC_NO   │   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
 │ KC_LGUI │ KC_LALT │ KC_LCTL │ KC_LSFT │ KC_NO   │   │ KC_NO   │ KC_MPRV │ KC_VOLD │ KC_VOLU │ KC_MNXT │
 ├─────────┼─────────┼─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┼─────────┼─────────┤
-│ QK_BOOT │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │
+│ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ QK_BOOT │   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │ KC_NO   │
 ╰─────────┴─────────┴─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┴─────────┴─────────╯
                               │ KC_NO   │ KC_NO   │   │ KC_MPLY │ KC_MUTE │
                               │ KC_NO   │         │   │         │         │
