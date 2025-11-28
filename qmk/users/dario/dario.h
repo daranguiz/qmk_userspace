@@ -5,7 +5,8 @@
 // Layer definitions
 // NOTE: Order must match config/keymap.yaml layer order
 enum layers {
-    BASE,
+    BASE_COLEMAK,
+    BASE_GALLIUM,
     NUM,
     SYM,
     NAV,
