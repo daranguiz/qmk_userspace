@@ -12,7 +12,11 @@ enum layers {
     SYM,
     NAV,
     MEDIA,
-    FUN
+    FUN,
+    NUM_NIGHT,
+    SYM_NIGHT,
+    NAV_NIGHT,
+    MEDIA_NIGHT
 };
 
 // Not available/Not used keycodes

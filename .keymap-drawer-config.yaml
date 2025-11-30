@@ -16,6 +16,10 @@ parse_config:
     - NAV
     - MEDIA
     - FUN
+    - NUM_NIGHT
+    - SYM_NIGHT
+    - NAV_NIGHT
+    - MEDIA_NIGHT
 
   # Custom layer names (for keys that reference layers)
   layer_legend_map:
@@ -27,6 +31,10 @@ parse_config:
     "NUM": "NUM"
     "SYM": "SYM"
     "FUN": "FUN"
+    "NUM_NIGHT": "NUM"
+    "SYM_NIGHT": "SYM"
+    "NAV_NIGHT": "NAV"
+    "MEDIA_NIGHT": "MEDIA"
 
   raw_binding_map:
     # Layer-tap keys - show tap key on top, layer below
@@ -57,6 +65,23 @@ parse_config:
     "LT(NUM, KC_BSPC)":
       tap: "Bksp"
       hold: "NUM"
+
+    # Night-specific layer-tap keys
+    "LT(SYM_NIGHT, KC_BSPC)":
+      tap: "Bksp"
+      hold: "SYM"
+    "LT(NUM_NIGHT, KC_R)":
+      tap: "R"
+      hold: "NUM"
+    "LT(NAV_NIGHT, KC_SPC)":
+      tap: "Space"
+      hold: "NAV"
+    "LT(NAV_NIGHT, KC_ENT)":
+      tap: "Enter"
+      hold: "NAV"
+    "LT(MEDIA_NIGHT, KC_ENT)":
+      tap: "Enter"
+      hold: "MEDIA"
 
     # Empty/blank keys
     "KC_NO": ""

@@ -13,8 +13,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_P                , KC_G                , KC_O                , KC_U                , KC_DOT              ,
         KC_Y                , RSFT_T(KC_C)        , RCTL_T(KC_A)        , RALT_T(KC_E)        , RGUI_T(KC_I)        ,
         KC_QUOT             , KC_W                , KC_SLSH             , KC_SCLN             , KC_COMM             ,
-                              LT(MEDIA, KC_ENT)   , LT(NAV, KC_R)       , LSFT_T(KC_TAB)      ,
-                              LT(SYM, KC_DEL)     , RSFT_T(KC_SPC)      , LT(NUM, KC_BSPC)    
+                              LT(SYM_NIGHT, KC_BSPC), LT(NUM_NIGHT, KC_R) , LSFT_T(KC_DEL)      ,
+                              LSFT_T(KC_TAB)      , LT(NAV_NIGHT, KC_SPC), LT(MEDIA_NIGHT, KC_ENT)
     ),
     [BASE_COLEMAK] = LAYOUT_split_3x5_3(
         KC_Q                , KC_W                , KC_F                , KC_P                , KC_G                ,
@@ -84,6 +84,46 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
                               KC_APP              , KC_SPC              , KC_TAB              ,
+                              KC_NO               , KC_NO               , KC_NO               
+    ),
+    [NUM_NIGHT] = LAYOUT_split_3x5_3(
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_LBRC             , KC_4                , KC_5                , KC_6                , KC_RBRC             ,
+        KC_SLSH             , KC_1                , KC_2                , KC_3                , KC_EQL              ,
+        KC_GRV              , KC_7                , KC_8                , KC_9                , KC_BSLS             ,
+                              KC_NO               , KC_NO               , KC_NO               ,
+                              KC_COLN             , KC_0                , KC_MINS             
+    ),
+    [SYM_NIGHT] = LAYOUT_split_3x5_3(
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             ,
+        KC_LCBR             , KC_DLR              , KC_PERC             , KC_CIRC             , KC_RCBR             ,
+        KC_QUES             , KC_EXLM             , KC_AT               , KC_HASH             , KC_PLUS             ,
+        KC_TILD             , KC_AMPR             , KC_ASTR             , KC_COLN             , KC_PIPE             ,
+                              KC_NO               , KC_NO               , KC_NO               ,
+                              KC_LPRN             , KC_RPRN             , KC_UNDS             
+    ),
+    [NAV_NIGHT] = LAYOUT_split_3x5_3(
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_ESC              ,
+        KC_LEFT             , KC_DOWN             , KC_UP               , KC_RGHT             , KC_CAPS             ,
+        KC_END              , KC_PGDN             , KC_PGUP             , KC_HOME             , KC_INS              ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
+        LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          ,
+                              KC_BSPC             , KC_ENT              , KC_DEL              ,
+                              KC_NO               , KC_NO               , KC_NO               
+    ),
+    [MEDIA_NIGHT] = LAYOUT_split_3x5_3(
+        DF(BASE_NIGHT)      , DF(BASE_COLEMAK)    , DF(BASE_GALLIUM)    , KC_NO               , KC_NO               ,
+        KC_MNXT             , KC_VOLU             , KC_VOLD             , KC_MPRV             , KC_NO               ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             ,
+                              KC_MUTE             , KC_MPLY             , KC_MSTP             ,
                               KC_NO               , KC_NO               , KC_NO               
     ),
 };

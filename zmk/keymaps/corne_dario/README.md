@@ -47,12 +47,12 @@
 34: &kp COMMA
 35: &none
 
-36: &lt MEDIA ENTER
-37: &lt NAV R
-38: &mt LSFT TAB
-39: &lt SYM DEL
-40: &mt RSFT SPACE
-41: &lt NUM BSPC
+36: &lt SYM_NIGHT BSPC
+37: &lt NUM_NIGHT R
+38: &mt LSFT DEL
+39: &mt LSFT TAB
+40: &lt NAV_NIGHT SPACE
+41: &lt MEDIA_NIGHT ENTER
 ```
 
 ## BASE_COLEMAK Layer
@@ -421,6 +421,218 @@
 36: &kp K_APP
 37: &kp SPACE
 38: &kp TAB
+39: &none
+40: &none
+41: &none
+```
+
+## NUM_NIGHT Layer
+
+```
+ 0: &none
+ 1: &none
+ 2: &none
+ 3: &none
+ 4: &none
+ 5: &none
+
+ 6: &none
+ 7: &kp LGUI
+ 8: &kp LALT
+ 9: &kp LCTRL
+10: &kp LSHFT
+11: &none
+
+12: &none
+13: &none
+14: &none
+15: &none
+16: &none
+17: &none
+
+18: &kp LBKT
+19: &kp N4
+20: &kp N5
+21: &kp N6
+22: &kp RBKT
+23: &none
+
+24: &kp FSLH
+25: &kp N1
+26: &kp N2
+27: &kp N3
+28: &kp EQUAL
+29: &kp LBRC
+
+30: &kp GRAVE
+31: &kp N7
+32: &kp N8
+33: &kp N9
+34: &kp BSLH
+35: &none
+
+36: &none
+37: &none
+38: &none
+39: &kp COLON
+40: &kp N0
+41: &kp MINUS
+```
+
+## SYM_NIGHT Layer
+
+```
+ 0: &none
+ 1: &none
+ 2: &none
+ 3: &none
+ 4: &none
+ 5: &none
+
+ 6: &none
+ 7: &kp LGUI
+ 8: &kp LALT
+ 9: &kp LCTRL
+10: &kp LSHFT
+11: &none
+
+12: &none
+13: &none
+14: &none
+15: &none
+16: &none
+17: &bootloader
+
+18: &kp LBRC
+19: &kp DOLLAR
+20: &kp PERCENT
+21: &kp CARET
+22: &kp RBRC
+23: &none
+
+24: &kp QUESTION
+25: &kp EXCL
+26: &kp AT
+27: &kp HASH
+28: &kp PLUS
+29: &none
+
+30: &kp TILDE
+31: &kp AMPERSAND
+32: &kp ASTERISK
+33: &kp COLON
+34: &kp PIPE
+35: &none
+
+36: &none
+37: &none
+38: &none
+39: &kp LPAR
+40: &kp RPAR
+41: &kp UNDERSCORE
+```
+
+## NAV_NIGHT Layer
+
+```
+ 0: &none
+ 1: &none
+ 2: &none
+ 3: &none
+ 4: &none
+ 5: &kp ESC
+
+ 6: &none
+ 7: &kp LEFT
+ 8: &kp DOWN
+ 9: &kp UP
+10: &kp RIGHT
+11: &kp CAPS
+
+12: &none
+13: &kp END
+14: &kp PG_DN
+15: &kp PG_UP
+16: &kp HOME
+17: &kp INS
+
+18: &bt BT_SEL 0
+19: &bt BT_SEL 1
+20: &bt BT_SEL 2
+21: &bt BT_SEL 3
+22: &bt BT_CLR
+23: &none
+
+24: &none
+25: &kp LSHFT
+26: &kp LCTRL
+27: &kp LALT
+28: &kp LGUI
+29: &none
+
+30: &kp LG(Z)
+31: &kp LG(X)
+32: &kp LG(C)
+33: &kp LG(V)
+34: &kp LG(LS(Z))
+35: &none
+
+36: &kp BSPC
+37: &kp ENTER
+38: &kp DEL
+39: &none
+40: &none
+41: &none
+```
+
+## MEDIA_NIGHT Layer
+
+```
+ 0: &none
+ 1: &to BASE_NIGHT
+ 2: &to BASE_COLEMAK
+ 3: &to BASE_GALLIUM
+ 4: &none
+ 5: &none
+
+ 6: &none
+ 7: &kp C_NEXT
+ 8: &kp C_VOL_UP
+ 9: &kp C_VOL_DN
+10: &kp C_PREV
+11: &none
+
+12: &none
+13: &none
+14: &none
+15: &none
+16: &none
+17: &none
+
+18: &none
+19: &none
+20: &none
+21: &none
+22: &none
+23: &none
+
+24: &none
+25: &kp LSHFT
+26: &kp LCTRL
+27: &kp LALT
+28: &kp LGUI
+29: &none
+
+30: &none
+31: &none
+32: &none
+33: &none
+34: &bootloader
+35: &none
+
+36: &kp C_MUTE
+37: &kp C_PLAY_PAUSE
+38: &kp C_STOP
 39: &none
 40: &none
 41: &none
