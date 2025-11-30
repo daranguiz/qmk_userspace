@@ -10,6 +10,7 @@ parse_config:
   layer_names:
     - BASE_COLEMAK
     - BASE_GALLIUM
+    - BASE_NIGHT
     - NUM
     - SYM
     - NAV
@@ -18,8 +19,9 @@ parse_config:
 
   # Custom layer names (for keys that reference layers)
   layer_legend_map:
-    "BASE_COLEMAK": "Colemak"
-    "BASE_GALLIUM": "Gallium"
+    "BASE_COLEMAK": "COLEMAK"
+    "BASE_GALLIUM": "GALLIUM"
+    "BASE_NIGHT": "NIGHT"
     "NAV": "NAV"
     "MEDIA": "MEDIA"
     "NUM": "NUM"
@@ -40,8 +42,14 @@ parse_config:
     "LT(MEDIA, KC_TAB)":
       tap: "Tab"
       hold: "MEDIA"
+    "LT(MEDIA, KC_ENT)":
+      tap: "Enter"
+      hold: "MEDIA"
     "LT(SYM, KC_DEL)":
       tap: "Del"
+      hold: "SYM"
+    "LT(SYM, KC_SPC)":
+      tap: "Space"
       hold: "SYM"
     "LT(NUM, KC_BSPC)":
       tap: "Bksp"
@@ -88,7 +96,7 @@ parse_config:
 
     # Default layer switching
     "DF(BASE_COLEMAK)": "CLMK"
-    "DF(BASE_GALLIUM)": "GALM"
+    "DF(BASE_GALLIUM)": "GLIUM"
     "DF(BASE_NIGHT)": "NIGHT"
 
 draw_config:

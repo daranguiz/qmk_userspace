@@ -16,6 +16,13 @@ behaviors:
     params: [layer, key]
     firmware_support: [qmk, zmk]
 
+  mt:
+    description: "Mod-tap (hold for modifier, tap for key) without chordal hold"
+    qmk_pattern: "{mod}_T(KC_{key})"
+    zmk_pattern: "&mt {mod} {key}"
+    params: [mod, key]
+    firmware_support: [qmk, zmk]
+
   bt:
     description: "Bluetooth control (ZMK-only)"
     qmk_pattern: "KC_NO"  # Filtered for QMK

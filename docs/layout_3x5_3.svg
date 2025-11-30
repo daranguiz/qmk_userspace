@@ -210,7 +210,6 @@ path.combo {
     .layer-BASE_GALLIUM .keypos-33 rect,
     .layer-BASE_GALLIUM .keypos-35 rect,
     .layer-BASE_NIGHT .keypos-30 rect,
-    .layer-BASE_NIGHT .keypos-32 rect,
     .layer-BASE_NIGHT .keypos-34 rect,
     .layer-BASE_NIGHT .keypos-35 rect {
       fill: #4CAF50 !important;
@@ -226,13 +225,12 @@ path.combo {
     .layer-BASE_GALLIUM .keypos-33 text,
     .layer-BASE_GALLIUM .keypos-35 text,
     .layer-BASE_NIGHT .keypos-30 text,
-    .layer-BASE_NIGHT .keypos-32 text,
     .layer-BASE_NIGHT .keypos-34 text,
     .layer-BASE_NIGHT .keypos-35 text {
       fill: white !important;
     }
 
-    /* Highlight home row mods with lighter green stroke on all BASE layers */
+    /* Highlight home row mods and mod-tap keys with lighter green stroke on all BASE layers */
     .layer-BASE_COLEMAK .keypos-10 rect,
     .layer-BASE_COLEMAK .keypos-11 rect,
     .layer-BASE_COLEMAK .keypos-12 rect,
@@ -256,7 +254,9 @@ path.combo {
     .layer-BASE_NIGHT .keypos-15 rect,
     .layer-BASE_NIGHT .keypos-16 rect,
     .layer-BASE_NIGHT .keypos-17 rect,
-    .layer-BASE_NIGHT .keypos-18 rect {
+    .layer-BASE_NIGHT .keypos-18 rect,
+    .layer-BASE_NIGHT .keypos-32 rect,
+    .layer-BASE_NIGHT .keypos-33 rect {
       stroke: #66BB6A !important;
       stroke-width: 2 !important;
     }
@@ -745,30 +745,30 @@ path.combo {
 </g>
 <g transform="translate(252, 196)" class="key keypos-30">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">
-<tspan x="0" dy="-0.6em">LT(NAV,</tspan><tspan x="0" dy="1.2em">DEL)</tspan>
-</text>
-</g>
+<text x="0" y="0" class="key tap">Enter</text>
+<a href="#MEDIA">
+<text x="0" y="24" class="key hold layer-activator">MEDIA</text>
+</a></g>
 <g transform="translate(308, 196)" class="key keypos-31">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
 <text x="0" y="0" class="key tap">R</text>
 </g>
 <g transform="translate(364, 196)" class="key keypos-32">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">Tab</text>
-<a href="#MEDIA">
-<text x="0" y="24" class="key hold layer-activator">MEDIA</text>
-</a></g>
+<text x="0" y="0" class="key tap">TAB</text>
+<text x="0" y="24" class="key hold">LSFT</text>
+</g>
 <g transform="translate(532, 196)" class="key keypos-33">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<use href="#mdi:apple-keyboard-shift" xlink:href="#mdi:apple-keyboard-shift" x="-9" y="-9" height="18" width="18.0" class="key tap glyph mdi:apple-keyboard-shift"/>
+<text x="0" y="0" class="key tap">DEL</text>
+<text x="0" y="24" class="key hold">LSFT</text>
 </g>
 <g transform="translate(588, 196)" class="key keypos-34">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">
-<tspan x="0" dy="-0.6em">LT(SYM,</tspan><tspan x="0" dy="1.2em">SPC)</tspan>
-</text>
-</g>
+<text x="0" y="0" class="key tap">Space</text>
+<a href="#SYM">
+<text x="0" y="24" class="key hold layer-activator">SYM</text>
+</a></g>
 <g transform="translate(644, 196)" class="key keypos-35">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
 <text x="0" y="0" class="key tap">Bksp</text>
@@ -1198,7 +1198,7 @@ path.combo {
 </g>
 <g transform="translate(84, 28)" class="key keypos-1">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">GALM</text>
+<text x="0" y="0" class="key tap">GLIUM</text>
 </g>
 <g transform="translate(140, 28)" class="key keypos-2">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>

@@ -54,17 +54,18 @@ layers:
         - [Y              , hrm:RSFT:C     , hrm:RCTL:A     , hrm:RALT:E     , hrm:RGUI:I     ]
         - [QUOT           , W              , SLSH           , SCLN           , COMM           ]
       thumbs:
-        - [lt:NAV:DEL     , R              , lt:MEDIA:TAB   ]
-        - [LSFT           , lt:SYM:SPC     , lt:NUM:BSPC    ]
+        - [lt:MEDIA:ENT   , R              , mt:LSFT:TAB    ]
+        - [mt:LSFT:DEL    , lt:SYM:SPC     , lt:NUM:BSPC    ]
 
         # constraints
         # Space and R are used frequently, so should be opposite
         # R must be shiftable, so should be opposite
-        # Shift should be holdable through Space, so should be opposite <-- conflict
+        # Shift and Space form an SFB, must be opposite
         #
-        # NAV on R
+        # NAV on R (was on MEDIA, moved to MEDIA:ENT)
         # NUM on R
         # SYM on L
+        # Shift mod-taps on thumb keys (TAB/DEL) don't use chordal hold
         #
         # future idea: ENT on R ring finger
     extensions:

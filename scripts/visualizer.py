@@ -94,6 +94,41 @@ class KeymapVisualizer:
 
         return layer_tap_positions
 
+    def _get_mod_tap_positions_for_layer(self, layer_name: str, layout_size: str) -> List[int]:
+        """
+        Get the actual positions of mod-tap (mt:) keys for a specific layer
+
+        Args:
+            layer_name: Name of the layer
+            layout_size: Layout size identifier
+
+        Returns:
+            List of key positions that have mod-tap (mt:) keys
+        """
+        # Load the keymap config
+        keymap_config = YAMLConfigParser.parse_keymap(
+            self.config_dir / "keymap.yaml"
+        )
+
+        if layer_name not in keymap_config.layers:
+            return []
+
+        layer = keymap_config.layers[layer_name]
+
+        # Build the full keycode list for this layer
+        keycodes = self._build_superset_layer(layer, layout_size)
+
+        # Reorder to QMK format to match SVG positions
+        reordered = self._reorder_keys_for_qmk(keycodes, layout_size)
+
+        # Find positions with mt: prefix
+        mod_tap_positions = []
+        for i, keycode in enumerate(reordered):
+            if keycode.startswith("mt:"):
+                mod_tap_positions.append(i)
+
+        return mod_tap_positions
+
     def _generate_dynamic_css(self, layout_size: str, base_layers: List[str]) -> str:
         """
         Generate dynamic CSS for layer highlighting based on layout and layer names
@@ -130,7 +165,13 @@ class KeymapVisualizer:
 
         home_row_selectors = []
         for layer in base_layers:
+            # Add home row positions
             for pos in home_row_positions:
+                home_row_selectors.append(f"    .layer-{layer} .keypos-{pos} rect")
+
+            # Also add mod-tap (mt:) positions - they should have same styling as hrm
+            mod_tap_positions = self._get_mod_tap_positions_for_layer(layer, layout_size)
+            for pos in mod_tap_positions:
                 home_row_selectors.append(f"    .layer-{layer} .keypos-{pos} rect")
 
         # Generate CSS
@@ -159,7 +200,7 @@ class KeymapVisualizer:
       fill: white !important;
     }
 
-    /* Highlight home row mods with lighter green stroke on all BASE layers */
+    /* Highlight home row mods and mod-tap keys with lighter green stroke on all BASE layers */
 '''
         css += ",\n".join(home_row_selectors)
         css += ''' {
@@ -320,6 +361,14 @@ class KeymapVisualizer:
 
         # Handle home row mods: hrm:MOD:KEY -> MOD_T(KC_KEY)
         if keycode.startswith("hrm:"):
+            parts = keycode.split(":")
+            if len(parts) == 3:
+                mod, key = parts[1], parts[2]
+                return f"{mod}_T(KC_{key})"
+
+        # Handle mod-tap: mt:MOD:KEY -> MOD_T(KC_KEY)
+        # Same display as hrm, but different behavior (no chordal hold)
+        if keycode.startswith("mt:"):
             parts = keycode.split(":")
             if len(parts) == 3:
                 mod, key = parts[1], parts[2]
@@ -490,9 +539,9 @@ class KeymapVisualizer:
 
                 parsed_keymap = parse_result.stdout
 
-                # Post-process: Rename layers from L0-L5 to friendly names
+                # Post-process: Rename layers from L0-L7 to friendly names
                 # keymap-drawer's layer_names config doesn't actually rename layers in parse output
-                layer_names = ["BASE", "NUM", "SYM", "NAV", "MEDIA", "FUN"]
+                layer_names = ["COLEMAK", "GALLIUM", "NIGHT", "NUM", "SYM", "NAV", "MEDIA", "FUN"]
                 for i, name in enumerate(layer_names):
                     parsed_keymap = parsed_keymap.replace(f"L{i}:", f"{name}:")
 

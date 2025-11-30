@@ -153,10 +153,10 @@
 34: &kp COMMA
 35: &none
 
-36: &lt NAV DEL
+36: &lt MEDIA ENTER
 37: &kp R
-38: &lt MEDIA TAB
-39: &kp LSHFT
+38: &mt LSFT TAB
+39: &mt LSFT DEL
 40: &lt SYM SPACE
 41: &lt NUM BSPC
 ```

@@ -11,6 +11,12 @@
     flavor = "balanced";
 };
 
+&mt {
+    tapping-term-ms = <200>;
+    quick-tap-ms = <150>;
+    flavor = "balanced";
+};
+
 / {
     behaviors {
         hml: home_row_mod_left {
