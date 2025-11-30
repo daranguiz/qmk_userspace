@@ -50,8 +50,8 @@
 36: &lt MEDIA ENTER
 37: &lt NAV R
 38: &mt LSFT TAB
-39: &mt LSFT DEL
-40: &lt SYM SPACE
+39: &lt SYM DEL
+40: &mt RSFT SPACE
 41: &lt NUM BSPC
 ```
 

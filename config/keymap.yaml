@@ -13,12 +13,12 @@ layers:
         - [QUOT           , W              , SLSH           , SCLN           , COMM           ]
       thumbs:
         - [lt:MEDIA:ENT   , lt:NAV:R              , mt:LSFT:TAB    ]
-        - [mt:LSFT:DEL    , lt:SYM:SPC     , lt:NUM:BSPC    ]
+        - [lt:SYM:DEL    , mt:RSFT:SPC     , lt:NUM:BSPC    ]
 
         # constraints
         # Space and R are used frequently, so should be opposite
         # R must be shiftable, so should be opposite
-        # Shift and Space form an SFB, must be opposite
+        # Shift and Space form an SFB, must be oppositeaie
         #
         # NAV on R (was on MEDIA, moved to MEDIA:ENT)
         # NUM on R
@@ -33,7 +33,7 @@ layers:
       3x5_3_pinky:
         outer_pinky_left: LBRC
         outer_pinky_right: RBRC 
-        
+
   BASE_COLEMAK:
     core: # (3x5)
       left:

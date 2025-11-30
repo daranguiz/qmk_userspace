@@ -14,7 +14,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Y                , RSFT_T(KC_C)        , RCTL_T(KC_A)        , RALT_T(KC_E)        , RGUI_T(KC_I)        ,
         KC_QUOT             , KC_W                , KC_SLSH             , KC_SCLN             , KC_COMM             ,
                               LT(MEDIA, KC_ENT)   , LT(NAV, KC_R)       , LSFT_T(KC_TAB)      ,
-                              LSFT_T(KC_DEL)      , LT(SYM, KC_SPC)     , LT(NUM, KC_BSPC)    
+                              LT(SYM, KC_DEL)     , RSFT_T(KC_SPC)      , LT(NUM, KC_BSPC)    
     ),
     [BASE_COLEMAK] = LAYOUT_split_3x5_3(
         KC_Q                , KC_W                , KC_F                , KC_P                , KC_G                ,
