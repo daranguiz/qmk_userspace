@@ -94,6 +94,41 @@ class KeymapVisualizer:
 
         return layer_tap_positions
 
+    def _get_hrm_positions_for_layer(self, layer_name: str, layout_size: str) -> List[int]:
+        """
+        Get the actual positions of home row mod (hrm:) keys for a specific layer
+
+        Args:
+            layer_name: Name of the layer
+            layout_size: Layout size identifier
+
+        Returns:
+            List of key positions that have hrm: keys
+        """
+        # Load the keymap config
+        keymap_config = YAMLConfigParser.parse_keymap(
+            self.config_dir / "keymap.yaml"
+        )
+
+        if layer_name not in keymap_config.layers:
+            return []
+
+        layer = keymap_config.layers[layer_name]
+
+        # Build the full keycode list for this layer
+        keycodes = self._build_superset_layer(layer, layout_size)
+
+        # Reorder to QMK format to match SVG positions
+        reordered = self._reorder_keys_for_qmk(keycodes, layout_size)
+
+        # Find positions with hrm: prefix
+        hrm_positions = []
+        for i, keycode in enumerate(reordered):
+            if keycode.startswith("hrm:"):
+                hrm_positions.append(i)
+
+        return hrm_positions
+
     def _get_mod_tap_positions_for_layer(self, layer_name: str, layout_size: str) -> List[int]:
         """
         Get the actual positions of mod-tap (mt:) keys for a specific layer
@@ -140,17 +175,6 @@ class KeymapVisualizer:
         Returns:
             CSS string with dynamic layer highlighting
         """
-        # Define home row positions for each layout
-        if layout_size == "3x6_3":
-            # For 3x6_3: rows are interleaved (L1: 0-5, R1: 6-11, L2: 12-17, R2: 18-23, L3: 24-29, R3: 30-35, LT: 36-38, RT: 39-41)
-            home_row_positions = [13, 14, 15, 16, 19, 20, 21, 22]  # L 13-16, R 19-22
-        elif layout_size == "3x5_3":
-            # For 3x5_3: similar interleaving but smaller (L1: 0-4, R1: 5-9, L2: 10-14, R2: 15-19, L3: 20-24, R3: 25-29, LT: 30-32, RT: 33-35)
-            home_row_positions = [10, 11, 12, 13, 15, 16, 17, 18]  # L 10-13, R 15-18
-        else:
-            # Default/unknown layout - use 3x5_3 as fallback
-            home_row_positions = [10, 11, 12, 13, 15, 16, 17, 18]
-
         # Build CSS selectors dynamically for each BASE layer's actual layer-tap positions
         base_layer_selectors = []
         base_layer_text_selectors = []
@@ -163,10 +187,12 @@ class KeymapVisualizer:
                 base_layer_selectors.append(f"    .layer-{layer} .keypos-{pos} rect")
                 base_layer_text_selectors.append(f"    .layer-{layer} .keypos-{pos} text")
 
+        # Build home row mod selectors dynamically from hrm: and mt: prefixes
         home_row_selectors = []
         for layer in base_layers:
-            # Add home row positions
-            for pos in home_row_positions:
+            # Get positions of hrm: (home row mod) keys
+            hrm_positions = self._get_hrm_positions_for_layer(layer, layout_size)
+            for pos in hrm_positions:
                 home_row_selectors.append(f"    .layer-{layer} .keypos-{pos} rect")
 
             # Also add mod-tap (mt:) positions - they should have same styling as hrm

@@ -39,6 +39,9 @@ parse_config:
     "LT(NAV, KC_SPC)":
       tap: "Space"
       hold: "NAV"
+    "LT(NAV, KC_R)":
+      tap: "R"
+      hold: "NAV"
     "LT(MEDIA, KC_TAB)":
       tap: "Tab"
       hold: "MEDIA"
