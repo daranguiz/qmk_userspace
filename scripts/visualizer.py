@@ -560,6 +560,11 @@ class KeymapVisualizer:
                     draw_result.stdout, board.layout_size
                 )
 
+                # Replace BASE_* layer names with clean names in SVG
+                svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
+                svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
+                svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
+
                 # Write SVG file
                 svg_file.write_text(svg_output)
 
@@ -908,6 +913,11 @@ class KeymapVisualizer:
                 svg_output = self._format_layer_labels(
                     draw_result.stdout, layout_size
                 )
+
+                # Replace BASE_* layer names with clean names in SVG
+                svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
+                svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
+                svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
 
                 # Write SVG file
                 svg_file.write_text(svg_output)
