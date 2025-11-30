@@ -734,6 +734,18 @@ class KeymapVisualizer:
             )
             results[layout_size] = svg_path
 
+            # Generate standalone primary base layer visualization
+            # The first BASE_* layer is considered the primary layout
+            base_layers = [name for name in keymap_config.layers.keys() if name.startswith("BASE_")]
+            if base_layers:
+                primary_base = base_layers[0]
+                self._generate_primary_base_layer(
+                    layout_size,
+                    representative_board,
+                    primary_base,
+                    keymap_config
+                )
+
         return results
 
     def _generate_for_layout_size(self, layout_size: str, representative_board, superset_layers: List[Dict]) -> Optional[Path]:
@@ -964,6 +976,182 @@ class KeymapVisualizer:
             import traceback
             traceback.print_exc()
             return None
+
+    def _generate_primary_base_layer(self, layout_size: str, representative_board, primary_base: str, keymap_config) -> Optional[Path]:
+        """
+        Generate standalone visualization for the primary base layer
+
+        Args:
+            layout_size: Layout size identifier
+            representative_board: Board object for metadata
+            primary_base: Name of the primary base layer (first BASE_* layer)
+            keymap_config: Parsed keymap configuration
+
+        Returns:
+            Path to generated SVG file, or None if generation failed
+        """
+        import json
+        import subprocess
+        import yaml
+        import tempfile
+        import os
+        import re
+
+        try:
+            # Get the primary base layer
+            layer = keymap_config.layers[primary_base]
+
+            # Build keycodes
+            keycodes = self._build_superset_layer(layer, layout_size)
+
+            # Translate for display
+            translated = [self._translate_keycode_for_display(kc) for kc in keycodes]
+
+            # Reorder for QMK
+            reordered = self._reorder_keys_for_qmk(translated, layout_size)
+
+            # Determine keyboard and layout
+            if representative_board.firmware == "qmk":
+                keyboard = representative_board.qmk_keyboard
+            else:
+                if layout_size == "3x6_3":
+                    keyboard = "crkbd/rev1"
+                elif layout_size == "3x5_3":
+                    keyboard = "bastardkb/skeletyl/promicro"
+                else:
+                    keyboard = representative_board.id
+
+            if layout_size == "3x5_3":
+                layout = "LAYOUT_split_3x5_3"
+            elif layout_size == "3x6_3":
+                layout = "LAYOUT_split_3x6_3"
+            else:
+                layout = "LAYOUT"
+
+            # Create JSON
+            keymap_data = {
+                "keyboard": keyboard,
+                "keymap": "dario",
+                "layout": layout,
+                "layers": [reordered]
+            }
+
+            # Write JSON
+            json_file = self.output_dir / f"primary_{layout_size}.json"
+            json_file.write_text(json.dumps(keymap_data, indent=2))
+
+            # Generate CSS with just the primary base layer
+            css = self._generate_dynamic_css(layout_size, [primary_base])
+
+            # Load config and add CSS
+            with open(self.config_file) as f:
+                config = yaml.safe_load(f)
+
+            config['draw_config']['svg_extra_style'] = css
+
+            # Update ortho_layout if needed
+            if layout_size == "3x6_3":
+                config['draw_config']['ortho_layout'] = {
+                    'split': True,
+                    'rows': 3,
+                    'columns': 6,
+                    'thumbs': 3
+                }
+
+            # Write temp config
+            fd, temp_path = tempfile.mkstemp(prefix=f"keymap-primary-{layout_size}-", suffix=".yaml")
+            temp_config = Path(temp_path)
+            with os.fdopen(fd, 'w') as f:
+                yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+
+            # Parse
+            parse_cmd = ["keymap", "-c", str(temp_config), "parse", "-q", str(json_file)]
+            parse_result = subprocess.run(parse_cmd, capture_output=True, text=True, check=True)
+
+            # Rename layer
+            clean_name = primary_base.replace('BASE_', '')
+            parsed_keymap = parse_result.stdout.replace("L0:", f"{clean_name}:")
+
+            # Draw
+            draw_cmd = ["keymap", "-c", str(temp_config), "draw", "-"]
+            draw_result = subprocess.run(draw_cmd, input=parsed_keymap, capture_output=True, text=True, check=True)
+
+            svg_output = draw_result.stdout.replace(primary_base, clean_name)
+
+            # Format layer label
+            pattern = re.compile(r'(?P<indent>\s*)<text x="[^"]+" y="[^"]+" class="label" id="(?P<id>[^"]+)">[^<]*</text>')
+
+            # Get correct x position based on layout
+            label_x = "448" if layout_size == "3x5_3" else "420"
+            label_y = "112" if layout_size == "3x5_3" else "133"
+
+            svg_output = pattern.sub(
+                f'\\g<indent><text x="{label_x}" y="{label_y}" class="label" id="\\g<id>" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">\\g<id></text>',
+                svg_output
+            )
+
+            # Write SVG to docs/ for embedding
+            svg_file = self.docs_dir / f"primary_{layout_size}.svg"
+            svg_file.write_text(svg_output)
+
+            # Also copy to out/visualizations/
+            import shutil
+            out_svg = self.output_dir / svg_file.name
+            shutil.copy2(svg_file, out_svg)
+
+            # Generate landscape PDF for printing
+            self._generate_primary_pdf(svg_file, layout_size)
+
+            # Clean up
+            temp_config.unlink()
+            json_file.unlink()  # Clean up JSON file
+
+            print(f"    📄 {svg_file.name} ({clean_name} only)")
+            return svg_file
+
+        except Exception as e:
+            print(f"  ⚠️  Failed to generate primary base layer: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+
+    def _generate_primary_pdf(self, svg_file: Path, layout_size: str):
+        """Generate landscape PDF for the primary base layer"""
+        try:
+            from svglib.svglib import svg2rlg
+            from reportlab.pdfgen import canvas
+            from reportlab.lib.pagesizes import letter, landscape
+            from reportlab.graphics import renderPDF
+
+            pdf_file = self.output_dir / f"primary_{layout_size}_landscape.pdf"
+
+            drawing = svg2rlg(str(svg_file))
+            if not drawing:
+                return
+
+            page_width, page_height = landscape(letter)
+            c = canvas.Canvas(str(pdf_file), pagesize=landscape(letter))
+
+            margin = 36
+            available_width = page_width - (2 * margin)
+            available_height = page_height - (2 * margin)
+
+            scale_x = available_width / drawing.width
+            scale_y = available_height / drawing.height
+            scale = min(scale_x, scale_y, 1.5)
+
+            scaled_width = drawing.width * scale
+            scaled_height = drawing.height * scale
+            x = margin + (available_width - scaled_width) / 2
+            y = margin + (available_height - scaled_height) / 2
+
+            drawing.scale(scale, scale)
+            renderPDF.draw(drawing, c, x, y)
+            c.save()
+
+            print(f"    📄 {pdf_file.name}")
+        except Exception as e:
+            print(f"  ⚠️  Failed to generate primary PDF: {e}")
 
     def generate_all(self, board_inventory, compiled_layers_by_board: Dict) -> dict:
         """
