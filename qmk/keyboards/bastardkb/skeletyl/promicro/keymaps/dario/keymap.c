@@ -89,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NUM_NIGHT] = LAYOUT_split_3x5_3(
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_NO               ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          ,
         KC_LBRC             , KC_4                , KC_5                , KC_6                , KC_RBRC             ,
         KC_SLSH             , KC_1                , KC_2                , KC_3                , KC_EQL              ,
         KC_GRV              , KC_7                , KC_8                , KC_9                , KC_BSLS             ,
@@ -112,7 +112,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_END              , KC_PGDN             , KC_PGUP             , KC_HOME             , KC_INS              ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             ,
-        LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          ,
+        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
                               KC_BSPC             , KC_ENT              , KC_DEL              ,
                               KC_NO               , KC_NO               , KC_NO               
     ),

@@ -444,11 +444,11 @@
 11: &none
 
 12: &none
-13: &none
-14: &none
-15: &none
-16: &none
-17: &none
+13: &kp LG(Z)
+14: &kp LG(X)
+15: &kp LG(C)
+16: &kp LG(V)
+17: &kp LG(LS(Z))
 
 18: &kp LBKT
 19: &kp N4
@@ -570,11 +570,11 @@
 28: &kp LGUI
 29: &none
 
-30: &kp LG(Z)
-31: &kp LG(X)
-32: &kp LG(C)
-33: &kp LG(V)
-34: &kp LG(LS(Z))
+30: &none
+31: &none
+32: &none
+33: &none
+34: &none
 35: &none
 
 36: &kp BSPC
