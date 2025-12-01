@@ -210,15 +210,7 @@ path.combo {
     .layer-NIGHT .keypos-36 rect,
     .layer-NIGHT .keypos-37 rect,
     .layer-NIGHT .keypos-39 rect,
-    .layer-NIGHT .keypos-41 rect,
-    .layer-NIGHT_V2 .keypos-36 rect,
-    .layer-NIGHT_V2 .keypos-37 rect,
-    .layer-NIGHT_V2 .keypos-40 rect,
-    .layer-NIGHT_V2 .keypos-41 rect,
-    .layer-COLEMAK .keypos-37 rect,
-    .layer-COLEMAK .keypos-38 rect,
-    .layer-COLEMAK .keypos-39 rect,
-    .layer-COLEMAK .keypos-41 rect {
+    .layer-NIGHT .keypos-41 rect {
       fill: #4CAF50 !important;
       stroke: none !important;
       opacity: 1 !important;
@@ -226,15 +218,7 @@ path.combo {
     .layer-NIGHT .keypos-36 text,
     .layer-NIGHT .keypos-37 text,
     .layer-NIGHT .keypos-39 text,
-    .layer-NIGHT .keypos-41 text,
-    .layer-NIGHT_V2 .keypos-36 text,
-    .layer-NIGHT_V2 .keypos-37 text,
-    .layer-NIGHT_V2 .keypos-40 text,
-    .layer-NIGHT_V2 .keypos-41 text,
-    .layer-COLEMAK .keypos-37 text,
-    .layer-COLEMAK .keypos-38 text,
-    .layer-COLEMAK .keypos-39 text,
-    .layer-COLEMAK .keypos-41 text {
+    .layer-NIGHT .keypos-41 text {
       fill: white !important;
     }
 
@@ -248,25 +232,7 @@ path.combo {
     .layer-NIGHT .keypos-21 rect,
     .layer-NIGHT .keypos-22 rect,
     .layer-NIGHT .keypos-38 rect,
-    .layer-NIGHT .keypos-40 rect,
-    .layer-NIGHT_V2 .keypos-13 rect,
-    .layer-NIGHT_V2 .keypos-14 rect,
-    .layer-NIGHT_V2 .keypos-15 rect,
-    .layer-NIGHT_V2 .keypos-16 rect,
-    .layer-NIGHT_V2 .keypos-19 rect,
-    .layer-NIGHT_V2 .keypos-20 rect,
-    .layer-NIGHT_V2 .keypos-21 rect,
-    .layer-NIGHT_V2 .keypos-22 rect,
-    .layer-NIGHT_V2 .keypos-38 rect,
-    .layer-NIGHT_V2 .keypos-39 rect,
-    .layer-COLEMAK .keypos-13 rect,
-    .layer-COLEMAK .keypos-14 rect,
-    .layer-COLEMAK .keypos-15 rect,
-    .layer-COLEMAK .keypos-16 rect,
-    .layer-COLEMAK .keypos-19 rect,
-    .layer-COLEMAK .keypos-20 rect,
-    .layer-COLEMAK .keypos-21 rect,
-    .layer-COLEMAK .keypos-22 rect {
+    .layer-NIGHT .keypos-40 rect {
       stroke: #66BB6A !important;
       stroke-width: 2 !important;
     }
@@ -958,7 +924,7 @@ path.combo {
 </g>
 <g transform="translate(140, 35)" class="key keypos-2">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap"><tspan style="font-size: 88%">NIGHT_V2</tspan></text>
+<text x="0" y="0" class="key tap">NGHT2</text>
 </g>
 <g transform="translate(196, 28)" class="key keypos-3">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>

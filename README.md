@@ -6,11 +6,14 @@ Custom keyboard firmware for split ergonomic keyboards using a unified keymap co
 
 ## Keymap Visualizations
 
-### 3x5_3 Layout (36-key boards)
-![3x5_3 Layout](docs/layout_3x5_3.svg)
+### NIGHT Layout
+![NIGHT Layout](docs/night.svg)
 
-### 3x6_3 Layout (42-key boards)
-![3x6_3 Layout](docs/layout_3x6_3.svg)
+### NIGHT V2 Layout
+![NIGHT V2 Layout](docs/night_v2.svg)
+
+### Colemak Layout
+![Colemak Layout](docs/colemak.svg)
 
 ## About
 

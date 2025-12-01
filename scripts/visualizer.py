@@ -164,13 +164,14 @@ class KeymapVisualizer:
 
         return mod_tap_positions
 
-    def _generate_dynamic_css(self, layout_size: str, base_layers: List[str]) -> str:
+    def _generate_dynamic_css(self, layout_size: str, base_layers: List[str], layers_in_viz: List = None) -> str:
         """
         Generate dynamic CSS for layer highlighting based on layout and layer names
 
         Args:
             layout_size: Layout size identifier (e.g., "3x5_3", "3x6_3")
             base_layers: List of BASE_* layer names
+            layers_in_viz: Optional list of Layer objects being visualized (for targeted CSS)
 
         Returns:
             CSS string with dynamic layer highlighting
@@ -238,11 +239,34 @@ class KeymapVisualizer:
 '''
 
         # For non-BASE layers, find the position of the layer-tap key that activates them
-        # We'll look in any BASE layer to find where lt:NAV, lt:MEDIA, etc. are located
+        # Look through the actual layers being visualized to find the correct activator positions
         layer_activator_positions = {}
 
-        # Use the first BASE layer to find activator positions
-        if base_layers:
+        if layers_in_viz and base_layers:
+            # Use the BASE layer from the visualization set to find activator positions
+            # This ensures we get the correct thumb positions for each base layer variant
+            for base_layer_name in base_layers:
+                # Find the base layer object
+                base_layer = next((l for l in layers_in_viz if l.name == base_layer_name), None)
+                if not base_layer:
+                    continue
+
+                # Get the keycodes for this base layer
+                keycodes = self._build_superset_layer(base_layer, layout_size)
+                reordered = self._reorder_keys_for_qmk(keycodes, layout_size)
+
+                # Find positions for each layer activator in this base layer
+                for i, keycode in enumerate(reordered):
+                    if keycode.startswith("lt:"):
+                        parts = keycode.split(":")
+                        if len(parts) >= 2:
+                            layer_name = parts[1]
+                            # Map the activator position for this layer
+                            # Only set if not already set (first occurrence wins)
+                            if layer_name not in layer_activator_positions:
+                                layer_activator_positions[layer_name] = i
+        elif base_layers:
+            # Fallback: Use the first BASE layer to find activator positions
             first_base = base_layers[0]
             keymap_config = YAMLConfigParser.parse_keymap(self.config_dir / "keymap.yaml")
             layer = keymap_config.layers[first_base]
@@ -288,12 +312,13 @@ class KeymapVisualizer:
         return css
 
     @contextmanager
-    def _get_layout_specific_config(self, layout_size: str) -> Iterator[Path]:
+    def _get_layout_specific_config(self, layout_size: str, layers_in_viz: List = None) -> Iterator[Path]:
         """
         Create a layout-specific config file with correct key position styling
 
         Args:
             layout_size: Layout size identifier (e.g., "3x5_3", "3x6_3")
+            layers_in_viz: Optional list of Layer objects being visualized (for targeted CSS)
 
         Returns:
             Path to the layout-specific config file
@@ -302,8 +327,13 @@ class KeymapVisualizer:
         with open(self.config_file) as f:
             config = yaml.safe_load(f)
 
-        # Get all BASE layer names dynamically
-        base_layers = self._get_base_layer_names()
+        # Determine which base layers to use for CSS generation
+        if layers_in_viz:
+            # Use only the base layers present in this visualization
+            base_layers = [layer.name for layer in layers_in_viz if layer.name.startswith("BASE_")]
+        else:
+            # Fallback: get all BASE layer names dynamically
+            base_layers = self._get_base_layer_names()
 
         # Update ortho_layout for the specific board size
         if layout_size == "3x6_3":
@@ -315,7 +345,7 @@ class KeymapVisualizer:
             }
 
         # Generate dynamic CSS based on layout size and BASE layers
-        config['draw_config']['svg_extra_style'] = self._generate_dynamic_css(layout_size, base_layers)
+        config['draw_config']['svg_extra_style'] = self._generate_dynamic_css(layout_size, base_layers, layers_in_viz)
 
         # Write to temp config file in system temp directory
         fd, temp_path = tempfile.mkstemp(
@@ -703,54 +733,46 @@ class KeymapVisualizer:
         if not layers:
             return
 
-        base_lower = base_name.lower()
+        # Remove BASE_ prefix and convert to lowercase for output filename
+        # BASE_NIGHT -> night, BASE_NIGHT_V2 -> night_v2, BASE_COLEMAK -> colemak
+        output_name = base_name.replace('BASE_', '').lower()
 
         # Generate full SVG
-        self._generate_svg_for_layers(layers, layout_size, output_name=base_lower)
+        self._generate_svg_for_layers(layers, layout_size, output_name=output_name)
 
         # Generate 2-page print PDF
         self._generate_print_pdf_for_base(base_name, layers, layout_size)
 
-        # Generate primary base layer SVG (no PDF)
-        self._generate_primary_base_layer(base_name, layout_size)
-
-        # DON'T clean up main JSON file - keep for debugging
-        # json_file = self.output_dir / f"{base_lower}.json"
-        # if json_file.exists():
-        #     json_file.unlink()
+        # Clean up main JSON file
+        json_file = self.output_dir / f"{output_name}.json"
+        if json_file.exists():
+            json_file.unlink()
 
     def _generate_print_pdf_for_base(self, base_name: str, all_layers: List,
                                      layout_size: str) -> Path:
-        """Generate 2-page PDF: Page 1=BASE+SYM+NAV, Page 2=NUM+MEDIA+FUN"""
+        """Generate 2-page PDF with same layer order as SVG (3 layers per page)"""
 
-        # Determine variant-specific layer names
-        if 'V2' in base_name:
-            sym_name, nav_name = 'SYM_NIGHT_V2', 'NAV_NIGHT_V2'
-        else:
-            sym_name, nav_name = 'SYM', 'NAV'
+        # Remove BASE_ prefix and convert to lowercase for output filename
+        output_name = base_name.replace('BASE_', '').lower()
 
-        # Page 1: BASE + SYM + NAV (in order)
-        page1_names = [base_name, sym_name, nav_name]
-        page1_layers = [l for l in all_layers if l.name in page1_names]
-        page1_layers.sort(key=lambda l: page1_names.index(l.name))
-
-        # Page 2: Everything else
-        page2_layers = [l for l in all_layers if l.name not in page1_names]
-
-        base_lower = base_name.lower()
+        # Split layers into two pages, maintaining the same order as the main SVG
+        # Page 1: First 3 layers (BASE, NUM, SYM)
+        # Page 2: Last 3 layers (NAV, MEDIA, FUN)
+        page1_layers = all_layers[:3]
+        page2_layers = all_layers[3:]
 
         # Generate page SVGs
         svg1 = self._generate_svg_for_layers(
             page1_layers, layout_size, suffix="_print1",
-            output_name=base_lower
+            output_name=output_name
         )
         svg2 = self._generate_svg_for_layers(
             page2_layers, layout_size, suffix="_print2",
-            output_name=base_lower
+            output_name=output_name
         )
 
         # Combine to PDF
-        pdf_file = self._combine_svgs_to_pdf(base_lower, [svg1, svg2])
+        pdf_file = self._combine_svgs_to_pdf(output_name, [svg1, svg2])
 
         # Clean up intermediate SVGs and JSONs
         svg1.unlink()
@@ -758,33 +780,11 @@ class KeymapVisualizer:
 
         # Clean up JSON files
         for suffix in ["_print1", "_print2"]:
-            json_file = self.output_dir / f"{base_lower}{suffix}.json"
+            json_file = self.output_dir / f"{output_name}{suffix}.json"
             if json_file.exists():
                 json_file.unlink()
 
         return pdf_file
-
-    def _generate_primary_base_layer(self, base_name: str, layout_size: str) -> None:
-        """Generate single-layer SVG visualization for primary base"""
-
-        keymap_config = YAMLConfigParser.parse_keymap(self.config_dir / "keymap.yaml")
-
-        if base_name not in keymap_config.layers:
-            return
-
-        base_layer = keymap_config.layers[base_name]
-        base_lower = base_name.lower()
-
-        # Generate SVG only (no PDF)
-        self._generate_svg_for_layers(
-            [base_layer], layout_size,
-            output_name=f"primary_{base_lower}"
-        )
-
-        # Clean up JSON file
-        json_file = self.output_dir / f"primary_{base_lower}.json"
-        if json_file.exists():
-            json_file.unlink()
 
     def _generate_svg_for_layers(self, layers: List, layout_size: str,
                                  suffix: str = "", output_name: str = None) -> Path:
@@ -850,7 +850,8 @@ class KeymapVisualizer:
             json_file.write_text(json.dumps(keymap_data, indent=2))
 
             # Get layout-specific config (handles ortho_layout and CSS styling)
-            with self._get_layout_specific_config(layout_size) as layout_config:
+            # Pass the layers being visualized for targeted CSS generation
+            with self._get_layout_specific_config(layout_size, layers) as layout_config:
                 # Parse with keymap-drawer (config must come before subcommand)
                 parse_cmd = ["keymap", "-c", str(layout_config), "parse", "-q", str(json_file)]
 
@@ -889,6 +890,18 @@ class KeymapVisualizer:
                 svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
                 svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
                 svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
+
+                # Replace V2 variant layer names with clean names (NUM, SYM, etc.)
+                svg_output = svg_output.replace('NUM_NIGHT_V2', 'NUM')
+                svg_output = svg_output.replace('SYM_NIGHT_V2', 'SYM')
+                svg_output = svg_output.replace('NAV_NIGHT_V2', 'NAV')
+                svg_output = svg_output.replace('MEDIA_NIGHT_V2', 'MEDIA')
+
+                # Replace original NIGHT variant layer names with clean names too
+                svg_output = svg_output.replace('NUM_NIGHT', 'NUM')
+                svg_output = svg_output.replace('SYM_NIGHT', 'SYM')
+                svg_output = svg_output.replace('NAV_NIGHT', 'NAV')
+                svg_output = svg_output.replace('MEDIA_NIGHT', 'MEDIA')
 
                 # Write SVG file
                 svg_file.write_text(svg_output)

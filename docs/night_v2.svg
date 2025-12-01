@@ -207,48 +207,22 @@ path.combo {
     }
 
     /* Highlight layer-tap keys with bright green on all BASE layers */
-    .layer-NIGHT .keypos-36 rect,
-    .layer-NIGHT .keypos-37 rect,
-    .layer-NIGHT .keypos-39 rect,
-    .layer-NIGHT .keypos-41 rect,
     .layer-NIGHT_V2 .keypos-36 rect,
     .layer-NIGHT_V2 .keypos-37 rect,
     .layer-NIGHT_V2 .keypos-40 rect,
-    .layer-NIGHT_V2 .keypos-41 rect,
-    .layer-COLEMAK .keypos-37 rect,
-    .layer-COLEMAK .keypos-38 rect,
-    .layer-COLEMAK .keypos-39 rect,
-    .layer-COLEMAK .keypos-41 rect {
+    .layer-NIGHT_V2 .keypos-41 rect {
       fill: #4CAF50 !important;
       stroke: none !important;
       opacity: 1 !important;
     }
-    .layer-NIGHT .keypos-36 text,
-    .layer-NIGHT .keypos-37 text,
-    .layer-NIGHT .keypos-39 text,
-    .layer-NIGHT .keypos-41 text,
     .layer-NIGHT_V2 .keypos-36 text,
     .layer-NIGHT_V2 .keypos-37 text,
     .layer-NIGHT_V2 .keypos-40 text,
-    .layer-NIGHT_V2 .keypos-41 text,
-    .layer-COLEMAK .keypos-37 text,
-    .layer-COLEMAK .keypos-38 text,
-    .layer-COLEMAK .keypos-39 text,
-    .layer-COLEMAK .keypos-41 text {
+    .layer-NIGHT_V2 .keypos-41 text {
       fill: white !important;
     }
 
     /* Highlight home row mods and mod-tap keys with lighter green stroke on all BASE layers */
-    .layer-NIGHT .keypos-13 rect,
-    .layer-NIGHT .keypos-14 rect,
-    .layer-NIGHT .keypos-15 rect,
-    .layer-NIGHT .keypos-16 rect,
-    .layer-NIGHT .keypos-19 rect,
-    .layer-NIGHT .keypos-20 rect,
-    .layer-NIGHT .keypos-21 rect,
-    .layer-NIGHT .keypos-22 rect,
-    .layer-NIGHT .keypos-38 rect,
-    .layer-NIGHT .keypos-40 rect,
     .layer-NIGHT_V2 .keypos-13 rect,
     .layer-NIGHT_V2 .keypos-14 rect,
     .layer-NIGHT_V2 .keypos-15 rect,
@@ -258,31 +232,23 @@ path.combo {
     .layer-NIGHT_V2 .keypos-21 rect,
     .layer-NIGHT_V2 .keypos-22 rect,
     .layer-NIGHT_V2 .keypos-38 rect,
-    .layer-NIGHT_V2 .keypos-39 rect,
-    .layer-COLEMAK .keypos-13 rect,
-    .layer-COLEMAK .keypos-14 rect,
-    .layer-COLEMAK .keypos-15 rect,
-    .layer-COLEMAK .keypos-16 rect,
-    .layer-COLEMAK .keypos-19 rect,
-    .layer-COLEMAK .keypos-20 rect,
-    .layer-COLEMAK .keypos-21 rect,
-    .layer-COLEMAK .keypos-22 rect {
+    .layer-NIGHT_V2 .keypos-39 rect {
       stroke: #66BB6A !important;
       stroke-width: 2 !important;
     }
 
     /* On other layers, highlight the key that keeps you on that layer */
-    .layer-MEDIA .keypos-36 rect,
-    .layer-NAV .keypos-37 rect,
-    .layer-SYM .keypos-39 rect,
-    .layer-NUM .keypos-41 rect {
+    .layer-NUM .keypos-36 rect,
+    .layer-SYM .keypos-37 rect,
+    .layer-NAV .keypos-40 rect,
+    .layer-MEDIA .keypos-41 rect {
       fill: #FF9800 !important;
       stroke: none !important;
     }
-    .layer-MEDIA .keypos-36 text,
-    .layer-NAV .keypos-37 text,
-    .layer-SYM .keypos-39 text,
-    .layer-NUM .keypos-41 text {
+    .layer-NUM .keypos-36 text,
+    .layer-SYM .keypos-37 text,
+    .layer-NAV .keypos-40 text,
+    .layer-MEDIA .keypos-41 text {
       fill: white !important;
     }
 
@@ -474,8 +440,8 @@ path.combo {
 </g>
 </g>
 </g>
-<g transform="translate(30, 331)" class="layer-NUM_NIGHT_V2">
-<text x="420" y="133" class="label" id="NUM_NIGHT_V2" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">NUM_NIGHT_V2</text>
+<g transform="translate(30, 331)" class="layer-NUM">
+<text x="420" y="133" class="label" id="NUM" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">NUM</text>
 <g transform="translate(0, 56)">
 <g transform="translate(28, 49)" class="key keypos-0">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
@@ -630,8 +596,8 @@ path.combo {
 </g>
 </g>
 </g>
-<g transform="translate(30, 661)" class="layer-SYM_NIGHT_V2">
-<text x="420" y="133" class="label" id="SYM_NIGHT_V2" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">SYM_NIGHT_V2</text>
+<g transform="translate(30, 661)" class="layer-SYM">
+<text x="420" y="133" class="label" id="SYM" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">SYM</text>
 <g transform="translate(0, 56)">
 <g transform="translate(28, 49)" class="key keypos-0">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
@@ -789,8 +755,8 @@ path.combo {
 </g>
 </g>
 </g>
-<g transform="translate(30, 992)" class="layer-NAV_NIGHT_V2">
-<text x="420" y="133" class="label" id="NAV_NIGHT_V2" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">NAV_NIGHT_V2</text>
+<g transform="translate(30, 992)" class="layer-NAV">
+<text x="420" y="133" class="label" id="NAV" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">NAV</text>
 <g transform="translate(0, 56)">
 <g transform="translate(28, 49)" class="key keypos-0">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
@@ -943,8 +909,8 @@ path.combo {
 </g>
 </g>
 </g>
-<g transform="translate(30, 1323)" class="layer-MEDIA_NIGHT_V2">
-<text x="420" y="133" class="label" id="MEDIA_NIGHT_V2" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">MEDIA_NIGHT_V2</text>
+<g transform="translate(30, 1323)" class="layer-MEDIA">
+<text x="420" y="133" class="label" id="MEDIA" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">MEDIA</text>
 <g transform="translate(0, 56)">
 <g transform="translate(28, 49)" class="key keypos-0">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
@@ -955,7 +921,7 @@ path.combo {
 </g>
 <g transform="translate(140, 35)" class="key keypos-2">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap"><tspan style="font-size: 88%">NIGHT_V2</tspan></text>
+<text x="0" y="0" class="key tap">NGHT2</text>
 </g>
 <g transform="translate(196, 28)" class="key keypos-3">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>

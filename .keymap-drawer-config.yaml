@@ -150,7 +150,7 @@ parse_config:
     "DF(BASE_COLEMAK)": "CLMK"
     "DF(BASE_GALLIUM)": "GLIUM"
     "DF(BASE_NIGHT)": "NIGHT"
-    "DF(BASE_NIGHT_V2)": "NIGHT_V2"
+    "DF(BASE_NIGHT_V2)": "NGHT2"
 
 draw_config:
   ortho_layout:
