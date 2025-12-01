@@ -178,7 +178,7 @@ class KeymapVisualizer:
         """
         css = '''
     /* Increase font size for tap keys only (not hold text like modifiers) */
-    text.key.tap {
+    svg.keymap text.key.tap {
       font-size: 20px;
     }
 
@@ -367,6 +367,44 @@ class KeymapVisualizer:
         finally:
             if temp_config.exists():
                 temp_config.unlink()
+
+    def _add_inline_font_size(self, svg_content: str) -> str:
+        """
+        Add inline font-size attributes to tap text elements for PDF compatibility
+
+        svglib (used for SVG-to-PDF conversion) doesn't fully support CSS class
+        selectors like 'text.key.tap', so we add inline font-size attributes.
+
+        Args:
+            svg_content: SVG markup string
+
+        Returns:
+            Updated SVG markup with inline font-size attributes
+        """
+        import re
+
+        # Pattern to match text elements with class="key tap" (in either order)
+        # We need to handle both 'class="key tap"' and 'class="tap key"'
+        pattern = re.compile(
+            r'(<text\s+[^>]*class="(?:key tap|tap key)"[^>]*)(>)',
+            re.IGNORECASE
+        )
+
+        def add_font_size(match: re.Match) -> str:
+            opening_tag = match.group(1)
+            closing_bracket = match.group(2)
+
+            # Check if style attribute already exists
+            if 'style=' in opening_tag:
+                # Append to existing style
+                opening_tag = opening_tag.replace('style="', 'style="font-size: 20px; ')
+                return f'{opening_tag}{closing_bracket}'
+            else:
+                # Add new style attribute
+                # Use style attribute instead of font-size attribute for better svglib support
+                return f'{opening_tag} style="font-size: 20px"{closing_bracket}'
+
+        return pattern.sub(add_font_size, svg_content)
 
     def _format_layer_labels(self, svg_content: str, layout_size: str) -> str:
         """
@@ -705,10 +743,10 @@ class KeymapVisualizer:
     def _get_layer_sets_by_base(self) -> Dict[str, List[str]]:
         """Map each base layer to its associated layers"""
         return {
-            'BASE_NIGHT': ['BASE_NIGHT', 'NUM', 'SYM', 'NAV', 'MEDIA', 'FUN'],
-            'BASE_NIGHT_V2': ['BASE_NIGHT_V2', 'NUM_NIGHT_V2', 'SYM_NIGHT_V2',
+            'BASE_NIGHT': ['BASE_NIGHT', 'SYM', 'NUM', 'NAV', 'MEDIA', 'FUN'],
+            'BASE_NIGHT_V2': ['BASE_NIGHT_V2', 'SYM_NIGHT_V2', 'NUM_NIGHT_V2',
                               'NAV_NIGHT_V2', 'MEDIA_NIGHT_V2', 'FUN'],
-            'BASE_COLEMAK': ['BASE_COLEMAK', 'NUM', 'SYM', 'NAV', 'MEDIA', 'FUN']
+            'BASE_COLEMAK': ['BASE_COLEMAK', 'SYM', 'NUM', 'NAV', 'MEDIA', 'FUN']
         }
 
     def generate_superset_visualizations(self, board_inventory) -> None:
@@ -763,7 +801,7 @@ class KeymapVisualizer:
         output_name = base_name.replace('BASE_', '').lower()
 
         # Split layers into two pages, maintaining the same order as the main SVG
-        # Page 1: First 3 layers (BASE, NUM, SYM)
+        # Page 1: First 3 layers (BASE, SYM, NUM)
         # Page 2: Last 3 layers (NAV, MEDIA, FUN)
         page1_layers = all_layers[:3]
         page2_layers = all_layers[3:]
@@ -784,7 +822,7 @@ class KeymapVisualizer:
         # Combine to PDF
         pdf_file = self._combine_svgs_to_pdf(output_name, [svg1, svg2])
 
-        # Clean up intermediate SVGs and JSONs
+        # Clean up intermediate SVGs
         svg1.unlink()
         svg2.unlink()
 
@@ -916,6 +954,10 @@ class KeymapVisualizer:
                 svg_output = svg_output.replace('SYM_NIGHT', 'SYM')
                 svg_output = svg_output.replace('NAV_NIGHT', 'NAV')
                 svg_output = svg_output.replace('MEDIA_NIGHT', 'MEDIA')
+
+                # Post-process: Add inline font-size to tap text elements for PDF compatibility
+                # svglib doesn't fully support CSS class selectors, so we need inline styles
+                svg_output = self._add_inline_font_size(svg_output)
 
                 # Write SVG file
                 svg_file.write_text(svg_output)

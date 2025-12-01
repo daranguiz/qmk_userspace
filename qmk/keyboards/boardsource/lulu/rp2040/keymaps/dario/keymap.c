@@ -22,7 +22,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_B                , KC_F                , KC_L                , KC_K                , KC_Q                , KC_P                , KC_G                , KC_O                , KC_U                , KC_DOT              , KC_NO               ,
         KC_NO               , LGUI_T(KC_N)        , LALT_T(KC_S)        , LCTL_T(KC_H)        , LSFT_T(KC_T)        , KC_M                , KC_Y                , RSFT_T(KC_C)        , RCTL_T(KC_A)        , RALT_T(KC_E)        , RGUI_T(KC_I)        , KC_ENT              ,
-        KC_NO               , KC_X                , KC_V                , KC_J                , KC_D                , KC_Z                , KC_NO               , KC_NO               , KC_QUOT             , KC_W                , KC_SLSH             , KC_MINS             , KC_COMM             , KC_NO               ,
+        KC_NO               , KC_X                , KC_V                , KC_J                , KC_D                , KC_Z                , KC_NO               , KC_NO               , KC_QUOT             , KC_W                , KC_MINS             , KC_SCLN             , KC_COMM             , KC_NO               ,
         KC_NO               , LT(NUM_NIGHT_V2, KC_BSPC), LT(SYM_NIGHT_V2, KC_R), LSFT_T(KC_DEL)      , LSFT_T(KC_TAB)      , LT(NAV_NIGHT_V2, KC_SPC), LT(MEDIA_NIGHT_V2, KC_ENT), KC_NO               
     ),
     [BASE_COLEMAK] = LAYOUT(
@@ -69,9 +69,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [NUM_NIGHT_V2] = LAYOUT(
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_NO               , KC_NO               , KC_LBRC             , KC_RBRC             , KC_NO               , KC_NO               , KC_CIRC             , KC_7                , KC_8                , KC_9                , KC_PERC             , KC_NO               ,
+        KC_NO               , KC_NO               , KC_LBRC             , KC_RBRC             , KC_PERC             , KC_NO               , KC_CIRC             , KC_7                , KC_8                , KC_9                , KC_DOT              , KC_NO               ,
         KC_NO               , KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_PIPE             , KC_HASH             , KC_4                , KC_5                , KC_6                , KC_GRV              , KC_NO               ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_DLR              , KC_1                , KC_2                , KC_3                , KC_TILD             , KC_NO               ,
+        KC_NO               , LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          , KC_NO               , KC_NO               , KC_DLR              , KC_1                , KC_2                , KC_3                , KC_TILD             , KC_NO               ,
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_COLN             , KC_0                , KC_AT               , KC_NO               
     ),
     [SYM_NIGHT_V2] = LAYOUT(
@@ -83,16 +83,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [NAV_NIGHT_V2] = LAYOUT(
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_ESC              , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
-        KC_NO               , KC_LEFT             , KC_DOWN             , KC_UP               , KC_RGHT             , KC_CAPS             , KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             , KC_NO               ,
-        KC_NO               , KC_END              , KC_PGDN             , KC_PGUP             , KC_HOME             , KC_INS              , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_NO               , KC_PGUP             , KC_NO               , KC_NO               , KC_ESC              , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
+        KC_NO               , KC_NO               , KC_LEFT             , KC_UP               , KC_RGHT             , KC_CAPS             , KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             , KC_NO               ,
+        KC_NO               , KC_END              , KC_PGDN             , KC_DOWN             , KC_HOME             , KC_INS              , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_BSPC             , KC_ENT              , KC_DEL              , KC_NO               , KC_NO               , KC_NO               , KC_NO               
     ),
     [MEDIA_NIGHT_V2] = LAYOUT(
         KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , DF(BASE_NIGHT)      , DF(BASE_NIGHT_V2)   , DF(BASE_COLEMAK)    , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               ,
         KC_NO               , KC_MNXT             , KC_VOLU             , KC_VOLD             , KC_MPRV             , KC_NO               , KC_NO               , KC_LSFT             , KC_LCTL             , KC_LALT             , KC_LGUI             , KC_NO               ,
-        KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             , KC_NO               ,
+        KC_NO               , LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , KC_NO               , QK_BOOT             , KC_NO               ,
         KC_NO               , KC_MUTE             , KC_MPLY             , KC_MSTP             , KC_NO               , KC_NO               , KC_NO               , KC_NO               
     ),
 };

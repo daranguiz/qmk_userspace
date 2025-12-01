@@ -95,8 +95,8 @@
 
 30: &kp SQT
 31: &kp W
-32: &kp FSLH
-33: &kp MINUS
+32: &kp MINUS
+33: &kp SEMI
 34: &kp COMMA
 35: &none
 
@@ -433,7 +433,7 @@
  1: &none
  2: &kp LBKT
  3: &kp RBKT
- 4: &none
+ 4: &kp PERCENT
  5: &none
 
  6: &none
@@ -444,17 +444,17 @@
 11: &kp PIPE
 
 12: &none
-13: &none
-14: &none
-15: &none
-16: &none
-17: &none
+13: &kp LG(Z)
+14: &kp LG(X)
+15: &kp LG(C)
+16: &kp LG(V)
+17: &kp LG(LS(Z))
 
 18: &kp CARET
 19: &kp N7
 20: &kp N8
 21: &kp N9
-22: &kp PERCENT
+22: &kp DOT
 23: &none
 
 24: &kp HASH
@@ -537,14 +537,14 @@
 ```
  0: &none
  1: &none
- 2: &none
+ 2: &kp PG_UP
  3: &none
  4: &none
  5: &kp ESC
 
  6: &none
- 7: &kp LEFT
- 8: &kp DOWN
+ 7: &none
+ 8: &kp LEFT
  9: &kp UP
 10: &kp RIGHT
 11: &kp CAPS
@@ -552,7 +552,7 @@
 12: &none
 13: &kp END
 14: &kp PG_DN
-15: &kp PG_UP
+15: &kp DOWN
 16: &kp HOME
 17: &kp INS
 
@@ -603,11 +603,11 @@
 11: &none
 
 12: &none
-13: &none
-14: &none
-15: &none
-16: &none
-17: &none
+13: &kp LG(Z)
+14: &kp LG(X)
+15: &kp LG(C)
+16: &kp LG(V)
+17: &kp LG(LS(Z))
 
 18: &none
 19: &none
