@@ -665,9 +665,293 @@ class KeymapVisualizer:
 
         return keycodes
 
-    def generate_superset_visualizations(self, board_inventory) -> Dict[str, Optional[Path]]:
+    def _get_layer_sets_by_base(self) -> Dict[str, List[str]]:
+        """Map each base layer to its associated layers"""
+        return {
+            'BASE_NIGHT': ['BASE_NIGHT', 'NUM', 'SYM', 'NAV', 'MEDIA', 'FUN'],
+            'BASE_NIGHT_V2': ['BASE_NIGHT_V2', 'NUM_NIGHT_V2', 'SYM_NIGHT_V2',
+                              'NAV_NIGHT_V2', 'MEDIA_NIGHT_V2', 'FUN'],
+            'BASE_COLEMAK': ['BASE_COLEMAK', 'NUM', 'SYM', 'NAV', 'MEDIA', 'FUN']
+        }
+
+    def generate_superset_visualizations(self, board_inventory) -> None:
+        """Generate visualizations grouped by base layer (3x6_3 only)"""
+        if not self.is_available():
+            print("  ⚠️  keymap-drawer not available, skipping visualization")
+            return
+
+        print("📊 Generating keymap visualizations...")
+
+        layer_sets = self._get_layer_sets_by_base()
+        layout_size = "3x6_3"
+
+        for base_name, layer_names in layer_sets.items():
+            print(f"  📊 Generating visualization for {base_name}")
+            self._generate_for_base_layer(base_name, layer_names, layout_size)
+
+        print(f"✅ Generated {len(layer_sets)} base layer visualizations")
+
+    def _generate_for_base_layer(self, base_name: str, layer_names: List[str],
+                                  layout_size: str) -> None:
+        """Generate complete visualization set for one base layer"""
+
+        # Load and filter layers
+        keymap_config = YAMLConfigParser.parse_keymap(self.config_dir / "keymap.yaml")
+        layers = [keymap_config.layers[name] for name in layer_names
+                  if name in keymap_config.layers]
+
+        if not layers:
+            return
+
+        base_lower = base_name.lower()
+
+        # Generate full SVG
+        self._generate_svg_for_layers(layers, layout_size, output_name=base_lower)
+
+        # Generate 2-page print PDF
+        self._generate_print_pdf_for_base(base_name, layers, layout_size)
+
+        # Generate primary base layer SVG (no PDF)
+        self._generate_primary_base_layer(base_name, layout_size)
+
+        # DON'T clean up main JSON file - keep for debugging
+        # json_file = self.output_dir / f"{base_lower}.json"
+        # if json_file.exists():
+        #     json_file.unlink()
+
+    def _generate_print_pdf_for_base(self, base_name: str, all_layers: List,
+                                     layout_size: str) -> Path:
+        """Generate 2-page PDF: Page 1=BASE+SYM+NAV, Page 2=NUM+MEDIA+FUN"""
+
+        # Determine variant-specific layer names
+        if 'V2' in base_name:
+            sym_name, nav_name = 'SYM_NIGHT_V2', 'NAV_NIGHT_V2'
+        else:
+            sym_name, nav_name = 'SYM', 'NAV'
+
+        # Page 1: BASE + SYM + NAV (in order)
+        page1_names = [base_name, sym_name, nav_name]
+        page1_layers = [l for l in all_layers if l.name in page1_names]
+        page1_layers.sort(key=lambda l: page1_names.index(l.name))
+
+        # Page 2: Everything else
+        page2_layers = [l for l in all_layers if l.name not in page1_names]
+
+        base_lower = base_name.lower()
+
+        # Generate page SVGs
+        svg1 = self._generate_svg_for_layers(
+            page1_layers, layout_size, suffix="_print1",
+            output_name=base_lower
+        )
+        svg2 = self._generate_svg_for_layers(
+            page2_layers, layout_size, suffix="_print2",
+            output_name=base_lower
+        )
+
+        # Combine to PDF
+        pdf_file = self._combine_svgs_to_pdf(base_lower, [svg1, svg2])
+
+        # Clean up intermediate SVGs and JSONs
+        svg1.unlink()
+        svg2.unlink()
+
+        # Clean up JSON files
+        for suffix in ["_print1", "_print2"]:
+            json_file = self.output_dir / f"{base_lower}{suffix}.json"
+            if json_file.exists():
+                json_file.unlink()
+
+        return pdf_file
+
+    def _generate_primary_base_layer(self, base_name: str, layout_size: str) -> None:
+        """Generate single-layer SVG visualization for primary base"""
+
+        keymap_config = YAMLConfigParser.parse_keymap(self.config_dir / "keymap.yaml")
+
+        if base_name not in keymap_config.layers:
+            return
+
+        base_layer = keymap_config.layers[base_name]
+        base_lower = base_name.lower()
+
+        # Generate SVG only (no PDF)
+        self._generate_svg_for_layers(
+            [base_layer], layout_size,
+            output_name=f"primary_{base_lower}"
+        )
+
+        # Clean up JSON file
+        json_file = self.output_dir / f"primary_{base_lower}.json"
+        if json_file.exists():
+            json_file.unlink()
+
+    def _generate_svg_for_layers(self, layers: List, layout_size: str,
+                                 suffix: str = "", output_name: str = None) -> Path:
         """
-        Generate one visualization per layout_size using keymap.yaml superset
+        Generate SVG visualization for specific layers
+
+        Args:
+            layers: List of Layer objects from keymap.yaml
+            layout_size: Layout size identifier
+            suffix: Optional suffix for filename (e.g., "_print1")
+            output_name: Optional custom output name (defaults to layout_{layout_size})
+
+        Returns:
+            Path to generated SVG file
+        """
+        if output_name is None:
+            output_name = f"layout_{layout_size}{suffix}"
+        else:
+            output_name = f"{output_name}{suffix}"
+
+        # JSON files always go to out/visualizations/
+        json_file = self.output_dir / f"{output_name}.json"
+
+        # Final SVGs (without suffix like _print1) go to docs/ for README embedding
+        # Intermediate files go to out/visualizations/
+        if suffix:
+            svg_file = self.output_dir / f"{output_name}.svg"
+        else:
+            svg_file = self.docs_dir / f"{output_name}.svg"
+
+        try:
+            # Determine QMK keyboard metadata for keymap-drawer
+            # Use crkbd as the canonical 3x6_3 keyboard for visualization
+            if layout_size == "3x6_3":
+                keyboard = "crkbd/rev1"
+                layout = "LAYOUT_split_3x6_3"
+            elif layout_size == "3x5_3":
+                keyboard = "bastardkb/skeletyl/promicro"
+                layout = "LAYOUT_split_3x5_3"
+            else:
+                keyboard = "crkbd/rev1"
+                layout = "LAYOUT"
+
+            # Convert to QMK JSON format
+            layers_json = []
+            for layer in layers:
+                # Build keycodes from Layer object
+                keycodes = self._build_superset_layer(layer, layout_size)
+                # Translate keycodes to QMK format for keymap-drawer
+                translated = [self._translate_keycode_for_display(kc) for kc in keycodes]
+                # Reorder keys for QMK layout
+                reordered = self._reorder_keys_for_qmk(translated, layout_size)
+                layers_json.append(reordered)
+
+            keymap_data = {
+                "keyboard": keyboard,
+                "keymap": "dario",
+                "layout": layout,
+                "layers": layers_json
+            }
+
+            # Write JSON file
+            json_file.write_text(json.dumps(keymap_data, indent=2))
+
+            # Get layout-specific config (handles ortho_layout and CSS styling)
+            with self._get_layout_specific_config(layout_size) as layout_config:
+                # Parse with keymap-drawer (config must come before subcommand)
+                parse_cmd = ["keymap", "-c", str(layout_config), "parse", "-q", str(json_file)]
+
+                parse_result = subprocess.run(
+                    parse_cmd,
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+
+                parsed_keymap = parse_result.stdout
+
+                # Post-process: Rename layers from L0-L5 to friendly names
+                layer_names = [layer.name for layer in layers]
+                for i, name in enumerate(layer_names):
+                    parsed_keymap = parsed_keymap.replace(f"L{i}:", f"{name}:")
+
+                # Draw SVG (config must come before subcommand)
+                draw_cmd = ["keymap", "-c", str(layout_config), "draw", "-"]
+
+                draw_result = subprocess.run(
+                    draw_cmd,
+                    input=parsed_keymap,
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+
+                svg_output = self._format_layer_labels(
+                    draw_result.stdout, layout_size
+                )
+
+                # Replace BASE_* layer names with clean names in SVG
+                # Order matters: replace longer names first to avoid partial matches
+                svg_output = svg_output.replace('BASE_NIGHT_V2', 'NIGHT_V2')
+                svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
+                svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
+                svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
+
+                # Write SVG file
+                svg_file.write_text(svg_output)
+
+            print(f"    ✅ {svg_file.name}")
+            return svg_file
+
+        except subprocess.CalledProcessError as e:
+            print(f"  ⚠️  Visualization generation failed for {output_name}: {e}")
+            if e.stderr:
+                print(f"     {e.stderr}")
+            return None
+        except Exception as e:
+            print(f"  ⚠️  Unexpected error during visualization for {output_name}: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+
+    def _combine_svgs_to_pdf(self, output_name: str, svg_files: List[Path]) -> Path:
+        """Combine multiple SVGs into single multi-page PDF"""
+
+        pdf_path = self.output_dir / f"{output_name}_print.pdf"
+
+        # Create PDF canvas
+        c = canvas.Canvas(str(pdf_path), pagesize=letter)
+        page_width, page_height = letter
+
+        for svg_path in svg_files:
+            # Render SVG to ReportLab drawing
+            drawing = svg2rlg(str(svg_path))
+
+            if drawing is None:
+                print(f"  ⚠️  Failed to load SVG: {svg_path}")
+                continue
+
+            # Scale to fit page (with margins)
+            margin = 36  # 0.5 inch margins
+            available_width = page_width - (2 * margin)
+            available_height = page_height - (2 * margin)
+
+            # Calculate scaling factor to fit page
+            scale_x = available_width / drawing.width
+            scale_y = available_height / drawing.height
+            scale = min(scale_x, scale_y, 1.0)  # Don't scale up, only down
+
+            # Center the drawing
+            scaled_width = drawing.width * scale
+            scaled_height = drawing.height * scale
+            x = margin + (available_width - scaled_width) / 2
+            y = margin + (available_height - scaled_height) / 2
+
+            # Draw on canvas
+            drawing.scale(scale, scale)
+            renderPDF.draw(drawing, c, x, y)
+            c.showPage()
+
+        c.save()
+        print(f"    📄 {pdf_path.name}")
+        return pdf_path
+
+    def _old_generate_superset_visualizations(self, board_inventory) -> Dict[str, Optional[Path]]:
+        """
+        OLD VERSION - Generate one visualization per layout_size using keymap.yaml superset
 
         Args:
             board_inventory: BoardInventory object
@@ -803,7 +1087,7 @@ class KeymapVisualizer:
 
         return svg_file
 
-    def _combine_svgs_to_pdf(self, layout_size: str, svg_files: List[Path]) -> Optional[Path]:
+    def _old_combine_svgs_to_pdf(self, layout_size: str, svg_files: List[Path]) -> Optional[Path]:
         """
         Combine multiple SVG files into a single PDF for printing
 
@@ -852,7 +1136,7 @@ class KeymapVisualizer:
         c.save()
         return pdf_file
 
-    def _generate_svg_for_layers(self, layout_size: str, representative_board, layers: List[Dict], suffix: str = "", is_final: bool = False) -> Optional[Path]:
+    def _old_generate_svg_for_layers(self, layout_size: str, representative_board, layers: List[Dict], suffix: str = "", is_final: bool = False) -> Optional[Path]:
         """
         Generate SVG visualization for specific layers
 
@@ -977,7 +1261,7 @@ class KeymapVisualizer:
             traceback.print_exc()
             return None
 
-    def _generate_primary_base_layer(self, layout_size: str, representative_board, primary_base: str, keymap_config) -> Optional[Path]:
+    def _old_generate_primary_base_layer(self, layout_size: str, representative_board, primary_base: str, keymap_config) -> Optional[Path]:
         """
         Generate standalone visualization for the primary base layer
 

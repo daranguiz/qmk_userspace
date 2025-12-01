@@ -20,12 +20,18 @@ parse_config:
     - SYM_NIGHT
     - NAV_NIGHT
     - MEDIA_NIGHT
+    - BASE_NIGHT_V2
+    - NUM_NIGHT_V2
+    - SYM_NIGHT_V2
+    - NAV_NIGHT_V2
+    - MEDIA_NIGHT_V2
 
   # Custom layer names (for keys that reference layers)
   layer_legend_map:
     "BASE_COLEMAK": "COLEMAK"
     "BASE_GALLIUM": "GALLIUM"
     "BASE_NIGHT": "NIGHT"
+    "BASE_NIGHT_V2": "NIGHT_V2"
     "NAV": "NAV"
     "MEDIA": "MEDIA"
     "NUM": "NUM"
@@ -35,6 +41,10 @@ parse_config:
     "SYM_NIGHT": "SYM"
     "NAV_NIGHT": "NAV"
     "MEDIA_NIGHT": "MEDIA"
+    "NUM_NIGHT_V2": "NUM"
+    "SYM_NIGHT_V2": "SYM"
+    "NAV_NIGHT_V2": "NAV"
+    "MEDIA_NIGHT_V2": "MEDIA"
 
   raw_binding_map:
     # Layer-tap keys - show tap key on top, layer below
@@ -83,6 +93,20 @@ parse_config:
       tap: "Enter"
       hold: "MEDIA"
 
+    # Night V2-specific layer-tap keys
+    "LT(SYM_NIGHT_V2, KC_R)":
+      tap: "R"
+      hold: "SYM"
+    "LT(NUM_NIGHT_V2, KC_BSPC)":
+      tap: "Bksp"
+      hold: "NUM"
+    "LT(NAV_NIGHT_V2, KC_SPC)":
+      tap: "Space"
+      hold: "NAV"
+    "LT(MEDIA_NIGHT_V2, KC_ENT)":
+      tap: "Enter"
+      hold: "MEDIA"
+
     # Empty/blank keys
     "KC_NO": ""
     "U_NA": ""
@@ -126,6 +150,7 @@ parse_config:
     "DF(BASE_COLEMAK)": "CLMK"
     "DF(BASE_GALLIUM)": "GLIUM"
     "DF(BASE_NIGHT)": "NIGHT"
+    "DF(BASE_NIGHT_V2)": "NIGHT_V2"
 
 draw_config:
   ortho_layout:

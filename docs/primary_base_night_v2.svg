@@ -144,7 +144,15 @@ path.combo {
     .layer-NIGHT .keypos-36 rect,
     .layer-NIGHT .keypos-37 rect,
     .layer-NIGHT .keypos-39 rect,
-    .layer-NIGHT .keypos-41 rect {
+    .layer-NIGHT .keypos-41 rect,
+    .layer-NIGHT_V2 .keypos-36 rect,
+    .layer-NIGHT_V2 .keypos-37 rect,
+    .layer-NIGHT_V2 .keypos-40 rect,
+    .layer-NIGHT_V2 .keypos-41 rect,
+    .layer-COLEMAK .keypos-37 rect,
+    .layer-COLEMAK .keypos-38 rect,
+    .layer-COLEMAK .keypos-39 rect,
+    .layer-COLEMAK .keypos-41 rect {
       fill: #4CAF50 !important;
       stroke: none !important;
       opacity: 1 !important;
@@ -152,7 +160,15 @@ path.combo {
     .layer-NIGHT .keypos-36 text,
     .layer-NIGHT .keypos-37 text,
     .layer-NIGHT .keypos-39 text,
-    .layer-NIGHT .keypos-41 text {
+    .layer-NIGHT .keypos-41 text,
+    .layer-NIGHT_V2 .keypos-36 text,
+    .layer-NIGHT_V2 .keypos-37 text,
+    .layer-NIGHT_V2 .keypos-40 text,
+    .layer-NIGHT_V2 .keypos-41 text,
+    .layer-COLEMAK .keypos-37 text,
+    .layer-COLEMAK .keypos-38 text,
+    .layer-COLEMAK .keypos-39 text,
+    .layer-COLEMAK .keypos-41 text {
       fill: white !important;
     }
 
@@ -166,7 +182,25 @@ path.combo {
     .layer-NIGHT .keypos-21 rect,
     .layer-NIGHT .keypos-22 rect,
     .layer-NIGHT .keypos-38 rect,
-    .layer-NIGHT .keypos-40 rect {
+    .layer-NIGHT .keypos-40 rect,
+    .layer-NIGHT_V2 .keypos-13 rect,
+    .layer-NIGHT_V2 .keypos-14 rect,
+    .layer-NIGHT_V2 .keypos-15 rect,
+    .layer-NIGHT_V2 .keypos-16 rect,
+    .layer-NIGHT_V2 .keypos-19 rect,
+    .layer-NIGHT_V2 .keypos-20 rect,
+    .layer-NIGHT_V2 .keypos-21 rect,
+    .layer-NIGHT_V2 .keypos-22 rect,
+    .layer-NIGHT_V2 .keypos-38 rect,
+    .layer-NIGHT_V2 .keypos-39 rect,
+    .layer-COLEMAK .keypos-13 rect,
+    .layer-COLEMAK .keypos-14 rect,
+    .layer-COLEMAK .keypos-15 rect,
+    .layer-COLEMAK .keypos-16 rect,
+    .layer-COLEMAK .keypos-19 rect,
+    .layer-COLEMAK .keypos-20 rect,
+    .layer-COLEMAK .keypos-21 rect,
+    .layer-COLEMAK .keypos-22 rect {
       stroke: #66BB6A !important;
       stroke-width: 2 !important;
     }
@@ -192,8 +226,8 @@ path.combo {
       opacity: 0.3 !important;
     }
 </style>
-<g transform="translate(30, 0)" class="layer-NIGHT">
-<text x="420" y="133" class="label" id="NIGHT" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">NIGHT</text>
+<g transform="translate(30, 0)" class="layer-NIGHT_V2">
+<text x="420" y="133" class="label" id="NIGHT_V2" text-anchor="middle" dominant-baseline="middle" font-size="28" style="text-anchor: middle; dominant-baseline: middle;">NIGHT_V2</text>
 <g transform="translate(0, 56)">
 <g transform="translate(28, 49)" class="key keypos-0">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
@@ -333,7 +367,7 @@ path.combo {
 </g>
 <g transform="translate(700, 147)" class="key keypos-33">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">;</text>
+<text x="0" y="0" class="key tap">-</text>
 </g>
 <g transform="translate(756, 161)" class="key keypos-34">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
@@ -344,33 +378,33 @@ path.combo {
 </g>
 <g transform="translate(224, 205)" class="key keypos-36">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">Enter</text>
-<text x="0" y="24" class="key hold">MEDIA</text>
+<text x="0" y="0" class="key tap">Bksp</text>
+<text x="0" y="24" class="key hold">NUM</text>
 </g>
 <g transform="translate(286, 213) rotate(15.0)" class="key keypos-37">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
 <text x="0" y="0" class="key tap">R</text>
-<text x="0" y="24" class="key hold">NAV</text>
+<text x="0" y="24" class="key hold">SYM</text>
 </g>
 <g transform="translate(351, 224) rotate(30.0)" class="key keypos-38">
 <rect rx="6" ry="6" x="-26" y="-40" width="52" height="80" class="key"/>
-<text x="0" y="0" class="key tap">TAB</text>
+<text x="0" y="0" class="key tap">DEL</text>
 <text x="0" y="38" class="key hold">LSFT</text>
 </g>
 <g transform="translate(489, 224) rotate(-30.0)" class="key keypos-39">
 <rect rx="6" ry="6" x="-26" y="-40" width="52" height="80" class="key"/>
-<text x="0" y="0" class="key tap">Del</text>
-<text x="0" y="38" class="key hold">SYM</text>
+<text x="0" y="0" class="key tap">TAB</text>
+<text x="0" y="38" class="key hold">LSFT</text>
 </g>
 <g transform="translate(554, 213) rotate(-15.0)" class="key keypos-40">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">SPC</text>
-<text x="0" y="24" class="key hold">RSFT</text>
+<text x="0" y="0" class="key tap">Space</text>
+<text x="0" y="24" class="key hold">NAV</text>
 </g>
 <g transform="translate(616, 205)" class="key keypos-41">
 <rect rx="6" ry="6" x="-26" y="-26" width="52" height="52" class="key"/>
-<text x="0" y="0" class="key tap">Bksp</text>
-<text x="0" y="24" class="key hold">NUM</text>
+<text x="0" y="0" class="key tap">Enter</text>
+<text x="0" y="24" class="key hold">MEDIA</text>
 </g>
 </g>
 </g>
