@@ -61,80 +61,17 @@ qmk compile -kb lily58/rev1 -km dario
 43: KC_NO
 44: KC_QUOT
 45: KC_W
-46: KC_SLSH
-47: KC_SCLN
-48: KC_COMM
-49: KC_NO
-50: KC_NO
-51: LT(MEDIA, KC_ENT)
-52: LT(NAV, KC_R)
-53: LSFT_T(KC_TAB)
-54: LT(SYM, KC_DEL)
-55: RSFT_T(KC_SPC)
-56: LT(NUM, KC_BSPC)
-57: KC_NO
-```
-
-## BASE_NIGHT_V2 Layer
-
-```
- 0: KC_NO
- 1: KC_NO
- 2: KC_NO
- 3: KC_NO
- 4: KC_NO
- 5: KC_NO
- 6: KC_NO
- 7: KC_NO
- 8: KC_NO
- 9: KC_NO
-10: KC_NO
-11: KC_NO
-12: KC_NO
-13: KC_B
-14: KC_F
-15: KC_L
-16: KC_K
-17: KC_Q
-18: KC_P
-19: KC_G
-20: KC_O
-21: KC_U
-22: KC_DOT
-23: KC_NO
-24: KC_NO
-25: LGUI_T(KC_N)
-26: LALT_T(KC_S)
-27: LCTL_T(KC_H)
-28: LSFT_T(KC_T)
-29: KC_M
-30: KC_Y
-31: RSFT_T(KC_C)
-32: RCTL_T(KC_A)
-33: RALT_T(KC_E)
-34: RGUI_T(KC_I)
-35: KC_ENT
-36: KC_NO
-37: KC_X
-38: KC_V
-39: KC_J
-40: KC_D
-41: KC_Z
-42: KC_NO
-43: KC_NO
-44: KC_QUOT
-45: KC_W
 46: KC_MINS
 47: KC_SCLN
 48: KC_COMM
 49: KC_NO
 50: KC_NO
-51: LT(NUM_NIGHT_V2, KC_BSPC)
-52: LT(SYM_NIGHT_V2, KC_R)
+51: LT(NUM_NIGHT, KC_BSPC)
+52: LT(SYM_NIGHT, KC_R)
 53: LSFT_T(KC_DEL)
 54: LSFT_T(KC_TAB)
-55: LT(NAV_NIGHT_V2, KC_SPC)
-56: LT(MEDIA_NIGHT_V2, KC_ENT)
+55: LT(NAV_NIGHT, KC_SPC)
+56: LT(MEDIA_NIGHT, KC_ENT)
 57: KC_NO
 ```
 
@@ -407,8 +344,8 @@ qmk compile -kb lily58/rev1 -km dario
 11: KC_NO
 12: KC_NO
 13: DF(BASE_NIGHT)
-14: DF(BASE_NIGHT_V2)
-15: DF(BASE_COLEMAK)
+14: DF(BASE_COLEMAK)
+15: KC_NO
 16: KC_NO
 17: KC_NO
 18: KC_NO
@@ -516,7 +453,7 @@ qmk compile -kb lily58/rev1 -km dario
 57: KC_NO
 ```
 
-## NUM_NIGHT_V2 Layer
+## NUM_NIGHT Layer
 
 ```
  0: KC_NO
@@ -579,7 +516,7 @@ qmk compile -kb lily58/rev1 -km dario
 57: KC_NO
 ```
 
-## SYM_NIGHT_V2 Layer
+## SYM_NIGHT Layer
 
 ```
  0: KC_NO
@@ -642,7 +579,7 @@ qmk compile -kb lily58/rev1 -km dario
 57: KC_NO
 ```
 
-## NAV_NIGHT_V2 Layer
+## NAV_NIGHT Layer
 
 ```
  0: KC_NO
@@ -705,7 +642,7 @@ qmk compile -kb lily58/rev1 -km dario
 57: KC_NO
 ```
 
-## MEDIA_NIGHT_V2 Layer
+## MEDIA_NIGHT Layer
 
 ```
  0: KC_NO
@@ -722,8 +659,8 @@ qmk compile -kb lily58/rev1 -km dario
 11: KC_NO
 12: KC_NO
 13: DF(BASE_NIGHT)
-14: DF(BASE_NIGHT_V2)
-15: DF(BASE_COLEMAK)
+14: DF(BASE_COLEMAK)
+15: KC_NO
 16: KC_NO
 17: KC_NO
 18: KC_NO

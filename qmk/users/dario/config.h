@@ -1,5 +1,8 @@
 #pragma once
 
+// Global QMK Configuration for all keyboards
+// Migrated from qmk/config/global/config.h for proper QMK userspace integration
+
 // Bootmagic: Hold upper-left key at power on to enter bootloader
 // Row 0, Column 0 is typically the upper-left key on most keyboards
 #define BOOTMAGIC_ROW 0
@@ -9,8 +12,11 @@
 #define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
 
-// Custom macro for home row mod tapping term (TAPPING_TERM + 100)
-#define TAPPING_TERM_HRM 300
+// Custom macro for home row mod tapping term
+#define TAPPING_TERM_HRM 280
+
+// Flow Tap: disable holds during fast typing (like ZMK require-prior-idle-ms)
+#define FLOW_TAP_TERM 150
 
 // Chordal hold: opposite hands rule for tap-hold keys
 // Settles tap-hold as tap when same-hand key is pressed

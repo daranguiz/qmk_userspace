@@ -10,31 +10,10 @@ layers:
       right:
         - [P              , G              , O              , U              , DOT            ]
         - [Y              , hrm:RSFT:C     , hrm:RCTL:A     , hrm:RALT:E     , hrm:RGUI:I     ]
-        - [QUOT           , W              , SLSH           , SCLN           , COMM           ]
-      thumbs:
-        - [lt:MEDIA:ENT   , lt:NAV:R              , mt:LSFT:TAB    ]
-        - [lt:SYM:DEL    , mt:RSFT:SPC     , lt:NUM:BSPC    ]
-    extensions:
-      3x6_3:
-        outer_pinky_left: [NONE, NONE, NONE]
-        outer_pinky_right: [NONE, ENT, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: LBRC
-        outer_pinky_right: RBRC
-
-  BASE_NIGHT_V2:
-    core: # (3x5)
-      left:
-        - [B              , F              , L              , K              , Q              ]
-        - [hrm:LGUI:N     , hrm:LALT:S     , hrm:LCTL:H     , hrm:LSFT:T     , M              ]
-        - [X              , V              , J              , D              , Z              ]
-      right:
-        - [P              , G              , O              , U              , DOT            ]
-        - [Y              , hrm:RSFT:C     , hrm:RCTL:A     , hrm:RALT:E     , hrm:RGUI:I     ]
         - [QUOT           , W              , MINS           , SCLN           , COMM           ]
       thumbs:
-        - [lt:NUM_NIGHT_V2:BSPC   , lt:SYM_NIGHT_V2:R              , mt:LSFT:DEL    ]
-        - [mt:LSFT:TAB    , lt:NAV_NIGHT_V2:SPC     , lt:MEDIA_NIGHT_V2:ENT    ]
+        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:DEL    ]
+        - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
 
         # constraints
         # Space and R are used frequently, so should be opposite
@@ -142,7 +121,7 @@ layers:
   MEDIA:
     core: # (3x5)
       left:
-        - [df:BASE_NIGHT  , df:BASE_NIGHT_V2, df:BASE_COLEMAK, NONE           , NONE           ]
+        - [df:BASE_NIGHT  , df:BASE_COLEMAK, NONE           , NONE           , NONE           ]
         - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
         - [NONE           , NONE           , NONE           , NONE           , DFU           ]
       right:
@@ -182,7 +161,7 @@ layers:
         outer_pinky_right: NONE
 
   # Night-specific layers (hands flipped compared to original)
-  NUM_NIGHT_V2:
+  NUM_NIGHT:
     core: # (3x5)
       left:
         - [TILD           , LBRC           , RBRC           , PERC           , NONE           ]
@@ -203,7 +182,7 @@ layers:
         outer_pinky_left: NONE
         outer_pinky_right: NONE
 
-  SYM_NIGHT_V2:
+  SYM_NIGHT:
     core: # (3x5)
       left:
         - [ASTR           , PERC           , DLR            , DQUO           , NONE           ]
@@ -224,7 +203,7 @@ layers:
         outer_pinky_left: NONE
         outer_pinky_right: NONE
 
-  NAV_NIGHT_V2:
+  NAV_NIGHT:
     core: # (3x5)
       left:
         - [NONE           , PGUP           , NONE           , NONE           , ESC            ]
@@ -245,10 +224,10 @@ layers:
         outer_pinky_left: NONE
         outer_pinky_right: NONE
 
-  MEDIA_NIGHT_V2:
+  MEDIA_NIGHT:
     core: # (3x5)
       left:
-        - [df:BASE_NIGHT  , df:BASE_NIGHT_V2, df:BASE_COLEMAK, NONE           , NONE           ]
+        - [df:BASE_NIGHT  , df:BASE_COLEMAK, NONE           , NONE           , NONE           ]
         - [MNXT           , VOLU           , VOLD           , MPRV           , NONE           ]
         - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:

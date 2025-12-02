@@ -3,10 +3,3 @@
 // Board: Bastard Keyboards Skeletyl
 
 #pragma once
-
-// Include global QMK config if it exists
-#ifdef __has_include
-#  if __has_include("../../../../../../config/global/config.h")
-#    include "../../../../../../config/global/config.h"
-#  endif
-#endif

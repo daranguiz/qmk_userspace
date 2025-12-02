@@ -222,13 +222,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 // Board: {board.name}
 
 #pragma once
-
-// Include global QMK config if it exists
-#ifdef __has_include
-#  if __has_include("../../../../../../config/global/config.h")
-#    include "../../../../../../config/global/config.h"
-#  endif
-#endif
 """
 
     def generate_rules_mk(self, board: Board) -> str:

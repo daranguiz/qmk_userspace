@@ -42,70 +42,17 @@
 
 30: &kp SQT
 31: &kp W
-32: &kp FSLH
-33: &kp SEMI
-34: &kp COMMA
-35: &none
-
-36: &lt MEDIA ENTER
-37: &lt NAV R
-38: &mt LSFT TAB
-39: &lt SYM DEL
-40: &mt RSFT SPACE
-41: &lt NUM BSPC
-```
-
-## BASE_NIGHT_V2 Layer
-
-```
- 0: &none
- 1: &kp B
- 2: &kp F
- 3: &kp L
- 4: &kp K
- 5: &kp Q
-
- 6: &none
- 7: &hml LGUI N
- 8: &hml LALT S
- 9: &hml LCTL H
-10: &hml LSFT T
-11: &kp M
-
-12: &none
-13: &kp X
-14: &kp V
-15: &kp J
-16: &kp D
-17: &kp Z
-
-18: &kp P
-19: &kp G
-20: &kp O
-21: &kp U
-22: &kp DOT
-23: &none
-
-24: &kp Y
-25: &hmr RSFT C
-26: &hmr RCTL A
-27: &hmr RALT E
-28: &hmr RGUI I
-29: &kp ENTER
-
-30: &kp SQT
-31: &kp W
 32: &kp MINUS
 33: &kp SEMI
 34: &kp COMMA
 35: &none
 
-36: &lt NUM_NIGHT_V2 BSPC
-37: &lt SYM_NIGHT_V2 R
+36: &lt NUM_NIGHT BSPC
+37: &lt SYM_NIGHT R
 38: &mt LSFT DEL
 39: &mt LSFT TAB
-40: &lt NAV_NIGHT_V2 SPACE
-41: &lt MEDIA_NIGHT_V2 ENTER
+40: &lt NAV_NIGHT SPACE
+41: &lt MEDIA_NIGHT ENTER
 ```
 
 ## BASE_COLEMAK Layer
@@ -325,8 +272,8 @@
 ```
  0: &none
  1: &to BASE_NIGHT
- 2: &to BASE_NIGHT_V2
- 3: &to BASE_COLEMAK
+ 2: &to BASE_COLEMAK
+ 3: &none
  4: &none
  5: &none
 
@@ -426,7 +373,7 @@
 41: &none
 ```
 
-## NUM_NIGHT_V2 Layer
+## NUM_NIGHT Layer
 
 ```
  0: &none
@@ -479,7 +426,7 @@
 41: &kp AT
 ```
 
-## SYM_NIGHT_V2 Layer
+## SYM_NIGHT Layer
 
 ```
  0: &none
@@ -532,7 +479,7 @@
 41: &kp FSLH
 ```
 
-## NAV_NIGHT_V2 Layer
+## NAV_NIGHT Layer
 
 ```
  0: &none
@@ -585,13 +532,13 @@
 41: &none
 ```
 
-## MEDIA_NIGHT_V2 Layer
+## MEDIA_NIGHT Layer
 
 ```
  0: &none
  1: &to BASE_NIGHT
- 2: &to BASE_NIGHT_V2
- 3: &to BASE_COLEMAK
+ 2: &to BASE_COLEMAK
+ 3: &none
  4: &none
  5: &none
 

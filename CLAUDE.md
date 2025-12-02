@@ -115,9 +115,9 @@ The codebase uses a **single source of truth** approach for keymap definitions t
   - Mac clipboard shortcuts (U_UND, U_RDO, U_CUT, U_CPY, U_PST)
   - Mouse and RGB control aliases
   - Layer enums exported for generated keymaps
-- **`dario.c`**: Custom keycode processing (currently minimal)
-- **`config.h`**: Shared QMK settings (now migrated to `qmk/config/global/config.h`)
-- **`rules.mk`**: Shared feature flags (now migrated to `qmk/config/global/rules.mk`)
+- **`dario.c`**: Custom keycode processing with per-key tapping term function
+- **`config.h`**: Shared QMK settings including timeless home row mods configuration
+- **`rules.mk`**: Shared feature flags
 
 #### Generated Files in `qmk/keyboards/*/keymaps/dario/` (AUTO-GENERATED - DO NOT EDIT):
 - **`keymap.c`**: Auto-generated from `config/keymap.yaml`
@@ -162,17 +162,39 @@ The codebase uses a **single source of truth** approach for keymap definitions t
 
 ## Configuration Details
 
-### Tapping Term Configuration
-- Base tapping term: 200ms
-- Home row mods tapping term: 300ms (TAPPING_TERM_HRM)
-- Uses `TAPPING_TERM_PER_KEY` for fine-grained control
-- Chordal hold enabled with PERMISSIVE_HOLD
+### Timeless Home Row Mods Configuration
 
-### Important QMK Features in Use
-- `CHORDAL_HOLD`: Opposite hand rule for mod-tap keys
+The firmware implements "timeless home row mods" - a configuration philosophy that minimizes dependency on timing for reliable home row mod operation. This matches the ZMK configuration in `zmk/config/dario_behaviors.dtsi`.
+
+**Tapping Terms**:
+- Base tapping term: 200ms (for layer-tap keys)
+- Home row mods tapping term: 280ms (TAPPING_TERM_HRM)
+- Per-key tapping term via `get_tapping_term()` function in `dario.c`
+
+**Core Features**:
+1. **Flow Tap** (150ms): Disables holds during fast typing (equivalent to ZMK's `require-prior-idle-ms`)
+   - Prevents accidental mod triggers when typing quickly
+   - Only affects alpha keys and space
+2. **Speculative Hold**: Applies modifiers immediately on key press for zero-delay mouse interactions
+   - Enabled via QMK Community Modules (`getreuer/speculative_hold`)
+   - Eliminates lag for Ctrl+click, Shift+click, etc.
+3. **Chordal Hold**: Opposite hands rule for tap-hold keys
+   - Same-hand rolls don't trigger mods (instant tap settlement)
+   - Opposite-hand chords activate holds quickly
+4. **Permissive Hold**: Fast chords settle before tapping term
+   - Enabled for layer-tap keys to allow quick sequences
+
+**Additional Settings**:
 - `TAPPING_FORCE_HOLD`: Enables rapid tap-to-hold transitions
 - `LTO_ENABLE`: Link-time optimization for smaller firmware
 - `QMK_KEYS_PER_SCAN 4`: Optimized for heavy chording
+
+### QMK Community Modules
+
+The firmware uses QMK Community Modules for advanced features:
+- **Speculative Hold**: Located in `qmk_firmware/modules/getreuer/speculative_hold`
+- Configured per-keymap via `keymap.json` files
+- See https://getreuer.info/posts/keyboards/qmk-community-modules for setup details
 
 ## Making Changes
 
