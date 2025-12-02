@@ -48,6 +48,114 @@ class KeymapVisualizer:
             return YAMLConfigParser.parse_keycodes(keycodes_path)
         return {}
 
+    def _get_friendly_key_name(self, key: str) -> str:
+        """
+        Get friendly display name for a key
+
+        Args:
+            key: Key name from keymap.yaml (e.g., "SPC", "R", "ENT")
+
+        Returns:
+            Friendly display name (e.g., "Space", "R", "Enter")
+        """
+        # Check keycodes.yaml for display_glyph or display_name
+        if key in self.keycodes:
+            kc_data = self.keycodes[key]
+            if isinstance(kc_data, dict):
+                if "display_glyph" in kc_data:
+                    return kc_data["display_glyph"]
+                if "display_name" in kc_data:
+                    return kc_data["display_name"]
+
+        # Smart defaults for common keys
+        if len(key) == 1 and key.isalpha():
+            return key.upper()  # Single letters → uppercase
+
+        # Map of special keys to friendly names
+        special_keys = {
+            "SPC": "Space",
+            "ENT": "Enter",
+            "BSPC": "Bksp",
+            "DEL": "Del",
+            "TAB": "Tab",
+        }
+        return special_keys.get(key, key)
+
+    def _generate_layer_tap_mappings(self) -> Dict[str, Dict[str, str]]:
+        """
+        Extract all layer-tap and mod-tap keys from keymap.yaml and generate display mappings
+
+        Returns:
+            Dictionary mapping QMK codes to {tap, hold} display format
+            Example: {"LT(NUM_NIGHT, KC_R)": {"tap": "R", "hold": "NUM"}}
+        """
+        # Load keymap config
+        keymap_config = YAMLConfigParser.parse_keymap(
+            self.config_dir / "keymap.yaml"
+        )
+
+        # Load layer_legend_map from .keymap-drawer-config.yaml for layer display names
+        with open(self.config_file) as f:
+            drawer_config = yaml.safe_load(f)
+        layer_legend_map = drawer_config.get('parse_config', {}).get('layer_legend_map', {})
+
+        # Track unique (layer, key) or (mod, key) combinations
+        lt_combinations = set()  # For layer-tap keys
+        mt_combinations = set()  # For mod-tap keys
+
+        # Scan all layers
+        for layer_name, layer in keymap_config.layers.items():
+            # Scan core layout
+            if layer.core:
+                for row in layer.core.rows:
+                    for keycode in row:
+                        if keycode.startswith("lt:"):
+                            parts = keycode.split(":")
+                            if len(parts) == 3:
+                                lt_combinations.add((parts[1], parts[2]))
+                        elif keycode.startswith("mt:"):
+                            parts = keycode.split(":")
+                            if len(parts) == 3:
+                                mt_combinations.add((parts[1], parts[2]))
+
+            # Scan extensions
+            if layer.extensions:
+                for layout_size, ext in layer.extensions.items():
+                    if hasattr(ext, 'keys') and ext.keys:
+                        for key_list_name, key_list in ext.keys.items():
+                            # key_list might be a single string or a list
+                            keys_to_check = key_list if isinstance(key_list, list) else [key_list]
+                            for keycode in keys_to_check:
+                                if keycode.startswith("lt:"):
+                                    parts = keycode.split(":")
+                                    if len(parts) == 3:
+                                        lt_combinations.add((parts[1], parts[2]))
+                                elif keycode.startswith("mt:"):
+                                    parts = keycode.split(":")
+                                    if len(parts) == 3:
+                                        mt_combinations.add((parts[1], parts[2]))
+
+        # Generate mappings
+        mappings = {}
+
+        # Layer-tap mappings
+        for layer, key in lt_combinations:
+            qmk_code = f"LT({layer}, KC_{key})"
+            tap_display = self._get_friendly_key_name(key)
+            # Use layer_legend_map to get friendly layer name, fallback to layer name
+            hold_display = layer_legend_map.get(layer, layer)
+            mappings[qmk_code] = {"tap": tap_display, "hold": hold_display}
+
+        # Mod-tap mappings
+        for mod, key in mt_combinations:
+            qmk_code = f"{mod}_T(KC_{key})"
+            tap_display = self._get_friendly_key_name(key)
+            # Get modifier display from keycodes.yaml, fallback to mod name
+            hold_display = self._get_friendly_key_name(mod)
+            mappings[qmk_code] = {"tap": tap_display, "hold": hold_display}
+
+        return mappings
+
     def is_available(self) -> bool:
         """Check if keymap-drawer CLI is available"""
         return shutil.which("keymap") is not None
@@ -177,11 +285,6 @@ class KeymapVisualizer:
             CSS string with dynamic layer highlighting
         """
         css = '''
-    /* Increase font size for tap keys only (not hold text like modifiers) */
-    svg.keymap text.key.tap {
-      font-size: 20px;
-    }
-
 '''
         # Build CSS selectors dynamically for each BASE layer's actual layer-tap positions
         base_layer_selectors = []
@@ -230,6 +333,13 @@ class KeymapVisualizer:
     }
 '''
         css += ",\n".join(base_layer_text_selectors)
+        css += ''' {
+      fill: white !important;
+    }
+'''
+        # Add glyph selectors (for SVG icons like backspace, enter, etc.)
+        base_layer_glyph_selectors = [s.replace(' text', ' use') for s in base_layer_text_selectors]
+        css += ",\n".join(base_layer_glyph_selectors)
         css += ''' {
       fill: white !important;
     }
@@ -308,6 +418,13 @@ class KeymapVisualizer:
       fill: white !important;
     }
 '''
+            # Add glyph selectors for orange activator keys
+            activator_glyph_selectors = [s.replace(' text', ' use') for s in activator_text_selectors]
+            css += ",\n".join(activator_glyph_selectors)
+            css += ''' {
+      fill: white !important;
+    }
+'''
 
         css += '''
 
@@ -353,6 +470,25 @@ class KeymapVisualizer:
 
         # Generate dynamic CSS based on layout size and BASE layers
         config['draw_config']['svg_extra_style'] = self._generate_dynamic_css(layout_size, base_layers, layers_in_viz)
+
+        # Auto-generate layer-tap and mod-tap mappings from keymap.yaml
+        auto_generated_mappings = self._generate_layer_tap_mappings()
+
+        # Merge auto-generated mappings into raw_binding_map
+        # Keep existing static entries, but replace any LT(...) or *_T(...) entries
+        if 'parse_config' not in config:
+            config['parse_config'] = {}
+        if 'raw_binding_map' not in config['parse_config']:
+            config['parse_config']['raw_binding_map'] = {}
+
+        # Remove old layer-tap and mod-tap entries (will be replaced by auto-generated ones)
+        raw_binding_map = config['parse_config']['raw_binding_map']
+        keys_to_remove = [k for k in raw_binding_map.keys() if k.startswith("LT(") or "_T(KC_" in k]
+        for key in keys_to_remove:
+            del raw_binding_map[key]
+
+        # Add auto-generated mappings
+        raw_binding_map.update(auto_generated_mappings)
 
         # Write to temp config file in system temp directory
         fd, temp_path = tempfile.mkstemp(
@@ -743,9 +879,8 @@ class KeymapVisualizer:
     def _get_layer_sets_by_base(self) -> Dict[str, List[str]]:
         """Map each base layer to its associated layers"""
         return {
-            'BASE_NIGHT': ['BASE_NIGHT', 'SYM', 'NUM', 'NAV', 'MEDIA', 'FUN'],
-            'BASE_NIGHT_V2': ['BASE_NIGHT_V2', 'SYM_NIGHT_V2', 'NUM_NIGHT_V2',
-                              'NAV_NIGHT_V2', 'MEDIA_NIGHT_V2', 'FUN'],
+            'BASE_NIGHT': ['BASE_NIGHT', 'SYM_NIGHT', 'NUM_NIGHT',
+                          'NAV_NIGHT', 'MEDIA_NIGHT', 'FUN'],
             'BASE_COLEMAK': ['BASE_COLEMAK', 'SYM', 'NUM', 'NAV', 'MEDIA', 'FUN']
         }
 
@@ -938,26 +1073,15 @@ class KeymapVisualizer:
 
                 # Replace BASE_* layer names with clean names in SVG
                 # Order matters: replace longer names first to avoid partial matches
-                svg_output = svg_output.replace('BASE_NIGHT_V2', 'NIGHT_V2')
                 svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
                 svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
                 svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
 
-                # Replace V2 variant layer names with clean names (NUM, SYM, etc.)
-                svg_output = svg_output.replace('NUM_NIGHT_V2', 'NUM')
-                svg_output = svg_output.replace('SYM_NIGHT_V2', 'SYM')
-                svg_output = svg_output.replace('NAV_NIGHT_V2', 'NAV')
-                svg_output = svg_output.replace('MEDIA_NIGHT_V2', 'MEDIA')
-
-                # Replace original NIGHT variant layer names with clean names too
+                # Replace NIGHT variant layer names with clean names (NUM, SYM, etc.)
                 svg_output = svg_output.replace('NUM_NIGHT', 'NUM')
                 svg_output = svg_output.replace('SYM_NIGHT', 'SYM')
                 svg_output = svg_output.replace('NAV_NIGHT', 'NAV')
                 svg_output = svg_output.replace('MEDIA_NIGHT', 'MEDIA')
-
-                # Post-process: Add inline font-size to tap text elements for PDF compatibility
-                # svglib doesn't fully support CSS class selectors, so we need inline styles
-                svg_output = self._add_inline_font_size(svg_output)
 
                 # Write SVG file
                 svg_file.write_text(svg_output)

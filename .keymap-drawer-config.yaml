@@ -47,65 +47,9 @@ parse_config:
     "MEDIA_NIGHT_V2": "MEDIA"
 
   raw_binding_map:
-    # Layer-tap keys - show tap key on top, layer below
-    "LT(FUN, KC_X)":
-      tap: "X"
-      hold: "FUN"
-    "LT(FUN, KC_SLSH)":
-      tap: "/"
-      hold: "FUN"
-    "LT(NAV, KC_SPC)":
-      tap: "Space"
-      hold: "NAV"
-    "LT(NAV, KC_R)":
-      tap: "R"
-      hold: "NAV"
-    "LT(MEDIA, KC_TAB)":
-      tap: "Tab"
-      hold: "MEDIA"
-    "LT(MEDIA, KC_ENT)":
-      tap: "Enter"
-      hold: "MEDIA"
-    "LT(SYM, KC_DEL)":
-      tap: "Del"
-      hold: "SYM"
-    "LT(SYM, KC_SPC)":
-      tap: "Space"
-      hold: "SYM"
-    "LT(NUM, KC_BSPC)":
-      tap: "Bksp"
-      hold: "NUM"
-
-    # Night-specific layer-tap keys
-    "LT(SYM_NIGHT, KC_BSPC)":
-      tap: "Bksp"
-      hold: "SYM"
-    "LT(NUM_NIGHT, KC_R)":
-      tap: "R"
-      hold: "NUM"
-    "LT(NAV_NIGHT, KC_SPC)":
-      tap: "Space"
-      hold: "NAV"
-    "LT(NAV_NIGHT, KC_ENT)":
-      tap: "Enter"
-      hold: "NAV"
-    "LT(MEDIA_NIGHT, KC_ENT)":
-      tap: "Enter"
-      hold: "MEDIA"
-
-    # Night V2-specific layer-tap keys
-    "LT(SYM_NIGHT_V2, KC_R)":
-      tap: "R"
-      hold: "SYM"
-    "LT(NUM_NIGHT_V2, KC_BSPC)":
-      tap: "Bksp"
-      hold: "NUM"
-    "LT(NAV_NIGHT_V2, KC_SPC)":
-      tap: "Space"
-      hold: "NAV"
-    "LT(MEDIA_NIGHT_V2, KC_ENT)":
-      tap: "Enter"
-      hold: "MEDIA"
+    # Layer-tap and mod-tap keys are AUTO-GENERATED from config/keymap.yaml
+    # Do not add manual entries here - they will be overwritten
+    # See scripts/visualizer.py::_generate_layer_tap_mappings()
 
     # Empty/blank keys
     "KC_NO": ""
