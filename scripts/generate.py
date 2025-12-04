@@ -323,6 +323,7 @@ class KeymapGenerator:
 
         if visualizer.is_available():
             visualizer.generate_superset_visualizations(self.board_inventory)
+            visualizer.generate_rowstagger_visualizations()
         else:
             print(f"⚠️  keymap-drawer not available, skipping visualization")
 

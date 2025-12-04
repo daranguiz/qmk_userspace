@@ -1643,3 +1643,89 @@ class KeymapVisualizer:
         """
         # Call new superset visualization method
         return self.generate_superset_visualizations(board_inventory)
+
+    def generate_rowstagger_visualizations(self) -> None:
+        """Generate visualizations for row-stagger keyboard layouts"""
+        from config_parser import YAMLConfigParser
+        from keylayout_translator import KeylayoutTranslator
+
+        rowstagger_dir = self.config_dir / "rowstagger"
+        if not rowstagger_dir.exists():
+            return
+
+        yaml_files = list(rowstagger_dir.glob("*.yaml"))
+        if not yaml_files:
+            return
+
+        print(f"📊 Generating row-stagger visualizations...")
+        translator = KeylayoutTranslator()
+
+        for yaml_file in yaml_files:
+            try:
+                # Parse config
+                config = YAMLConfigParser.parse_rowstagger(yaml_file)
+                layout_name = yaml_file.stem
+
+                # Convert to keymap-drawer YAML format
+                keymap_yaml = self._rowstagger_to_keymap_yaml(config, translator)
+
+                # Write YAML to output directory
+                yaml_path = self.output_dir / f"{layout_name}_rowstagger.yaml"
+                with open(yaml_path, 'w') as f:
+                    yaml.dump(keymap_yaml, f, default_flow_style=False, sort_keys=False)
+
+                # Generate SVG using keymap-drawer
+                svg_path = self.docs_dir / f"{layout_name}_rowstagger.svg"
+                with open(svg_path, 'w') as svg_file:
+                    result = subprocess.run(
+                        ['keymap', 'draw', str(yaml_path)],
+                        stdout=svg_file,
+                        stderr=subprocess.PIPE,
+                        text=True
+                    )
+
+                if result.returncode == 0 and svg_path.exists():
+                    print(f"  ✅ {layout_name}_rowstagger.svg")
+                else:
+                    print(f"  ⚠️  Failed to generate {layout_name}_rowstagger.svg")
+                    if result.stderr:
+                        print(f"      {result.stderr.strip()}")
+
+            except Exception as e:
+                print(f"  ⚠️  Error generating visualization for {yaml_file.name}: {e}")
+
+    def _rowstagger_to_keymap_yaml(self, config, translator) -> Dict:
+        """Convert row-stagger config to keymap-drawer YAML format"""
+        # Infer shift layer
+        shift_layout = translator.infer_shift_layer(config.layout)
+
+        # Build keymap-drawer format
+        return {
+            "layout": {
+                "ortho_layout": {
+                    "split": False,
+                    "rows": 5,
+                    "columns": 15,
+                    "thumbs": 0
+                }
+            },
+            "layers": {
+                "Base": self._build_rowstagger_layer(config.layout)
+            }
+        }
+
+    def _build_rowstagger_layer(self, layout: List[List[str]]) -> List[List[str]]:
+        """Build a keymap-drawer layer from row-stagger layout"""
+        # Build 5 rows for standard keyboard (15 keys per row)
+        return [
+            # Number row (15 keys: Esc + 1-0 + -=Bksp)
+            ["Esc", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Bksp", ""],
+            # Top row (15 keys: Tab + 12 alphas + \)
+            ["Tab"] + layout[0] + ["\\", ""],  # layout[0] has 12 keys (q-])
+            # Home row (15 keys: Caps + 11 alphas + Enter + padding)
+            ["Caps"] + layout[1] + ["Enter", "", ""],  # layout[1] has 11 keys (a-')
+            # Bottom row (15 keys: Shift + 10 alphas + Shift + padding)
+            ["Shift"] + layout[2] + ["Shift", "", "", ""],  # layout[2] has 10 keys (z-/)
+            # Space row (15 keys)
+            ["Ctrl", "Win", "Alt", "", "", "", "Space", "", "", "", "Alt", "Win", "Menu", "Ctrl", ""]
+        ]
