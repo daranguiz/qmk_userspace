@@ -1266,6 +1266,28 @@ class KeymapVisualizer:
             traceback.print_exc()
             return None
 
+    def _generate_rowstagger_pdf(self, svg_path: Path, layout_name: str) -> Optional[Path]:
+        """Generate landscape PDF for row-stagger keyboard layout"""
+        pdf_path = self.output_dir / f"{layout_name}_print.pdf"
+
+        try:
+            import cairosvg
+
+            # Read SVG content and add inline styles for better PDF rendering
+            svg_content = svg_path.read_text()
+            svg_content = self._add_inline_styles_for_pdf(svg_content)
+
+            # Convert SVG to PDF using cairosvg
+            cairosvg.svg2pdf(bytestring=svg_content.encode('utf-8'), write_to=str(pdf_path))
+
+            print(f"    📄 {pdf_path.name}")
+            return pdf_path
+        except Exception as e:
+            print(f"  ⚠️  PDF generation failed for {layout_name}: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+
     def _old_generate_superset_visualizations(self, board_inventory) -> Dict[str, Optional[Path]]:
         """
         OLD VERSION - Generate one visualization per layout_size using keymap.yaml superset
@@ -1815,6 +1837,9 @@ class KeymapVisualizer:
 
                 if result.returncode == 0 and svg_path.exists():
                     print(f"  ✅ {layout_name}_rowstagger.svg")
+
+                    # Generate landscape PDF for printing
+                    self._generate_rowstagger_pdf(svg_path, layout_name)
 
                     # Clean up intermediate files
                     if info_json_path.exists():
