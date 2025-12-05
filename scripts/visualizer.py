@@ -1709,7 +1709,31 @@ class KeymapVisualizer:
                 "Base": self._build_flat_layer(config.layout)
             },
             "draw_config": {
-                "svg_extra_style": ".default-key { fill: #cccccc !important; } .default-key text { display: none !important; }"
+                "key_h": 60,
+                "key_w": 60,
+                "key_rx": 6,
+                "key_ry": 6,
+                "n_columns": 1,
+                "separate_combo_diagrams": False,
+                "combo_w": 24,
+                "combo_h": 22,
+                "inner_pad_w": 2,
+                "inner_pad_h": 2,
+                "line_spacing": 1.2,
+                "arc_scale": 1.0,
+                "append_colon_to_layer_header": True,
+                "small_pad": 2,
+                "legend_rel_x": 0,
+                "legend_rel_y": 0,
+                "glyph_tap_size": 28,
+                "glyph_hold_size": 20,
+                "glyph_shifted_size": 16,
+                "svg_extra_style": """
+                    /* Grey out empty keys (number row, modifiers) */
+                    .key:has(text:empty) .key-base { fill: #d0d0d0 !important; }
+                    /* Increase legend size */
+                    .tap { font-size: 24px !important; font-weight: 600 !important; }
+                """
             }
         }
 
@@ -1758,21 +1782,30 @@ class KeymapVisualizer:
             }
         }
 
-    def _build_flat_layer(self, layout: List[List[str]]) -> List[str]:
+    def _build_flat_layer(self, layout: List[List[str]]) -> List:
         """Build a flat list of keys for the layer"""
-        # Create default key markers
-        dk = {"t": "", "h": "default-key"}
+        # Default key (empty string will be styled grey)
+        dk = ""
+
+        # Mark homing keys (f and j positions in QWERTY = indices 3 and 6 on home row)
+        # Add a marker (·) that will be styled to look like a homing bump
+        home_row_keys = []
+        for i, key in enumerate(layout[1]):  # Home row
+            if i == 3 or i == 6:  # f and j positions
+                home_row_keys.append(f"{key}\n·")  # Add dot below for homing indicator
+            else:
+                home_row_keys.append(key)
 
         # Flatten the layout to match the physical layout spec
         return (
-            # Number row (14 keys)
+            # Number row (14 keys) - all empty/grey
             [dk] * 14 +
             # Top row (1.5u Tab + 12 alphas + 1.5u backslash)
             [dk] + layout[0] + [dk] +
             # Home row (1.75u Caps + 11 alphas + 2.25u Enter)
-            [dk] + layout[1] + [dk] +
+            [dk] + home_row_keys + [dk] +
             # Bottom row (2.25u Shift + 10 alphas + 2.75u Shift)
             [dk] + layout[2] + [dk] +
-            # Space row (8 keys)
+            # Space row (8 keys) - all empty/grey
             [dk] * 8
         )
