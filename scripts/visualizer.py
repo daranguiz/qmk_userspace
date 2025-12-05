@@ -1100,8 +1100,8 @@ class KeymapVisualizer:
                 svg_output = svg_output.replace('NAV_NIGHT', 'NAV')
                 svg_output = svg_output.replace('MEDIA_NIGHT', 'MEDIA')
 
-                # Apply inline styles for better rendering
-                svg_output = self._add_inline_styles_for_pdf(svg_output)
+                # Apply inline styles for better rendering (with white outline for SVG)
+                svg_output = self._add_inline_styles_for_pdf(svg_output, for_pdf=False)
 
                 # Write SVG file
                 svg_file.write_text(svg_output)
@@ -1120,7 +1120,7 @@ class KeymapVisualizer:
             traceback.print_exc()
             return None
 
-    def _add_inline_styles_for_pdf(self, svg_content: str) -> str:
+    def _add_inline_styles_for_pdf(self, svg_content: str, for_pdf: bool = True) -> str:
         """
         Add inline style attributes to text elements for PDF rendering
 
@@ -1129,6 +1129,7 @@ class KeymapVisualizer:
 
         Args:
             svg_content: SVG markup string
+            for_pdf: If True, omit white stroke on labels (for PDF). If False, include it (for SVG).
 
         Returns:
             Updated SVG markup with inline styles
@@ -1190,12 +1191,21 @@ class KeymapVisualizer:
             content = match.group(3)
             closing_tag = match.group(4)
 
-            # Layer labels should be bold with explicit font and NO stroke (solid black)
-            # Build the complete style string at once to avoid multiple replacements
+            # Layer labels should be bold with explicit font
+            # For SVG: add white stroke outline for visibility
+            # For PDF: no stroke (solid black only)
             new_styles = []
             new_styles.append('font-weight: 700')
             new_styles.append('font-family: Helvetica, Arial, sans-serif')
-            new_styles.append('stroke: none')  # Remove white outline for PDF
+
+            if not for_pdf:
+                # Only add white outline for SVG display
+                new_styles.append('stroke: white')
+                new_styles.append('stroke-width: 4')
+                new_styles.append('paint-order: stroke')
+            else:
+                # For PDF, no stroke
+                new_styles.append('stroke: none')
 
             if 'style=' in opening_tag:
                 # Extract existing style content
