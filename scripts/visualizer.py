@@ -1666,8 +1666,13 @@ class KeymapVisualizer:
                 config = YAMLConfigParser.parse_rowstagger(yaml_file)
                 layout_name = yaml_file.stem
 
+                # Write QMK info.json
+                info_json_path = self.output_dir / f"{layout_name}_info.json"
+                with open(info_json_path, 'w') as f:
+                    json.dump(self._build_qmk_info_json(), f, indent=2)
+
                 # Convert to keymap-drawer YAML format
-                keymap_yaml = self._rowstagger_to_keymap_yaml(config, translator)
+                keymap_yaml = self._rowstagger_to_keymap_yaml(config, translator, info_json_path)
 
                 # Write YAML to output directory
                 yaml_path = self.output_dir / f"{layout_name}_rowstagger.yaml"
@@ -1694,38 +1699,80 @@ class KeymapVisualizer:
             except Exception as e:
                 print(f"  ⚠️  Error generating visualization for {yaml_file.name}: {e}")
 
-    def _rowstagger_to_keymap_yaml(self, config, translator) -> Dict:
+    def _rowstagger_to_keymap_yaml(self, config, translator, info_json_path: Path) -> Dict:
         """Convert row-stagger config to keymap-drawer YAML format"""
-        # Infer shift layer
-        shift_layout = translator.infer_shift_layer(config.layout)
-
-        # Build keymap-drawer format
         return {
             "layout": {
-                "ortho_layout": {
-                    "split": False,
-                    "rows": 5,
-                    "columns": 15,
-                    "thumbs": 0
-                }
+                "qmk_info_json": str(info_json_path)
             },
             "layers": {
-                "Base": self._build_rowstagger_layer(config.layout)
+                "Base": self._build_flat_layer(config.layout)
+            },
+            "draw_config": {
+                "svg_extra_style": ".default-key { fill: #cccccc !important; } .default-key text { display: none !important; }"
             }
         }
 
-    def _build_rowstagger_layer(self, layout: List[List[str]]) -> List[List[str]]:
-        """Build a keymap-drawer layer from row-stagger layout"""
-        # Build 5 rows for standard keyboard (15 keys per row)
-        return [
-            # Number row (15 keys: Esc + 1-0 + -=Bksp)
-            ["Esc", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Bksp", ""],
-            # Top row (15 keys: Tab + 12 alphas + \)
-            ["Tab"] + layout[0] + ["\\", ""],  # layout[0] has 12 keys (q-])
-            # Home row (15 keys: Caps + 11 alphas + Enter + padding)
-            ["Caps"] + layout[1] + ["Enter", "", ""],  # layout[1] has 11 keys (a-')
-            # Bottom row (15 keys: Shift + 10 alphas + Shift + padding)
-            ["Shift"] + layout[2] + ["Shift", "", "", ""],  # layout[2] has 10 keys (z-/)
-            # Space row (15 keys)
-            ["Ctrl", "Win", "Alt", "", "", "", "Space", "", "", "", "Alt", "Win", "Menu", "Ctrl", ""]
-        ]
+    def _build_qmk_info_json(self) -> Dict:
+        """Build a QMK info.json structure for 60% ANSI layout"""
+        layout = []
+
+        # Row 0: Number row (Esc through Backspace)
+        for i in range(13):
+            layout.append({"x": i, "y": 0})
+        layout.append({"x": 13, "y": 0, "w": 2})  # Backspace
+
+        # Row 1: Tab row (Tab, q-], backslash)
+        layout.append({"x": 0, "y": 1, "w": 1.5})  # Tab
+        for i in range(12):
+            layout.append({"x": 1.5 + i, "y": 1})  # q through ]
+        layout.append({"x": 13.5, "y": 1, "w": 1.5})  # Backslash
+
+        # Row 2: Caps row (Caps, a-', Enter)
+        layout.append({"x": 0, "y": 2, "w": 1.75})  # Caps
+        for i in range(11):
+            layout.append({"x": 1.75 + i, "y": 2})  # a through '
+        layout.append({"x": 12.75, "y": 2, "w": 2.25})  # Enter
+
+        # Row 3: Shift row (Shift, z-/, Shift)
+        layout.append({"x": 0, "y": 3, "w": 2.25})  # Left Shift
+        for i in range(10):
+            layout.append({"x": 2.25 + i, "y": 3})  # z through /
+        layout.append({"x": 12.25, "y": 3, "w": 2.75})  # Right Shift
+
+        # Row 4: Bottom row (Ctrl, Win, Alt, Space, Alt, Win, Menu, Ctrl)
+        layout.append({"x": 0, "y": 4, "w": 1.25})  # Ctrl
+        layout.append({"x": 1.25, "y": 4, "w": 1.25})  # Win
+        layout.append({"x": 2.5, "y": 4, "w": 1.25})  # Alt
+        layout.append({"x": 3.75, "y": 4, "w": 6.25})  # Space
+        layout.append({"x": 10, "y": 4, "w": 1.25})  # Alt
+        layout.append({"x": 11.25, "y": 4, "w": 1.25})  # Win
+        layout.append({"x": 12.5, "y": 4, "w": 1.25})  # Menu
+        layout.append({"x": 13.75, "y": 4, "w": 1.25})  # Ctrl
+
+        return {
+            "layouts": {
+                "LAYOUT_60_ansi": {
+                    "layout": layout
+                }
+            }
+        }
+
+    def _build_flat_layer(self, layout: List[List[str]]) -> List[str]:
+        """Build a flat list of keys for the layer"""
+        # Create default key markers
+        dk = {"t": "", "h": "default-key"}
+
+        # Flatten the layout to match the physical layout spec
+        return (
+            # Number row (14 keys)
+            [dk] * 14 +
+            # Top row (1.5u Tab + 12 alphas + 1.5u backslash)
+            [dk] + layout[0] + [dk] +
+            # Home row (1.75u Caps + 11 alphas + 2.25u Enter)
+            [dk] + layout[1] + [dk] +
+            # Bottom row (2.25u Shift + 10 alphas + 2.75u Shift)
+            [dk] + layout[2] + [dk] +
+            # Space row (8 keys)
+            [dk] * 8
+        )
