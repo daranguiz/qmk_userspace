@@ -514,10 +514,10 @@ qmk compile -kb jels/boaty -km dario
 20: KC_TRNS
 21: KC_TRNS
 22: KC_TRNS
-23: KC_TILD
-24: KC_LBRC
-25: KC_RBRC
-26: KC_PERC
+23: KC_NO
+24: KC_TILD
+25: KC_PERC
+26: KC_COLN
 27: KC_NO
 28: KC_CIRC
 29: KC_7
@@ -551,7 +551,7 @@ qmk compile -kb jels/boaty -km dario
 57: KC_NO
 58: KC_NO
 59: KC_NO
-60: KC_COLN
+60: KC_SLSH
 61: KC_0
 62: KC_AT
 ```
@@ -585,7 +585,7 @@ qmk compile -kb jels/boaty -km dario
 23: KC_PERC
 24: KC_ASTR
 25: KC_DLR
-26: KC_DQUO
+26: KC_COLN
 27: KC_NO
 28: KC_PLUS
 29: KC_LT
@@ -599,9 +599,9 @@ qmk compile -kb jels/boaty -km dario
 37: KC_LALT
 38: KC_LCTL
 39: KC_LSFT
-40: KC_BSLS
+40: KC_EQL
 41: KC_EXLM
-42: KC_EQL
+42: KC_QUES
 43: KC_LPRN
 44: KC_RPRN
 45: KC_SCLN
@@ -611,17 +611,17 @@ qmk compile -kb jels/boaty -km dario
 49: KC_NO
 50: KC_AMPR
 51: KC_NO
-52: KC_UNDS
+52: KC_BSLS
 53: KC_MINS
 54: KC_LBRC
 55: KC_RBRC
-56: KC_COLN
+56: KC_COMM
 57: KC_NO
 58: KC_NO
 59: KC_NO
-60: KC_QUES
+60: KC_SLSH
 61: KC_SPC
-62: KC_SLSH
+62: KC_ENT
 ```
 
 ## NAV_NIGHT Layer

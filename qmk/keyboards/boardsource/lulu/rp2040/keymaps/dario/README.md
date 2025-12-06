@@ -469,10 +469,10 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 10: KC_NO
 11: KC_NO
 12: KC_NO
-13: KC_TILD
-14: KC_LBRC
-15: KC_RBRC
-16: KC_PERC
+13: KC_NO
+14: KC_TILD
+15: KC_PERC
+16: KC_COLN
 17: KC_NO
 18: KC_CIRC
 19: KC_7
@@ -510,7 +510,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 51: KC_NO
 52: KC_NO
 53: KC_NO
-54: KC_COLN
+54: KC_SLSH
 55: KC_0
 56: KC_AT
 57: KC_NO
@@ -535,7 +535,7 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 13: KC_PERC
 14: KC_ASTR
 15: KC_DLR
-16: KC_DQUO
+16: KC_COLN
 17: KC_NO
 18: KC_PLUS
 19: KC_LT
@@ -548,9 +548,9 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 26: KC_LALT
 27: KC_LCTL
 28: KC_LSFT
-29: KC_BSLS
+29: KC_EQL
 30: KC_EXLM
-31: KC_EQL
+31: KC_QUES
 32: KC_LPRN
 33: KC_RPRN
 34: KC_SCLN
@@ -563,19 +563,19 @@ qmk compile -kb boardsource/lulu/rp2040 -km dario
 41: KC_NO
 42: KC_NO
 43: KC_NO
-44: KC_UNDS
+44: KC_BSLS
 45: KC_MINS
 46: KC_LBRC
 47: KC_RBRC
-48: KC_COLN
+48: KC_COMM
 49: KC_NO
 50: KC_NO
 51: KC_NO
 52: KC_NO
 53: KC_NO
-54: KC_QUES
+54: KC_SLSH
 55: KC_SPC
-56: KC_SLSH
+56: KC_ENT
 57: KC_NO
 ```
 

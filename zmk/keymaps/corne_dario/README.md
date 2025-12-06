@@ -377,10 +377,10 @@
 
 ```
  0: &none
- 1: &kp TILDE
- 2: &kp LBKT
- 3: &kp RBKT
- 4: &kp PERCENT
+ 1: &none
+ 2: &kp TILDE
+ 3: &kp PERCENT
+ 4: &kp COLON
  5: &none
 
  6: &none
@@ -421,7 +421,7 @@
 36: &none
 37: &none
 38: &none
-39: &kp COLON
+39: &kp FSLH
 40: &kp N0
 41: &kp AT
 ```
@@ -433,7 +433,7 @@
  1: &kp PERCENT
  2: &kp ASTERISK
  3: &kp DOLLAR
- 4: &kp DQT
+ 4: &kp COLON
  5: &none
 
  6: &none
@@ -441,7 +441,7 @@
  8: &kp LALT
  9: &kp LCTRL
 10: &kp LSHFT
-11: &kp BSLH
+11: &kp EQUAL
 
 12: &none
 13: &none
@@ -458,25 +458,25 @@
 23: &none
 
 24: &kp EXCL
-25: &kp EQUAL
+25: &kp QUESTION
 26: &kp LPAR
 27: &kp RPAR
 28: &kp SEMI
 29: &none
 
-30: &kp UNDERSCORE
+30: &kp BSLH
 31: &kp MINUS
 32: &kp LBKT
 33: &kp RBKT
-34: &kp COLON
+34: &kp COMMA
 35: &none
 
 36: &none
 37: &none
 38: &none
-39: &kp QUESTION
+39: &kp FSLH
 40: &kp SPACE
-41: &kp FSLH
+41: &kp ENTER
 ```
 
 ## NAV_NIGHT Layer

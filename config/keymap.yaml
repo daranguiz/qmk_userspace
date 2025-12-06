@@ -14,18 +14,6 @@ layers:
       thumbs:
         - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:DEL    ]
         - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
-
-        # constraints
-        # Space and R are used frequently, so should be opposite
-        # R must be shiftable, so should be opposite
-        # Shift and Space form an SFB, must be oppositeaie
-        #
-        # NAV on R (was on MEDIA, moved to MEDIA:ENT)
-        # NUM on R
-        # SYM on L
-        # Shift mod-taps on thumb keys (TAB/DEL) don't use chordal hold
-        #
-        # future idea: ENT on R ring finger
     extensions:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
@@ -164,7 +152,7 @@ layers:
   NUM_NIGHT:
     core: # (3x5)
       left:
-        - [TILD           , LBRC           , RBRC           , PERC           , NONE           ]
+        - [NONE           , TILD           , PERC           , COLN           , NONE           ]
         - [LGUI           , LALT           , LCTL           , LSFT           , PIPE           ]
         - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:
@@ -173,7 +161,7 @@ layers:
         - [DLR            , 1              , 2              , 3              , COMM           ]
       thumbs:
         - [NONE           , NONE           , NONE           ]
-        - [COLN           , 0              , AT             ]
+        - [SLSH           , 0              , AT             ]
     extensions:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
@@ -185,16 +173,16 @@ layers:
   SYM_NIGHT:
     core: # (3x5)
       left:
-        - [PERC           , ASTR           , DLR            , DQUO           , NONE           ]
-        - [LGUI           , LALT           , LCTL           , LSFT           , BSLS           ]
+        - [PERC           , ASTR           , DLR            , COLN           , NONE           ]
+        - [LGUI           , LALT           , LCTL           , LSFT           , EQL            ]
         - [NONE           , NONE           , NONE           , AMPR           , NONE           ]
       right:
         - [PLUS           , LABK           , LCBR           , RCBR           , RABK           ]
-        - [EXLM           , EQL            , LPRN           , RPRN           , SCLN           ]
-        - [UNDS           , MINS           , LBRC           , RBRC           , COLN           ]
+        - [EXLM           , QUES           , LPRN           , RPRN           , SCLN           ]
+        - [BSLS           , MINS           , LBRC           , RBRC           , COMM           ]
       thumbs:
         - [NONE           , NONE           , NONE           ]
-        - [QUES           , SPC            , SLSH           ]
+        - [SLSH           , SPC            , ENT            ]
     extensions:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]

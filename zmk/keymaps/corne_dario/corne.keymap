@@ -89,19 +89,19 @@
 
         num_night_layer {
             bindings = <
-                &none &kp TILDE &kp LBKT &kp RBKT &kp PERCENT &none &kp CARET &kp N7 &kp N8 &kp N9 &kp DOT &none
+                &none &none &kp TILDE &kp PERCENT &kp COLON &none &kp CARET &kp N7 &kp N8 &kp N9 &kp DOT &none
                 &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp PIPE &kp HASH &kp N4 &kp N5 &kp N6 &kp GRAVE &none
                 &none &kp LG(Z) &kp LG(X) &kp LG(C) &kp LG(V) &kp LG(LS(Z)) &kp DOLLAR &kp N1 &kp N2 &kp N3 &kp COMMA &none
-                &none &none &none &kp COLON &kp N0 &kp AT
+                &none &none &none &kp FSLH &kp N0 &kp AT
             >;
         };
 
         sym_night_layer {
             bindings = <
-                &none &kp PERCENT &kp ASTERISK &kp DOLLAR &kp DQT &none &kp PLUS &kp LT &kp LBRC &kp RBRC &kp GT &none
-                &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp BSLH &kp EXCL &kp EQUAL &kp LPAR &kp RPAR &kp SEMI &none
-                &none &none &none &none &kp AMPERSAND &none &kp UNDERSCORE &kp MINUS &kp LBKT &kp RBKT &kp COLON &none
-                &none &none &none &kp QUESTION &kp SPACE &kp FSLH
+                &none &kp PERCENT &kp ASTERISK &kp DOLLAR &kp COLON &none &kp PLUS &kp LT &kp LBRC &kp RBRC &kp GT &none
+                &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp EQUAL &kp EXCL &kp QUESTION &kp LPAR &kp RPAR &kp SEMI &none
+                &none &none &none &none &kp AMPERSAND &none &kp BSLH &kp MINUS &kp LBKT &kp RBKT &kp COMMA &none
+                &none &none &none &kp FSLH &kp SPACE &kp ENTER
             >;
         };
 

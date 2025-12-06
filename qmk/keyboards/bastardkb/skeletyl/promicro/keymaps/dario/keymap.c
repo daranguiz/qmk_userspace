@@ -77,24 +77,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_NO               , KC_NO               , KC_NO               
     ),
     [NUM_NIGHT] = LAYOUT_split_3x5_3(
-        KC_TILD             , KC_LBRC             , KC_RBRC             , KC_PERC             , KC_NO               ,
+        KC_NO               , KC_TILD             , KC_PERC             , KC_COLN             , KC_NO               ,
         KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_PIPE             ,
         LGUI(KC_Z)          , LGUI(KC_X)          , LGUI(KC_C)          , LGUI(KC_V)          , SGUI(KC_Z)          ,
         KC_CIRC             , KC_7                , KC_8                , KC_9                , KC_DOT              ,
         KC_HASH             , KC_4                , KC_5                , KC_6                , KC_GRV              ,
         KC_DLR              , KC_1                , KC_2                , KC_3                , KC_COMM             ,
                               KC_NO               , KC_NO               , KC_NO               ,
-                              KC_COLN             , KC_0                , KC_AT               
+                              KC_SLSH             , KC_0                , KC_AT               
     ),
     [SYM_NIGHT] = LAYOUT_split_3x5_3(
-        KC_PERC             , KC_ASTR             , KC_DLR              , KC_DQUO             , KC_NO               ,
-        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_BSLS             ,
+        KC_PERC             , KC_ASTR             , KC_DLR              , KC_COLN             , KC_NO               ,
+        KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_EQL              ,
         KC_NO               , KC_NO               , KC_NO               , KC_AMPR             , KC_NO               ,
         KC_PLUS             , KC_LT               , KC_LCBR             , KC_RCBR             , KC_GT               ,
-        KC_EXLM             , KC_EQL              , KC_LPRN             , KC_RPRN             , KC_SCLN             ,
-        KC_UNDS             , KC_MINS             , KC_LBRC             , KC_RBRC             , KC_COLN             ,
+        KC_EXLM             , KC_QUES             , KC_LPRN             , KC_RPRN             , KC_SCLN             ,
+        KC_BSLS             , KC_MINS             , KC_LBRC             , KC_RBRC             , KC_COMM             ,
                               KC_NO               , KC_NO               , KC_NO               ,
-                              KC_QUES             , KC_SPC              , KC_SLSH             
+                              KC_SLSH             , KC_SPC              , KC_ENT              
     ),
     [NAV_NIGHT] = LAYOUT_split_3x5_3(
         KC_NO               , KC_PGUP             , KC_NO               , KC_NO               , KC_ESC              ,
