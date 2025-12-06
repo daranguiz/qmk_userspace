@@ -4,7 +4,7 @@ Layer compiler
 Compiles layers by applying extensions and translating keycodes
 """
 
-from typing import List, Union
+from typing import List, Union, Dict, Any
 from data_model import Layer, Board, CompiledLayer, ValidationError
 from qmk_translator import QMKTranslator
 from zmk_translator import ZMKTranslator
@@ -35,9 +35,10 @@ class LayerCompiler:
 
         This applies the following transformations:
         1. Start with either core or full_layout
-        2. Apply extensions/padding based on board requirements
-        3. Translate keycodes to firmware-specific syntax
-        4. Validate complex keybindings
+        2. Resolve position references (L36(n)) if present
+        3. Apply extensions/padding based on board requirements
+        4. Translate keycodes to firmware-specific syntax
+        5. Validate complex keybindings
 
         Args:
             layer: Layer to compile
@@ -52,27 +53,47 @@ class LayerCompiler:
         """
         # 1. Get initial keycodes
         if layer.full_layout is not None:
-            # Use full_layout directly (for special layers like GAME)
+            # Use full_layout directly (for special layers like GAME, or boards with L36 refs)
             keycodes = layer.full_layout.flatten()
+            print(f"DEBUG: Layer {layer.name} has full_layout, flattened to {len(keycodes)} keys")
+            print(f"DEBUG: First 5 keycodes after flatten: {keycodes[:5]}")
+
+            # 2. Check if this layout contains position references
+            has_refs = self._contains_position_references(keycodes)
+            print(f"DEBUG: Contains position references? {has_refs}")
+            if has_refs:
+                # Need core to resolve references
+                if layer.core is None:
+                    raise ValidationError(
+                        f"Layer {layer.name} uses L36 references but has no core defined"
+                    )
+                # Flatten core and resolve all L36(n) references
+                core_flat = self._flatten_core_for_references(layer.core)
+                print(f"DEBUG: Core flattened, first 5 items: {core_flat[:5]}")
+                keycodes = self._resolve_position_references(keycodes, core_flat)
+                print(f"DEBUG: After resolution, first 5 items: {keycodes[:5]}")
+                print(f"DEBUG: Keycodes contain dicts? {any(isinstance(kc, dict) for kc in keycodes)}")
         else:
             # Use core layout and pad to board size
             keycodes = layer.core.flatten()
             keycodes = self._pad_layout_for_board(keycodes, board, layer)
 
-        # 2. Select translator based on firmware
+        # 3. Select translator based on firmware
         translator = self.qmk_translator if firmware == "qmk" else self.zmk_translator
 
-        # 3. Validate complex keybindings before translation
+        # 4. Validate complex keybindings before translation
         for keycode in keycodes:
             translator.validate_keybinding(keycode, layer.name)
 
-        # 4. Translate keycodes (with position awareness for ZMK)
+        # 5. Translate keycodes (with position awareness for ZMK)
         translated = []
         for idx, kc in enumerate(keycodes):
             # Set key index for position-aware translation (ZMK hrm -> hml/hmr)
             if hasattr(translator, 'set_key_index'):
                 translator.set_key_index(idx)
             translated.append(translator.translate(kc))
+
+        print(f"DEBUG: Compiled layer {layer.name} with {len(translated)} keycodes")
 
         return CompiledLayer(
             name=layer.name,
@@ -189,6 +210,14 @@ class LayerCompiler:
         # We need to map our 36-key core into this 58-key matrix
         elif layout_size == "custom_58":
             return self._pad_to_58_keys(keycodes, layer, board)
+
+        # Custom layouts (like custom_boaty) should not reach this method
+        elif layout_size.startswith("custom_"):
+            raise ValidationError(
+                f"Board {board.id} has custom layout size {layout_size}. "
+                f"Custom layouts must use full_layout with L36(n) references, not core padding. "
+                f"Ensure the layer has a full_layout defined in the board-specific keymap file."
+            )
 
         # Unknown layout - just return core
         else:
@@ -327,3 +356,82 @@ class LayerCompiler:
         row4 = ["NONE", thumbs[0], thumbs[1], thumbs[2], thumbs[3], thumbs[4], thumbs[5], "NONE"]
 
         return row0 + row1 + row2 + row3 + row4
+
+    def _contains_position_references(self, keycodes: List[Union[str, dict]]) -> bool:
+        """Check if keycode list contains any L36(n) position references"""
+        for kc in keycodes:
+            if isinstance(kc, dict) and kc.get("_ref") == "L36":
+                return True
+        return False
+
+    def _flatten_core_for_references(self, core) -> List[Union[str, Dict[str, Any]]]:
+        """
+        Flatten 36-key core layout to flat list for position reference resolution.
+
+        Position mapping (0-35) - row-based ordering:
+        - 0-9: Top row (L36_0-4 = left top, L36_5-9 = right top)
+        - 10-19: Home row (L36_10-14 = left home, L36_15-19 = right home)
+        - 20-29: Bottom row (L36_20-24 = left bottom, L36_25-29 = right bottom)
+        - 30-32: Left thumbs (3 keys)
+        - 33-35: Right thumbs (3 keys)
+
+        Args:
+            core: KeyGrid with core layout
+
+        Returns:
+            Flattened list of 36 keycodes (strings or behavior dicts like hrm:LGUI:A)
+        """
+        flat = []
+
+        # Row-based ordering: interleave left and right for each row
+        for row in range(3):
+            # Left side of this row (5 keys)
+            flat.extend(core.rows[row])
+            # Right side of this row (5 keys)
+            flat.extend(core.rows[3 + row])
+
+        # Thumbs: left then right
+        flat.extend(core.rows[6])  # Left thumbs (3 keys)
+        flat.extend(core.rows[7])  # Right thumbs (3 keys)
+
+        if len(flat) != 36:
+            raise ValidationError(
+                f"Core layout must have exactly 36 keys, got {len(flat)}"
+            )
+
+        return flat
+
+    def _resolve_position_references(
+        self,
+        keycodes: List[Union[str, dict]],
+        core_flat: List[Union[str, Dict[str, Any]]]
+    ) -> List[Union[str, Dict[str, Any]]]:
+        """
+        Resolve all L36(n) position references to actual keycodes from core.
+
+        Args:
+            keycodes: List potentially containing L36 reference dicts
+            core_flat: Flattened 36-key core layout (strings or behavior dicts)
+
+        Returns:
+            List with all references resolved to actual keycodes (strings or behavior dicts)
+
+        Raises:
+            ValidationError: If reference index is out of range
+        """
+        resolved = []
+
+        for kc in keycodes:
+            if isinstance(kc, dict) and kc.get("_ref") == "L36":
+                index = kc["index"]
+                if index >= len(core_flat):
+                    raise ValidationError(
+                        f"L36 index {index} out of range (core has {len(core_flat)} keys)"
+                    )
+                # Resolve reference to actual keycode from core
+                resolved.append(core_flat[index])
+            else:
+                # Regular keycode (string)
+                resolved.append(kc)
+
+        return resolved

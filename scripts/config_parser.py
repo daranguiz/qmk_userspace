@@ -28,12 +28,16 @@ class YAMLConfigParser:
     """Parser for YAML configuration files"""
 
     @staticmethod
-    def parse_keymap(yaml_path: Path) -> KeymapConfiguration:
+    def parse_keymap(yaml_path: Path, overlay_path: Path = None) -> KeymapConfiguration:
         """
-        Parse config/keymap.yaml
+        Parse config/keymap.yaml with optional board-specific overlay
+
+        Args:
+            yaml_path: Path to main keymap.yaml (with core definitions)
+            overlay_path: Optional path to board-specific keymap file (with full_layout definitions)
 
         Returns:
-            KeymapConfiguration with all layers loaded
+            KeymapConfiguration with all layers loaded (merged if overlay provided)
         """
         with open(yaml_path, 'r') as f:
             data = yaml.safe_load(f)
@@ -41,8 +45,28 @@ class YAMLConfigParser:
         if not data or 'layers' not in data:
             raise ValidationError("keymap.yaml must contain 'layers' section")
 
+        layers_data = data['layers']
+
+        # If overlay provided, merge full_layout definitions
+        if overlay_path and overlay_path.exists():
+            with open(overlay_path, 'r') as f:
+                overlay_data = yaml.safe_load(f)
+
+            if overlay_data and 'layers' in overlay_data:
+                overlay_layers = overlay_data['layers']
+
+                # Merge: overlay full_layout takes precedence, but preserve core from main
+                for layer_name, overlay_layer in overlay_layers.items():
+                    if layer_name in layers_data:
+                        # Add/override full_layout to existing layer
+                        if 'full_layout' in overlay_layer:
+                            layers_data[layer_name]['full_layout'] = overlay_layer['full_layout']
+                    else:
+                        # New layer only in overlay
+                        layers_data[layer_name] = overlay_layer
+
         layers = {}
-        for layer_name, layer_data in data['layers'].items():
+        for layer_name, layer_data in layers_data.items():
             core = None
             full_layout = None
 
@@ -71,12 +95,14 @@ class YAMLConfigParser:
                 else:
                     raise ValidationError(f"Layer {layer_name}: 'core' must be a list or dict")
 
-            # Parse full_layout (for special layers like GAME)
+            # Parse full_layout (for special layers like GAME, or boards with position references)
             if 'full_layout' in layer_data:
                 full_rows = layer_data['full_layout']
                 if not isinstance(full_rows, list):
-                    raise ValidationError(f"Layer {layer_name}: 'full_layout' must be a list of rows")
-                full_layout = KeyGrid(rows=full_rows)
+                    raise ValidationError(f"Layer {layer_name}: 'full_layout' must be a list")
+                # full_layout is a flat list of keycodes, but KeyGrid expects rows (list of lists)
+                # Wrap it in a single row
+                full_layout = KeyGrid(rows=[full_rows])
 
             # Validate that at least one layout type is provided
             if core is None and full_layout is None:
@@ -150,6 +176,7 @@ class YAMLConfigParser:
                 firmware=board_data['firmware'],
                 layout_size=board_data.get('layout_size', '3x5_3'),
                 extra_layers=board_data.get('extra_layers', []),
+                keymap_file=board_data.get('keymap_file'),  # Board-specific keymap file
                 qmk_keyboard=board_data.get('qmk_keyboard'),
                 zmk_shield=board_data.get('zmk_shield'),
                 zmk_board=board_data.get('zmk_board')

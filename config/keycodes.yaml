@@ -38,6 +38,10 @@ TRANS:
   qmk: "KC_TRNS"
   zmk: "&trans"
 
+TRNS:
+  qmk: "KC_TRNS"
+  zmk: "&trans"
+
 # Alpha keys (A-Z)
 A:
   qmk: "KC_A"
@@ -149,6 +153,62 @@ Z:
 "9":
   qmk: "KC_9"
   zmk: "&kp N9"
+
+# Keypad/Numpad keys
+NLCK:
+  qmk: "KC_NUM_LOCK"
+  zmk: "&kp KP_NUM"
+P0:
+  qmk: "KC_P0"
+  zmk: "&kp KP_N0"
+P1:
+  qmk: "KC_P1"
+  zmk: "&kp KP_N1"
+P2:
+  qmk: "KC_P2"
+  zmk: "&kp KP_N2"
+P3:
+  qmk: "KC_P3"
+  zmk: "&kp KP_N3"
+P4:
+  qmk: "KC_P4"
+  zmk: "&kp KP_N4"
+P5:
+  qmk: "KC_P5"
+  zmk: "&kp KP_N5"
+P6:
+  qmk: "KC_P6"
+  zmk: "&kp KP_N6"
+P7:
+  qmk: "KC_P7"
+  zmk: "&kp KP_N7"
+P8:
+  qmk: "KC_P8"
+  zmk: "&kp KP_N8"
+P9:
+  qmk: "KC_P9"
+  zmk: "&kp KP_N9"
+PDOT:
+  qmk: "KC_PDOT"
+  zmk: "&kp KP_DOT"
+PENT:
+  qmk: "KC_PENT"
+  zmk: "&kp KP_ENTER"
+PPLS:
+  qmk: "KC_PPLS"
+  zmk: "&kp KP_PLUS"
+PMNS:
+  qmk: "KC_PMNS"
+  zmk: "&kp KP_MINUS"
+PAST:
+  qmk: "KC_PAST"
+  zmk: "&kp KP_MULTIPLY"
+PSLS:
+  qmk: "KC_PSLS"
+  zmk: "&kp KP_DIVIDE"
+PEQL:
+  qmk: "KC_PEQL"
+  zmk: "&kp KP_EQUAL"
 
 # Function keys (F1-F12)
 F1:

@@ -139,15 +139,30 @@ class KeymapGenerator:
             if board.zmk_shield:
                 print(f"  ZMK shield: {board.zmk_shield}")
 
+        # Load keymap with board-specific overlay if specified
+        keymap_config = self.keymap_config
+        if board.keymap_file:
+            overlay_path = self.config_dir / board.keymap_file
+            if overlay_path.exists():
+                self._log(f"  📋 Loading board-specific keymap: {board.keymap_file}")
+                keymap_config = YAMLConfigParser.parse_keymap(
+                    self.config_dir / "keymap.yaml",
+                    overlay_path
+                )
+            else:
+                print(f"⚠️  Warning: Board specifies keymap_file '{board.keymap_file}' but file not found")
+
         try:
             # Compile all layers for this board
             compiled_layers = []
-            for layer in self.keymap_config.layers.values():
+            for layer in keymap_config.layers.values():
                 # Check if this is a board-specific layer
-                # If the layer has full_layout, it's only for boards with extra_layers
+                # If the layer has full_layout:
+                # - For boards with keymap_file (custom layouts): include all full_layout layers
+                # - For other boards: only include if in extra_layers (like GAME)
                 if layer.full_layout is not None:
-                    # Skip if board doesn't explicitly request this layer
-                    if layer.name not in board.extra_layers:
+                    if not board.keymap_file and layer.name not in board.extra_layers:
+                        # Skip if board doesn't use board-specific keymap and doesn't explicitly request this layer
                         self._verbose(f"  Skipping layer {layer.name} (not in extra_layers)")
                         continue
 
@@ -286,13 +301,26 @@ class KeymapGenerator:
         for board_id in self.board_inventory.boards.keys():
             board = self.board_inventory.boards[board_id]
 
+            # Load keymap with board-specific overlay if specified
+            keymap_config = self.keymap_config
+            if board.keymap_file:
+                overlay_path = self.config_dir / board.keymap_file
+                if overlay_path.exists():
+                    keymap_config = YAMLConfigParser.parse_keymap(
+                        self.config_dir / "keymap.yaml",
+                        overlay_path
+                    )
+
             # Compile layers for this board
             compiled_layers = []
-            for layer in self.keymap_config.layers.values():
-                # If the layer has full_layout, it's only for boards with extra_layers
+            for layer in keymap_config.layers.values():
+                # Check if this is a board-specific layer
+                # If the layer has full_layout:
+                # - For boards with keymap_file (custom layouts): include all full_layout layers
+                # - For other boards: only include if in extra_layers (like GAME)
                 if layer.full_layout is not None:
-                    # Skip if board doesn't explicitly request this layer
-                    if layer.name not in board.extra_layers:
+                    if not board.keymap_file and layer.name not in board.extra_layers:
+                        # Skip if board doesn't use board-specific keymap and doesn't explicitly request this layer
                         continue
 
                 compiled_layer = self.compiler.compile_layer(

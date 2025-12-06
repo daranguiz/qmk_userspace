@@ -6,6 +6,7 @@ This module defines the core data structures used throughout the generator.
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional, Literal, Union
+import re
 
 
 class ValidationError(Exception):
@@ -22,15 +23,39 @@ class KeyGrid:
       - rows[3:6]: right hand columns (3 rows × 5 cols)
       - rows[6]: left thumb keys (3 keys)
       - rows[7]: right thumb keys (3 keys)
+
+    Supports position references like L36_0 which are preserved as dicts.
     """
-    rows: List[List[str]]  # Nested list of keycode strings
+    rows: List[List[Union[str, Dict[str, Any]]]]  # Nested list of keycodes or position references
+
+    # Pattern for position references (e.g., L36_5)
+    POSITION_REF_PATTERN = re.compile(r'^L36_(\d+)$')
 
     def __post_init__(self):
-        """Normalize all values to strings (handles YAML integers like 0-9)"""
-        self.rows = [[str(key) for key in row] for row in self.rows]
+        """
+        Normalize all values to strings or position reference dicts
+        Handles YAML integers like 0-9 and parses L36_N syntax
+        """
+        self.rows = [[self._parse_keycode(key) for key in row] for row in self.rows]
 
-    def flatten(self) -> List[str]:
-        """Flatten to single list of keycodes"""
+    def _parse_keycode(self, value: Any) -> Union[str, Dict[str, Any]]:
+        """Parse a keycode, handling position references like L36_N"""
+        if isinstance(value, str):
+            # Check for position reference pattern
+            match = self.POSITION_REF_PATTERN.match(value)
+            if match:
+                index = int(match.group(1))
+                if index < 0 or index > 35:
+                    raise ValidationError(f"L36 index out of range: {index} (must be 0-35)")
+                return {"_ref": "L36", "index": index}
+            # Regular keycode string
+            return value
+        else:
+            # Convert non-strings (like integers) to strings
+            return str(value)
+
+    def flatten(self) -> List[Union[str, Dict[str, Any]]]:
+        """Flatten to single list of keycodes (may include position references)"""
         return [key for row in self.rows for key in row]
 
     @property
@@ -119,18 +144,14 @@ class Layer:
                 f"Layer {self.name} must have either 'core' or 'full_layout' defined"
             )
 
-        # Cannot have both core and full_layout
-        if self.core is not None and self.full_layout is not None:
-            raise ValidationError(
-                f"Layer {self.name} cannot have both 'core' and 'full_layout' - choose one"
-            )
+        # Note: Layers CAN have both core and full_layout when using L36() position references
+        # The core provides the reference data, and full_layout uses it via L36(n) syntax
+        # Old validation prevented this, but we now allow it for custom boards with position references
 
-        # If using full_layout, extensions are not allowed
-        if self.full_layout is not None and len(self.extensions) > 0:
-            raise ValidationError(
-                f"Layer {self.name} uses 'full_layout' - extensions are not allowed. "
-                f"Full layouts must specify all keys directly."
-            )
+        # Note: When using L36() position references, layers can have both full_layout and extensions
+        # The extensions are for other boards (like 3x6_3), while full_layout is for custom boards
+        # We allow this combination to support the unified keymap system
+        # Old validation: "full_layout cannot have extensions" - now relaxed for flexibility
 
         # If core is provided, validate it's 36 keys
         if self.core is not None and len(self.core.flatten()) != 36:
@@ -154,6 +175,7 @@ class Board:
     - firmware: Target firmware ("qmk" or "zmk")
     - layout_size: Physical layout size (e.g., "3x5_3", "3x6_3", "custom_58")
     - extra_layers: Board-specific additional layers (e.g., ["GAME"])
+    - keymap_file: Optional board-specific keymap file (e.g., "boaty.yaml")
     - qmk_keyboard: QMK keyboard path (required for QMK boards)
     - zmk_shield: ZMK shield name (required for ZMK boards)
     """
@@ -162,6 +184,7 @@ class Board:
     firmware: Literal["qmk", "zmk"]
     layout_size: str = "3x5_3"  # Default to 36-key
     extra_layers: List[str] = field(default_factory=list)
+    keymap_file: Optional[str] = None  # Board-specific keymap file (e.g., "boaty.yaml")
 
     # Firmware-specific fields
     qmk_keyboard: Optional[str] = None

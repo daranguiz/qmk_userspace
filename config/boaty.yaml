@@ -1,0 +1,178 @@
+# Boaty-specific keymap configuration
+# Board: Jels Boaty (63 keys - boat-shaped layout)
+#
+# Physical layout:
+#   - Indices 0-20: Numpad area (right side "sail")
+#   - Indices 21-62: Main QWERTY area (the "boat" body)
+#
+# This file defines full_layout for each layer using L36(n) references
+# to pull keys from the 36-key core defined in config/keymap.yaml
+#
+# NOTE: The indices below correspond to the LAYOUT() macro order in QMK
+# Run `qmk info -kb jels/boaty` to see the exact matrix mapping
+
+layers:
+  BASE_NIGHT:
+    full_layout: [
+                                              NLCK,
+                                              PMNS,  PAST,
+                                              P7,    P8,    P9,
+                                              P4,    P5,    P6,    PPLS,
+                                              P1,    P2,    P3,    PENT, PSLS,
+                                              P0,    P0,    PDOT,  PENT, PEQL,  BSPC,
+
+      ESC,   TAB,    L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  BSPC,  DEL,
+             CAPS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, ENT,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  NAV_NIGHT:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  NUM_NIGHT:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  SYM_NIGHT:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  MEDIA_NIGHT:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  BASE_COLEMAK:
+    full_layout: [
+                                              NLCK,
+                                              PMNS,  PAST,
+                                              P7,    P8,    P9,
+                                              P4,    P5,    P6,    PPLS,
+                                              P1,    P2,    P3,    PENT, PSLS,
+                                              P0,    PDOT,  PENT, PEQL,  BSPC,
+
+      ESC,   TAB,    L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  BSPC,  DEL,
+             CAPS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, ENT,
+                     LSFT,   L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  NUM:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  SYM:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  NAV:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  MEDIA:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]
+
+  FUN:
+    full_layout: [
+                                              TRNS,
+                                              TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,
+                                              TRNS,  TRNS,  TRNS,  TRNS, TRNS,  TRNS,
+
+      TRNS,  TRNS,   L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  TRNS,  TRNS,
+             TRNS,   L36_10, L36_11, L36_12, L36_13, L36_14, L36_15, L36_16, L36_17, L36_18, L36_19, TRNS,
+                     L36_20, L36_21, L36_22, L36_23, L36_24, L36_25, L36_26, L36_27, L36_28, L36_29,
+                                     L36_30, L36_31, L36_32, L36_33, L36_34, L36_35
+    ]

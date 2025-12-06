@@ -190,15 +190,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 
     def _format_custom_layout(self, board: Board, keycodes: List[str]) -> str:
         """
-        Format custom layout (e.g., Lulu, Lily58)
+        Format custom layout (e.g., Lulu, Lily58, Boaty)
 
         For custom_58 layouts, we expect 58 keys total.
+        For custom_boaty layouts, we expect 63 keys total.
         Just format them in rows for readability.
         """
         num_keys = len(keycodes)
 
-        # Lulu/Lily macro order: 12,12,12,14,8
-        row_breaks = [12, 12, 12, 14, 8]
+        if board.layout_size == "custom_boaty":
+            # Boaty: 63 keys arranged as: 12, 12, 12, 14, 13
+            row_breaks = [12, 12, 12, 14, 13]
+        else:
+            # Lulu/Lily58: 58 keys arranged as: 12, 12, 12, 14, 8
+            row_breaks = [12, 12, 12, 14, 8]
+
         rows = []
         idx = 0
         for width in row_breaks:

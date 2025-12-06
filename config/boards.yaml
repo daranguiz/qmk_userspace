@@ -34,3 +34,10 @@ boards:
     firmware: zmk
     zmk_shield: "corneish_zen"
     layout_size: "3x6_3"
+
+  boaty:
+    name: "Jels Boaty"
+    firmware: qmk
+    qmk_keyboard: "jels/boaty"
+    layout_size: "custom_boaty"  # 63-key boat-shaped layout
+    keymap_file: "boaty.yaml"  # Board-specific keymap with L36() references
