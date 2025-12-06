@@ -14,11 +14,11 @@
 layers:
   BASE_NIGHT:
     full_layout: [
-                                              NLCK,
-                                              PMNS,  PAST,
+                                              PMNS,
+                                              PSLS,  PAST,
                                               P7,    P8,    P9,
                                               P4,    P5,    P6,    PPLS,
-                                              P1,    P2,    P3,    PENT, PSLS,
+                                              P1,    P2,    P3,    PENT, NLCK,
                                               P0,    P0,    PDOT,  PENT, PEQL,  BSPC,
 
       ESC,   TAB,    L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  BSPC,  DEL,
@@ -89,11 +89,11 @@ layers:
 
   BASE_COLEMAK:
     full_layout: [
-                                              NLCK,
-                                              PMNS,  PAST,
+                                              PMNS,
+                                              PSLS,  PAST,
                                               P7,    P8,    P9,
                                               P4,    P5,    P6,    PPLS,
-                                              P1,    P2,    P3,    PENT, PSLS,
+                                              P1,    P2,    P3,    PENT, NLCK,
                                               P0,    PDOT,  PENT, PEQL,  BSPC,
 
       ESC,   TAB,    L36_0,  L36_1,  L36_2,  L36_3,  L36_4,  L36_5,  L36_6,  L36_7,  L36_8,  L36_9,  BSPC,  DEL,

@@ -15,8 +15,8 @@ qmk compile -kb jels/boaty -km dario
 ## BASE_NIGHT Layer
 
 ```
- 0: KC_NUM_LOCK
- 1: KC_PMNS
+ 0: KC_PMNS
+ 1: KC_PSLS
  2: KC_PAST
  3: KC_P7
  4: KC_P8
@@ -29,7 +29,7 @@ qmk compile -kb jels/boaty -km dario
 11: KC_P2
 12: KC_P3
 13: KC_PENT
-14: KC_PSLS
+14: KC_NUM_LOCK
 15: KC_P0
 16: KC_P0
 17: KC_PDOT
@@ -83,8 +83,8 @@ qmk compile -kb jels/boaty -km dario
 ## BASE_COLEMAK Layer
 
 ```
- 0: KC_NUM_LOCK
- 1: KC_PMNS
+ 0: KC_PMNS
+ 1: KC_PSLS
  2: KC_PAST
  3: KC_P7
  4: KC_P8
@@ -97,7 +97,7 @@ qmk compile -kb jels/boaty -km dario
 11: KC_P2
 12: KC_P3
 13: KC_PENT
-14: KC_PSLS
+14: KC_NUM_LOCK
 15: KC_P0
 16: KC_PDOT
 17: KC_PENT
