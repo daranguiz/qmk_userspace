@@ -30,14 +30,13 @@
 #define FLOW_TAP_TERM 150
 
 // ZMK: quick-tap-ms = <175>
-// Note: QMK uses single QUICK_TAP_TERM (150ms) for both LT and MT keys
+// Note: QMK uses single QUICK_TAP_TERM (200ms) for both LT and MT keys
 
 // ZMK: flavor = "balanced"
 // Note: Uses PERMISSIVE_HOLD defined above
 
 // ZMK: hold-trigger-key-positions (opposite hand rule)
 #define CHORDAL_HOLD
-#define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 
 // ZMK: hold-trigger-on-release
 // Note: No direct QMK equivalent, approximated by CHORDAL_HOLD + PERMISSIVE_HOLD

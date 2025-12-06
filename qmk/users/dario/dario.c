@@ -40,40 +40,46 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-// Chordal hold (hold on other key press) configuration
-// Enable for home row mods (hrm:), disable for thumb shift mod-taps (mt:LSFT)
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+// Thumb-aware chordal hold: ignore thumbs so Flow Tap can resolve rolls
+// while still using opposite-hand protection for main alphas.
+#ifdef CHORDAL_HOLD
+static bool is_thumb_keycode(uint16_t keycode) {
     switch (keycode) {
-        // Home row mods from all BASE layers: enable chordal hold (opposite hand rule)
-        // BASE_COLEMAK: LGUI/LALT/LCTL/LSFT on A/R/S/T (left), RSFT/RCTL/RALT/RGUI on N/E/I/O (right)
-        case LGUI_T(KC_A):
-        case LALT_T(KC_R):
-        case LCTL_T(KC_S):
-        case LSFT_T(KC_T):
-        case RSFT_T(KC_N):
-        case RCTL_T(KC_E):
-        case RALT_T(KC_I):
-        case RGUI_T(KC_O):
-        // BASE_NIGHT: LGUI/LALT/LCTL/LSFT on N/S/H/T (left), RSFT/RCTL/RALT/RGUI on C/A/E/I (right)
-        case LGUI_T(KC_N):
-        case LALT_T(KC_S):
-        case LCTL_T(KC_H):
-        // case LSFT_T(KC_T):  // Already listed above (BASE_COLEMAK)
-        case RSFT_T(KC_C):
-        case RCTL_T(KC_A):
-        case RALT_T(KC_E):  
-        case RGUI_T(KC_I):  
-            return true;  // Enable chordal hold for home row mods
-
-        // Thumb shift mod-taps: disable chordal hold (use standard behavior)
-        case LSFT_T(KC_TAB):
+        // Thumbs on BASE_COLEMAK
+        case KC_ENT:
+        case LT(NAV, KC_SPC):
+        case LT(MEDIA, KC_TAB):
+        case LT(SYM, KC_DEL):
+        case KC_LSFT:
+        case LT(NUM, KC_BSPC):
+        // Thumbs on BASE_NIGHT
+        case LT(NUM_NIGHT, KC_BSPC):
+        case LT(SYM_NIGHT, KC_R):
         case LSFT_T(KC_DEL):
-            return false;  // Disable chordal hold for thumb shift keys
-
-        default:
-            return false;  // Disable for everything else
+        case LSFT_T(KC_TAB):
+        case LT(NAV_NIGHT, KC_SPC):
+        case LT(MEDIA_NIGHT, KC_ENT):
+            return true;
     }
+    return false;
 }
+
+static char handedness_for_keypos(keypos_t key) {
+    // Simple column-based split: lower columns are left, upper are right.
+    // Works across all current boards; thumbs are filtered separately above.
+    return (key.col < (MATRIX_COLS / 2)) ? 'L' : 'R';
+}
+
+bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode, keyrecord_t *other_record) {
+    if (is_thumb_keycode(tap_hold_keycode) || is_thumb_keycode(other_keycode)) {
+        return true;  // Never penalize holds when a thumb key is involved
+    }
+
+    const char tap_hand   = handedness_for_keypos(tap_hold_record->event.key);
+    const char other_hand = handedness_for_keypos(other_record->event.key);
+    return tap_hand != other_hand;
+}
+#endif  // CHORDAL_HOLD
 
 // Custom keycode handler
 // Clipboard keys are handled by macros in dario.h
