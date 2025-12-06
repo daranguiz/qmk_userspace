@@ -13,8 +13,8 @@
 #define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
 
-// ZMK: quick-tap-ms = <150>
-#define QUICK_TAP_TERM 150
+// ZMK: quick-tap-ms = <200>
+#define QUICK_TAP_TERM 200
 
 // ZMK: flavor = "balanced"
 #define PERMISSIVE_HOLD
