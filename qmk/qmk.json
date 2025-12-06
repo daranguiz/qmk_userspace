@@ -3,6 +3,7 @@
     "build_targets": [
         ["bastardkb/skeletyl/promicro", "dario"],
         ["boardsource/lulu/rp2040", "dario"],
-        ["lily58/rev1", "dario"]
+        ["lily58/rev1", "dario"],
+        ["jels/boaty", "dario"]
     ]
 }

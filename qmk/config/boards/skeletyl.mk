@@ -5,6 +5,9 @@
 # BOOTMAGIC_ENABLE = yes
 # NKRO_ENABLE = yes
 
+# Skeletyl is a split keyboard
+SPLIT_KEYBOARD = yes
+
 # Skeletyl-specific features
 MOUSEKEY_ENABLE = yes       # Mouse keys
 

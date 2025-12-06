@@ -1,6 +1,9 @@
 # Board-specific QMK features for Lily58 Rev1
 # This file is manually maintained
 
+# Lily58 is a split keyboard
+SPLIT_KEYBOARD = yes
+
 # Lily58-specific features
 MOUSEKEY_ENABLE = yes          # Mouse keys
 OLED_ENABLE = yes              # OLED display

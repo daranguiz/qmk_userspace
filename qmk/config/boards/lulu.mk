@@ -1,6 +1,9 @@
 # Board-specific QMK features for Boardsource Lulu (RP2040)
 # This file is manually maintained
 
+# Lulu is a split keyboard
+SPLIT_KEYBOARD = yes
+
 # Lulu-specific features
 MOUSEKEY_ENABLE = yes          # Mouse keys
 OLED_ENABLE = yes              # OLED display
