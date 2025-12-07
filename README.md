@@ -4,6 +4,16 @@
 
 Custom keyboard firmware for split ergonomic keyboards using a unified keymap code generation system.
 
+## Combos
+
+### Bootloader Entry (DFU)
+- Left hand: B + Q + Z
+- Right hand: P + . + '
+
+### GitHub URL
+- Keys: G + O + U + .
+- Outputs: `https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme`
+
 ## Keymap Visualizations
 
 ### Split Ergonomic Keyboards
