@@ -137,8 +137,13 @@ class KeylayoutGenerator:
                     # Regular output
                     lines.append(f'            <key code="{keycode}" output="{escaped}"/>')
             else:
-                # Use template default
-                lines.append(f'            <key code="{keycode}" output="{default_output}"/>')
+                # Use template default (apply shift transformation if this is shift layer)
+                output = default_output
+                if index == 1:  # Shift layer
+                    # Apply shift transformation to the default
+                    shifted = self.translator.get_output_for_key(default_output, shifted=True)
+                    output = self.translator.escape_xml(shifted)
+                lines.append(f'            <key code="{keycode}" output="{output}"/>')
 
         lines.append('        </keyMap>')
         return '\n'.join(lines)
