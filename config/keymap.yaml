@@ -241,7 +241,7 @@ combos:
     description: "Enter bootloader (left hand)"
     key_positions: [0, 4, 24]  # B + Q + Z (canonical 36-key positions)
     action: DFU
-    timeout_ms: 50  # Standard combo timeout
+    timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
     layers: [BASE_NIGHT, BASE_COLEMAK]
 
@@ -249,7 +249,7 @@ combos:
     description: "Enter bootloader (right hand)"
     key_positions: [5, 9, 25]  # P + DOT + ' (canonical 36-key positions)
     action: DFU
-    timeout_ms: 50  # Standard combo timeout
+    timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
     layers: [BASE_NIGHT, BASE_COLEMAK]
 
@@ -260,4 +260,3 @@ combos:
     macro_text: "https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme"
     timeout_ms: 100  # Slightly longer for 4-key combo
     layers: [BASE_NIGHT, BASE_COLEMAK]
-

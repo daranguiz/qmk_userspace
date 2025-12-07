@@ -161,15 +161,23 @@ for i in "${!BOARDS[@]}"; do
 
     echo -e "${BLUE}Keymap: $ZMK_CONFIG${NC}"
 
-    # Copy config into container (keymap + behaviors)
+    # Copy config into container (keymap + behaviors + global configs)
     docker exec "$CONTAINER_ID" rm -rf /tmp/zmk-config >/dev/null 2>&1
     docker exec "$CONTAINER_ID" mkdir -p /tmp/zmk-config >/dev/null 2>&1
     docker cp "$ZMK_CONFIG/." "$CONTAINER_ID:/tmp/zmk-config/" >/dev/null 2>&1
     docker cp "$SCRIPT_DIR/config/dario_behaviors.dtsi" "$CONTAINER_ID:/tmp/zmk-config/" >/dev/null 2>&1
+    # Optional global/project config
+    if [ -f "$SCRIPT_DIR/config/prj.conf" ]; then
+        docker cp "$SCRIPT_DIR/config/prj.conf" "$CONTAINER_ID:/tmp/zmk-config/" >/dev/null 2>&1
+    fi
+    # Optional board/shield Kconfig fragments
+    if [ -d "$SCRIPT_DIR/config/boards" ]; then
+        docker cp "$SCRIPT_DIR/config/boards/." "$CONTAINER_ID:/tmp/zmk-config/boards/" >/dev/null 2>&1
+    fi
 
     # Build inside container
     if docker exec -w /workspaces/zmk "$CONTAINER_ID" /bin/bash -c \
-        "west build -p -s app -b $BOARD -- $SHIELD_ARG -DZMK_CONFIG=/tmp/zmk-config" 2>&1 | tee /tmp/zmk_build.log | grep -E "CMake|Building|ERROR|error"; then
+        "west build -p -s app -b $BOARD -- $SHIELD_ARG -DZMK_CONFIG=/tmp/zmk-config -DOVERLAY_CONFIG=/tmp/zmk-config/prj.conf" 2>&1 | tee /tmp/zmk_build.log | grep -E "CMake|Building|ERROR|error"; then
 
         # Copy firmware out of container
         docker cp "$CONTAINER_ID:/workspaces/zmk/build/zephyr/zmk.uf2" "$OUTPUT_DIR/$OUTPUT_NAME" 2>/dev/null && \
