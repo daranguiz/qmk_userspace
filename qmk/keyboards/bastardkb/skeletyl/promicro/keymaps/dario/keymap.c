@@ -117,3 +117,45 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_NO               , KC_NO               , KC_NO               
     ),
 };
+
+
+#ifdef COMBO_ENABLE
+
+// Combo indices
+enum combo_events {
+    COMBO_DFU_LEFT,
+    COMBO_DFU_RIGHT,
+    COMBO_LENGTH
+};
+
+#define COMBO_COUNT COMBO_LENGTH
+
+// Combo key sequences
+const uint16_t PROGMEM dfu_left_combo[] = {0, 4, 24, COMBO_END};
+const uint16_t PROGMEM dfu_right_combo[] = {5, 9, 25, COMBO_END};
+
+// Combo definitions
+combo_t key_combos[] = {
+    [COMBO_DFU_LEFT] = COMBO(dfu_left_combo, QK_BOOT),
+    [COMBO_DFU_RIGHT] = COMBO(dfu_right_combo, QK_BOOT)
+};
+
+
+
+// Layer filtering
+bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+    uint8_t layer = get_highest_layer(layer_state);
+
+    switch (combo_index) {
+        case COMBO_DFU_LEFT:
+            // Only active on BASE_NIGHT, BASE_COLEMAK
+            return (layer == BASE_NIGHT || layer == BASE_COLEMAK);
+        case COMBO_DFU_RIGHT:
+            // Only active on BASE_NIGHT, BASE_COLEMAK
+            return (layer == BASE_NIGHT || layer == BASE_COLEMAK);
+        default:
+            return true;  // Other combos active on all layers
+    }
+}
+
+#endif  // COMBO_ENABLE

@@ -20,6 +20,8 @@ from data_model import (
     KeymapConfiguration,
     BehaviorAlias,
     RowStaggerConfig,
+    Combo,
+    ComboConfiguration,
     ValidationError
 )
 
@@ -306,6 +308,62 @@ class YAMLConfigParser:
         )
 
         # Validate
+        config.validate()
+
+        return config
+
+    @staticmethod
+    def parse_combos(yaml_path: Path) -> ComboConfiguration:
+        """
+        Parse combo definitions from config/keymap.yaml
+
+        Args:
+            yaml_path: Path to keymap.yaml
+
+        Returns:
+            ComboConfiguration with all combo definitions
+
+        The combos section is optional. If not present, returns empty ComboConfiguration.
+        """
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        # Combos section is optional
+        if not data or 'combos' not in data:
+            return ComboConfiguration(combos=[])
+
+        combos_data = data['combos']
+        if not isinstance(combos_data, list):
+            raise ValidationError("'combos' must be a list")
+
+        combos = []
+        for combo_data in combos_data:
+            # Validate required fields
+            required_fields = ['name', 'description', 'key_positions', 'action']
+            for field in required_fields:
+                if field not in combo_data:
+                    raise ValidationError(
+                        f"Combo definition missing required field: '{field}'"
+                    )
+
+            # Create combo
+            combo = Combo(
+                name=combo_data['name'],
+                description=combo_data['description'],
+                key_positions=combo_data['key_positions'],
+                action=combo_data['action'],
+                timeout_ms=combo_data.get('timeout_ms', 50),
+                require_prior_idle_ms=combo_data.get('require_prior_idle_ms'),
+                layers=combo_data.get('layers'),
+                slow_release=combo_data.get('slow_release', False),
+                hold_ms=combo_data.get('hold_ms')  # DEPRECATED but kept for backwards compatibility
+            )
+
+            combo.validate()
+            combos.append(combo)
+
+        # Create configuration
+        config = ComboConfiguration(combos=combos)
         config.validate()
 
         return config

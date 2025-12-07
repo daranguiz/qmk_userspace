@@ -6,7 +6,7 @@ Generates ZMK devicetree (.keymap) files from compiled layers
 
 from typing import List, Dict
 from pathlib import Path
-from data_model import CompiledLayer, Board
+from data_model import CompiledLayer, Board, ComboConfiguration, Combo
 
 
 class ZMKGenerator:
@@ -15,13 +15,19 @@ class ZMKGenerator:
     def __init__(self):
         pass
 
-    def generate_keymap(self, board: Board, compiled_layers: List[CompiledLayer]) -> str:
+    def generate_keymap(
+        self,
+        board: Board,
+        compiled_layers: List[CompiledLayer],
+        combos: ComboConfiguration = None
+    ) -> str:
         """
         Generate .keymap devicetree file for ZMK
 
         Args:
             board: Board configuration
             compiled_layers: List of compiled layers (already translated to ZMK syntax)
+            combos: Optional combo configuration
 
         Returns:
             Complete .keymap file content as string
@@ -39,6 +45,15 @@ class ZMKGenerator:
 
         layers_code = "\n\n".join(layer_defs)
 
+        # Generate combo and macro sections
+        layer_names = [layer.name for layer in compiled_layers]
+        combos_section = ""
+        macros_section = ""
+
+        if combos and combos.combos:
+            combos_section = "\n" + self.generate_combos_section(combos, layer_names, board)
+            macros_section = "\n" + self.generate_macros_section(combos)
+
         # Generate complete keymap file
         shield_or_board = board.zmk_shield if board.zmk_shield else board.zmk_board
         return f"""// AUTO-GENERATED - DO NOT EDIT
@@ -53,6 +68,8 @@ class ZMKGenerator:
 
 {layer_defines}
 / {{
+{combos_section}
+{macros_section}
     keymap {{
         compatible = "zmk,keymap";
 
@@ -229,3 +246,125 @@ class ZMKGenerator:
             return '▽▽▽'
 
         return kc.upper()[:4]
+
+    def translate_combo_positions(self, canonical_positions: List[int], board: Board) -> List[int]:
+        """
+        Translate combo positions from canonical 36-key layout to board's physical layout
+
+        Args:
+            canonical_positions: Positions in canonical 3x5_3 (36-key) layout
+            board: Board configuration with layout_size
+
+        Returns:
+            Translated positions for the board's physical layout
+        """
+        # For 3x5_3 boards, no translation needed
+        if board.layout_size == "3x5_3":
+            return canonical_positions
+
+        # For 3x6_3 boards with outer columns, add offset for each row
+        # Canonical 3x5_3: rows of 10 keys (0-9, 10-19, 20-29) + 6 thumbs (30-35)
+        # Physical 3x6_3: rows of 12 keys (0-11, 12-23, 24-35) + 6 thumbs (36-41)
+        if board.layout_size == "3x6_3":
+            translated = []
+            for pos in canonical_positions:
+                if pos < 30:  # Alpha keys (rows 0-2)
+                    row = pos // 10
+                    col = pos % 10
+                    # Add 1 for outer column, plus row offset
+                    new_pos = row * 12 + col + 1
+                else:  # Thumb keys (row 3)
+                    # Thumbs start at position 36 on 3x6_3
+                    new_pos = pos - 30 + 36
+                translated.append(new_pos)
+            return translated
+
+        # For other layouts, return as-is (TODO: add support for more layouts)
+        return canonical_positions
+
+    def generate_combos_section(self, combos: ComboConfiguration, layer_names: List[str], board: Board) -> str:
+        """
+        Generate ZMK combos devicetree section
+
+        Args:
+            combos: ComboConfiguration with all combos
+            layer_names: List of layer names for layer index lookup
+            board: Board configuration for position translation
+
+        Returns:
+            Combos section as devicetree code (empty string if no combos)
+        """
+        if not combos.combos:
+            return ""
+
+        # Generate combo definitions
+        combo_defs = []
+        for combo in combos.combos:
+            # Translate positions from canonical 36-key layout to board layout
+            translated_positions = self.translate_combo_positions(combo.key_positions, board)
+
+            # Convert positions to ZMK format (space-separated integers in angle brackets)
+            positions_str = " ".join(str(pos) for pos in translated_positions)
+
+            # Convert layer names to indices
+            layer_indices = []
+            if combo.layers:
+                for layer_name in combo.layers:
+                    if layer_name in layer_names:
+                        idx = layer_names.index(layer_name)
+                        layer_indices.append(str(idx))
+
+            layers_str = " ".join(layer_indices) if layer_indices else ""
+
+            # Generate binding - always use direct binding (no hold-tap)
+            if combo.action == "DFU":
+                binding = "&bootloader"
+            else:
+                binding = f"&kp {combo.action}"
+
+            # Build combo definition
+            combo_def = f"""        combo_{combo.name} {{
+            timeout-ms = <{combo.timeout_ms}>;
+            key-positions = <{positions_str}>;
+            bindings = <{binding}>;"""
+
+            # Add layers if specified
+            if layers_str:
+                combo_def += f"\n            layers = <{layers_str}>;"
+
+            # Add require-prior-idle-ms if specified
+            if combo.require_prior_idle_ms:
+                combo_def += f"\n            require-prior-idle-ms = <{combo.require_prior_idle_ms}>;"
+
+            # Add slow_release if specified
+            if combo.slow_release:
+                combo_def += f"\n            slow-release;"
+
+            combo_def += "\n        };"
+
+            combo_defs.append(combo_def)
+
+        combos_code = "\n\n".join(combo_defs)
+
+        return f"""    combos {{
+        compatible = "zmk,combos";
+
+{combos_code}
+    }};"""
+
+    def generate_macros_section(self, combos: ComboConfiguration) -> str:
+        """
+        Generate ZMK behaviors section for hold combos
+
+        Args:
+            combos: ComboConfiguration with all combos
+
+        Returns:
+            Behaviors section as devicetree code (empty string - deprecated)
+
+        NOTE: This method is deprecated. Hold combos are no longer supported.
+        Use standard instant combos with require-prior-idle-ms instead.
+        """
+        # No longer generating hold-tap behaviors for combos
+        # Combos now use direct bindings (instant trigger)
+        return ""

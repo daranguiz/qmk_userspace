@@ -386,3 +386,90 @@ class RowStaggerConfig:
                 raise ValidationError(
                     f"Row {i+1} must have {expected} keys, found {len(row)}"
                 )
+
+
+@dataclass
+class Combo:
+    """
+    Represents a key combination that triggers an action
+
+    Fields:
+    - name: Combo identifier (e.g., "dfu_left")
+    - description: Human-readable description
+    - key_positions: List of key positions using canonical 36-key numbering (0-35)
+                     Row-wise: [0-9] = row 0, [10-19] = row 1, [20-29] = row 2, [30-35] = thumbs
+    - action: Action keycode or behavior (e.g., "DFU", "ESC")
+    - timeout_ms: Time window to press all keys simultaneously (default: 50ms)
+    - require_prior_idle_ms: ZMK-only: prevent combo if keys pressed within this window (e.g., 150ms)
+    - layers: List of layer names where combo is active (None = all layers)
+    - slow_release: ZMK-specific: require all keys released simultaneously (default: False)
+    - hold_ms: DEPRECATED - use standard instant combos instead
+    """
+    name: str
+    description: str
+    key_positions: List[int]  # Canonical 36-key positions (0-35)
+    action: str  # Keycode or behavior name
+    timeout_ms: int = 50  # Standard combo timeout
+    require_prior_idle_ms: Optional[int] = None  # ZMK: prevent combo during fast typing
+    layers: Optional[List[str]] = None  # None = active on all layers
+    slow_release: bool = False  # ZMK: require simultaneous release
+    hold_ms: Optional[int] = None  # DEPRECATED: For backwards compatibility
+
+    def validate(self):
+        """Validate combo configuration"""
+        # Validate positions are in range 0-35
+        for pos in self.key_positions:
+            if pos < 0 or pos > 35:
+                raise ValidationError(
+                    f"Combo {self.name}: position {pos} out of range (must be 0-35)"
+                )
+
+        # Validate at least 2 keys
+        if len(self.key_positions) < 2:
+            raise ValidationError(
+                f"Combo {self.name}: must have at least 2 keys"
+            )
+
+        # Validate timeout
+        if self.timeout_ms < 1:
+            raise ValidationError(
+                f"Combo {self.name}: timeout_ms must be positive"
+            )
+
+        # Validate hold_ms if specified
+        if self.hold_ms is not None and self.hold_ms < 1:
+            raise ValidationError(
+                f"Combo {self.name}: hold_ms must be positive"
+            )
+
+
+@dataclass
+class ComboConfiguration:
+    """
+    Collection of all combo definitions from config/keymap.yaml
+
+    Fields:
+    - combos: List of Combo objects
+    """
+    combos: List[Combo] = field(default_factory=list)
+
+    def validate(self):
+        """Validate combo configuration"""
+        # Validate all combos
+        for combo in self.combos:
+            combo.validate()
+
+        # Check for duplicate combo names
+        names = [c.name for c in self.combos]
+        duplicates = [name for name in names if names.count(name) > 1]
+        if duplicates:
+            raise ValidationError(
+                f"Duplicate combo names found: {set(duplicates)}"
+            )
+
+    def get_by_name(self, name: str) -> Optional[Combo]:
+        """Get combo by name"""
+        for combo in self.combos:
+            if combo.name == name:
+                return combo
+        return None

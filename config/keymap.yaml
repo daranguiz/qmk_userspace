@@ -233,3 +233,23 @@ layers:
         outer_pinky_left: NONE
         outer_pinky_right: NONE
 
+# Combo definitions
+# NOTE: Positions use canonical 36-key (3x5_3) numbering
+# Positions are automatically translated for larger boards (3x6_3, etc.)
+combos:
+  - name: dfu_left
+    description: "Enter bootloader (left hand)"
+    key_positions: [0, 4, 24]  # B + Q + Z (canonical 36-key positions)
+    action: DFU
+    timeout_ms: 50  # Standard combo timeout
+    require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
+    layers: [BASE_NIGHT, BASE_COLEMAK]
+
+  - name: dfu_right
+    description: "Enter bootloader (right hand)"
+    key_positions: [5, 9, 25]  # P + DOT + ' (canonical 36-key positions)
+    action: DFU
+    timeout_ms: 50  # Standard combo timeout
+    require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
+    layers: [BASE_NIGHT, BASE_COLEMAK]
+

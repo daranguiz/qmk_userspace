@@ -68,6 +68,9 @@ class KeymapGenerator:
         self.aliases = YAMLConfigParser.parse_aliases(
             self.config_dir / "aliases.yaml"
         )
+        self.combos = YAMLConfigParser.parse_combos(
+            self.config_dir / "keymap.yaml"
+        )
         # Keycode map (firmware translations)
         keycodes = YAMLConfigParser.parse_keycodes(
             self.config_dir / "keycodes.yaml"
@@ -79,12 +82,14 @@ class KeymapGenerator:
         self.special_keycodes = {**keycodes, **self.special_keycodes}
 
         self._log(f"✅ Loaded {len(self.keymap_config.layers)} layers, "
-                  f"{len(self.board_inventory.boards)} boards")
+                  f"{len(self.board_inventory.boards)} boards, "
+                  f"{len(self.combos.combos)} combos")
 
         if self.verbose:
             print(f"  Layers: {', '.join(self.keymap_config.layers.keys())}")
             print(f"  Boards: {', '.join(self.board_inventory.boards.keys())}")
             print(f"  Aliases: {len(self.aliases)} behavior aliases")
+            print(f"  Combos: {len(self.combos.combos)} combo definitions")
 
         # Validate configuration
         self._log("🔍 Validating configuration...")
@@ -200,12 +205,11 @@ class KeymapGenerator:
         generator = QMKGenerator()
         output_dir = self.repo_root / board.get_output_directory()
 
-        # Generate all files
-        files = generator.generate_keymap(board, compiled_layers, output_dir)
+        # Generate all files (combos are now inline in keymap.c)
+        files = generator.generate_keymap(board, compiled_layers, output_dir, self.combos)
 
-        # Write files
+        # Write keymap files
         FileSystemWriter.write_all(output_dir, files)
-
         print(f"  📝 Wrote {len(files)} files to {output_dir}")
 
     def _generate_zmk(self, board, compiled_layers):
@@ -213,8 +217,8 @@ class KeymapGenerator:
         generator = ZMKGenerator()
         output_dir = self.repo_root / board.get_output_directory()
 
-        # Generate keymap file
-        keymap_content = generator.generate_keymap(board, compiled_layers)
+        # Generate keymap file with combos
+        keymap_content = generator.generate_keymap(board, compiled_layers, self.combos)
         visualization = generator.generate_visualization(board, compiled_layers)
 
         # Prepare files to write

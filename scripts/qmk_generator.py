@@ -6,7 +6,7 @@ Generates QMK C code files from compiled layers
 
 from pathlib import Path
 from typing import List, Dict
-from data_model import Board, CompiledLayer
+from data_model import Board, CompiledLayer, ComboConfiguration, Combo
 
 
 class QMKGenerator:
@@ -16,7 +16,8 @@ class QMKGenerator:
         self,
         board: Board,
         compiled_layers: List[CompiledLayer],
-        output_dir: Path
+        output_dir: Path,
+        combos: ComboConfiguration = None
     ) -> Dict[str, str]:
         """
         Generate all QMK files for a board
@@ -25,6 +26,7 @@ class QMKGenerator:
             board: Target board
             compiled_layers: List of compiled layers
             output_dir: Output directory path
+            combos: Optional combo configuration
 
         Returns:
             Dictionary of {filename: content} for all generated files
@@ -32,7 +34,7 @@ class QMKGenerator:
         files = {}
 
         # Generate keymap.c
-        files['keymap.c'] = self.generate_keymap_c(board, compiled_layers)
+        files['keymap.c'] = self.generate_keymap_c(board, compiled_layers, combos)
 
         # Generate config.h
         files['config.h'] = self.generate_config_h(board, compiled_layers)
@@ -48,7 +50,8 @@ class QMKGenerator:
     def generate_keymap_c(
         self,
         board: Board,
-        compiled_layers: List[CompiledLayer]
+        compiled_layers: List[CompiledLayer],
+        combos: ComboConfiguration = None
     ) -> str:
         """
         Generate keymap.c file
@@ -56,6 +59,7 @@ class QMKGenerator:
         Args:
             board: Target board
             compiled_layers: List of compiled layers
+            combos: Optional combo configuration
 
         Returns:
             Complete keymap.c file content
@@ -83,6 +87,11 @@ enum {{
 }};
 """
 
+        # Generate combo code if combos are provided
+        combo_code = ""
+        if combos and combos.combos:
+            combo_code = "\n" + self.generate_combos_inline(combos, layer_names, compiled_layers)
+
         return f"""// AUTO-GENERATED - DO NOT EDIT
 // Generated from config/keymap.yaml by scripts/generate.py
 // Board: {board.name}
@@ -93,7 +102,7 @@ enum {{
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {{
 {layers_code}
 }};
-"""
+{combo_code}"""
 
     def format_layer_definition(
         self,
@@ -317,3 +326,256 @@ qmk compile -kb {board.qmk_keyboard} -km dario
         else:
             # Fallback: just list the keycodes
             return "\n".join([f"{i:2d}: {kc}" for i, kc in enumerate(keycodes)])
+
+    def generate_combos_h(self, combos: ComboConfiguration, layer_names: List[str]) -> str:
+        """
+        Generate combos.h file with combo enum and declarations
+
+        Args:
+            combos: ComboConfiguration with all combos
+            layer_names: List of layer names for layer index lookup
+
+        Returns:
+            Complete combos.h file content
+        """
+        if not combos.combos:
+            # No combos defined
+            return ""
+
+        # Generate enum values for each combo
+        combo_enum_names = []
+        for combo in combos.combos:
+            enum_name = f"COMBO_{combo.name.upper()}"
+            combo_enum_names.append(enum_name)
+
+        combo_enums = ",\n    ".join(combo_enum_names)
+
+        return f"""// AUTO-GENERATED - DO NOT EDIT
+// Generated combo definitions from config/keymap.yaml
+
+#pragma once
+
+#ifdef COMBO_ENABLE
+
+#include "quantum.h"
+
+// Combo indices
+enum combo_events {{
+    {combo_enums},
+    COMBO_LENGTH
+}};
+
+// Combo configuration
+#define COMBO_LEN COMBO_LENGTH
+
+// External combo array declaration
+extern combo_t key_combos[];
+
+#endif  // COMBO_ENABLE
+"""
+
+    def generate_combos_c(
+        self,
+        combos: ComboConfiguration,
+        layer_names: List[str],
+        compiled_layers: List[CompiledLayer]
+    ) -> str:
+        """
+        Generate combos.c file with combo definitions and processing logic
+
+        Args:
+            combos: ComboConfiguration with all combos
+            layer_names: List of layer names for layer index lookup
+            compiled_layers: List of compiled layers (to translate action keycodes)
+
+        Returns:
+            Complete combos.c file content
+        """
+        if not combos.combos:
+            # No combos defined
+            return ""
+
+        # Generate combo key sequences
+        combo_sequences = []
+        for combo in combos.combos:
+            enum_name = f"COMBO_{combo.name.upper()}"
+            # Convert positions to QMK keycodes
+            # For now, we'll use the position indices directly
+            # In production, these should be mapped to actual matrix positions
+            positions_str = ", ".join(str(pos) for pos in combo.key_positions)
+            combo_sequences.append(
+                f"const uint16_t PROGMEM {combo.name}_combo[] = {{{positions_str}, COMBO_END}};"
+            )
+
+        sequences_code = "\n".join(combo_sequences)
+
+        # Generate combo_t array with simple instant combos
+        combo_defs = []
+        for combo in combos.combos:
+            enum_name = f"COMBO_{combo.name.upper()}"
+
+            # Translate action to QMK keycode
+            if combo.action == "DFU":
+                qmk_keycode = "QK_BOOT"  # Modern QMK bootloader keycode
+            else:
+                # Use the keycode translator for other actions
+                qmk_keycode = f"KC_{combo.action}"  # TODO: use proper translator
+
+            # Use simple COMBO() macro for instant trigger
+            combo_defs.append(f"    [{enum_name}] = COMBO({combo.name}_combo, {qmk_keycode})")
+
+        combos_array = ",\n".join(combo_defs)
+
+        # No hold logic needed for instant combos
+        process_combo_code = ""
+
+        # Generate layer filtering
+        layer_filter_code = ""
+        filtered_combos = [c for c in combos.combos if c.layers is not None]
+
+        if filtered_combos:
+            filter_cases = []
+            for combo in filtered_combos:
+                enum_name = f"COMBO_{combo.name.upper()}"
+
+                # Generate layer checks
+                layer_checks = []
+                for layer_name in combo.layers:
+                    if layer_name in layer_names:
+                        layer_checks.append(f"layer == {layer_name}")
+
+                if layer_checks:
+                    layer_condition = " || ".join(layer_checks)
+                    filter_cases.append(f"""        case {enum_name}:
+            // Only active on {', '.join(combo.layers)}
+            return ({layer_condition});""")
+
+            filter_switch_code = "\n".join(filter_cases)
+
+            layer_filter_code = f"""
+// Layer filtering
+bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {{
+    uint8_t layer = get_highest_layer(layer_state);
+
+    switch (combo_index) {{
+{filter_switch_code}
+        default:
+            return true;  // Other combos active on all layers
+    }}
+}}
+"""
+
+        return f"""// AUTO-GENERATED - DO NOT EDIT
+// Generated combo processing logic from config/keymap.yaml
+
+#include "dario.h"
+#include "combos.h"
+
+#ifdef COMBO_ENABLE
+
+// Combo key sequences
+{sequences_code}
+
+// Combo definitions
+combo_t key_combos[] = {{
+{combos_array}
+}};
+{process_combo_code}
+{layer_filter_code}
+#endif  // COMBO_ENABLE
+"""
+
+    def generate_combos_inline(
+        self,
+        combos: ComboConfiguration,
+        layer_names: List[str],
+        compiled_layers: List[CompiledLayer]
+    ) -> str:
+        """
+        Generate combo code inline for keymap.c (not separate files)
+
+        This is identical to generate_combos_c but without file headers
+        and the #include directives since it's embedded in keymap.c
+        """
+        if not combos.combos:
+            return ""
+
+        # Generate combo sequences
+        sequences = []
+        for combo in combos.combos:
+            positions_str = ", ".join(str(p) for p in combo.key_positions)
+            sequences.append(f"const uint16_t PROGMEM {combo.name}_combo[] = {{{positions_str}, COMBO_END}};")
+        sequences_code = "\n".join(sequences)
+
+        # Generate combo array entries with simple instant combos
+        combos_array_entries = []
+        for combo in combos.combos:
+            enum_name = f"COMBO_{combo.name.upper()}"
+
+            # Translate action to QMK keycode
+            if combo.action == "DFU":
+                qmk_keycode = "QK_BOOT"
+            else:
+                qmk_keycode = f"KC_{combo.action}"
+
+            # Use simple COMBO() macro for instant trigger
+            combos_array_entries.append(f"    [{enum_name}] = COMBO({combo.name}_combo, {qmk_keycode})")
+        combos_array = ",\n".join(combos_array_entries)
+
+        # Generate enum
+        combo_enum_names = [f"COMBO_{c.name.upper()}" for c in combos.combos]
+        combo_enums = ",\n    ".join(combo_enum_names)
+
+        # No hold logic needed for instant combos
+        process_combo_code = ""
+
+        # Generate layer filtering
+        has_layer_filtering = any(c.layers for c in combos.combos)
+        layer_filter_code = ""
+        if has_layer_filtering:
+            filter_cases = []
+            for combo in combos.combos:
+                if combo.layers:
+                    enum_name = f"COMBO_{combo.name.upper()}"
+                    layer_checks = " || ".join(f"layer == {ln}" for ln in combo.layers)
+                    filter_cases.append(f"""        case {enum_name}:
+            // Only active on {", ".join(combo.layers)}
+            return ({layer_checks});""")
+
+            filter_cases_str = "\n".join(filter_cases)
+            layer_filter_code = f"""
+
+// Layer filtering
+bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {{
+    uint8_t layer = get_highest_layer(layer_state);
+
+    switch (combo_index) {{
+{filter_cases_str}
+        default:
+            return true;  // Other combos active on all layers
+    }}
+}}
+"""
+
+        return f"""
+#ifdef COMBO_ENABLE
+
+// Combo indices
+enum combo_events {{
+    {combo_enums},
+    COMBO_LENGTH
+}};
+
+#define COMBO_COUNT COMBO_LENGTH
+
+// Combo key sequences
+{sequences_code}
+
+// Combo definitions
+combo_t key_combos[] = {{
+{combos_array}
+}};
+{process_combo_code}
+{layer_filter_code}
+#endif  // COMBO_ENABLE
+"""
