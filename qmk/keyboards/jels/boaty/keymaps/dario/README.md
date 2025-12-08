@@ -310,9 +310,9 @@ qmk compile -kb jels/boaty -km dario
 20: KC_TRNS
 21: KC_TRNS
 22: KC_TRNS
-23: KC_PERC
+23: KC_DLR
 24: KC_ASTR
-25: KC_DLR
+25: KC_PERC
 26: KC_COLN
 27: KC_NO
 28: KC_PLUS

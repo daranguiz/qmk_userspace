@@ -67,7 +67,7 @@
 // ----------------------------------------------------------------------------
 
 // Standard combo timeout (maps to timeout-ms in ZMK)
-#define COMBO_TERM 50
+#define COMBO_TERM 100
 
 // Note: QMK does not have built-in require-prior-idle support for combos
 // This is a ZMK-only feature (require-prior-idle-ms)

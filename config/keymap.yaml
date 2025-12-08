@@ -86,7 +86,7 @@ layers:
   SYM_NIGHT:
     core: # (3x5)
       left:
-        - [PERC           , ASTR           , DLR            , COLN           , NONE           ]
+        - [DLR            , ASTR           , PERC           , COLN           , NONE           ]
         - [LGUI           , LALT           , LCTL           , LSFT           , EQL            ]
         - [NONE           , NONE           , NONE           , AMPR           , NONE           ]
       right:

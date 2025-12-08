@@ -90,7 +90,7 @@ enum {{
         # Generate combo code if combos are provided
         combo_code = ""
         if combos and combos.combos:
-            combo_code = "\n" + self.generate_combos_inline(combos, layer_names, compiled_layers)
+            combo_code = "\n" + self.generate_combos_inline(combos, layer_names, compiled_layers, board)
 
         return f"""// AUTO-GENERATED - DO NOT EDIT
 // Generated from config/keymap.yaml by scripts/generate.py
@@ -378,7 +378,8 @@ extern combo_t key_combos[];
         self,
         combos: ComboConfiguration,
         layer_names: List[str],
-        compiled_layers: List[CompiledLayer]
+        compiled_layers: List[CompiledLayer],
+        board: Board
     ) -> str:
         """
         Generate combos.c file with combo definitions and processing logic
@@ -399,10 +400,9 @@ extern combo_t key_combos[];
         combo_sequences = []
         for combo in combos.combos:
             enum_name = f"COMBO_{combo.name.upper()}"
-            # Convert positions to QMK keycodes
-            # For now, we'll use the position indices directly
-            # In production, these should be mapped to actual matrix positions
-            positions_str = ", ".join(str(pos) for pos in combo.key_positions)
+            # Convert positions to match the board's LAYOUT_* ordering
+            translated_positions = self.translate_combo_positions(combo.key_positions, board)
+            positions_str = ", ".join(str(pos) for pos in translated_positions)
             combo_sequences.append(
                 f"const uint16_t PROGMEM {combo.name}_combo[] = {{{positions_str}, COMBO_END}};"
             )
@@ -492,7 +492,8 @@ combo_t key_combos[] = {{
         self,
         combos: ComboConfiguration,
         layer_names: List[str],
-        compiled_layers: List[CompiledLayer]
+        compiled_layers: List[CompiledLayer],
+        board: Board
     ) -> str:
         """
         Generate combo code inline for keymap.c (not separate files)
@@ -503,10 +504,21 @@ combo_t key_combos[] = {{
         if not combos.combos:
             return ""
 
-        # Generate combo sequences
+        # Generate combo sequences; prefer keycodes for stability across layouts
         sequences = []
         for combo in combos.combos:
-            positions_str = ", ".join(str(p) for p in combo.key_positions)
+            # Special-case known combos to avoid layout position drift
+            if combo.name == "dfu_left":
+                keys = ["KC_B", "KC_Q", "KC_Z"]
+            elif combo.name == "dfu_right":
+                keys = ["KC_P", "KC_DOT", "KC_QUOT"]
+            elif combo.name == "github_url":
+                keys = ["KC_G", "KC_O", "KC_U", "KC_DOT"]
+            else:
+                translated_positions = self.translate_combo_positions(combo.key_positions, board)
+                keys = [str(p) for p in translated_positions]
+
+            positions_str = ", ".join(keys)
             sequences.append(f"const uint16_t PROGMEM {combo.name}_combo[] = {{{positions_str}, COMBO_END}};")
         sequences_code = "\n".join(sequences)
 
@@ -585,3 +597,80 @@ combo_t key_combos[] = {{
 {layer_filter_code}
 #endif  // COMBO_ENABLE
 """
+
+    def translate_combo_positions(self, canonical_positions: List[int], board: Board) -> List[int]:
+        """
+        Translate combo positions from canonical 36-key ordering to the board's
+        LAYOUT_* ordering used in QMK keymaps by mirroring the LayerCompiler
+        padding logic. This keeps combos aligned with the generated keymaps for
+        every supported layout.
+        """
+        layout = board.layout_size
+
+        # Build a base 36-key list in the same ordering used by LayerCompiler
+        # (left rows, right rows, thumbs)
+        base_core = [None] * 36
+        for row in range(3):
+            for col in range(5):  # left columns
+                canonical = row * 10 + col
+                base_core[row * 5 + col] = canonical
+            for col in range(5, 10):  # right columns
+                canonical = row * 10 + col
+                idx = 15 + row * 5 + (col - 5)
+                base_core[idx] = canonical
+        # Thumbs
+        for i in range(3):
+            base_core[30 + i] = 30 + i  # left thumbs
+            base_core[33 + i] = 33 + i  # right thumbs
+
+        def pad_to_3x6(core: List[int]) -> List[int]:
+            """Mirror LayerCompiler._pad_to_3x6 ordering."""
+            result: List[int] = []
+            left_pinky = [None] * 3
+            right_pinky = [None] * 3
+            for row in range(3):
+                result.append(left_pinky[row])
+                result.extend(core[row * 5:(row + 1) * 5])
+            for row in range(3):
+                result.extend(core[15 + row * 5:15 + (row + 1) * 5])
+                result.append(right_pinky[row])
+            result.extend(core[30:36])
+            return result
+
+        def pad_to_58_from_42(core42: List[int]) -> List[int]:
+            """Mirror LayerCompiler._pad_to_58_keys_from_3x6 ordering."""
+            left_top = core42[0:6]
+            left_home = core42[6:12]
+            left_bottom = core42[12:18]
+            right_top = core42[18:24]
+            right_home = core42[24:30]
+            right_bottom = core42[30:36]
+            thumbs = core42[36:42]
+
+            row0 = [None] * 12
+            row1 = left_top + right_top
+            row2 = left_home + right_home
+            row3 = left_bottom + [None, None] + right_bottom
+            row4 = [None, thumbs[0], thumbs[1], thumbs[2], thumbs[3], thumbs[4], thumbs[5], None]
+            return row0 + row1 + row2 + row3 + row4
+
+        # 36-key split (3x5_3)
+        if layout == "3x5_3":
+            mapping = {val: idx for idx, val in enumerate(base_core)}
+            return [mapping[pos] for pos in canonical_positions]
+
+        # 42-key split (3x6_3)
+        if layout == "3x6_3":
+            padded42 = pad_to_3x6(base_core)
+            mapping = {val: idx for idx, val in enumerate(padded42) if val is not None}
+            return [mapping[pos] for pos in canonical_positions]
+
+        # Lulu/Lily58 style (58 keys padded from 3x6_3)
+        if layout == "custom_58_from_3x6":
+            padded42 = pad_to_3x6(base_core)
+            padded58 = pad_to_58_from_42(padded42)
+            mapping = {val: idx for idx, val in enumerate(padded58) if val is not None}
+            return [mapping[pos] for pos in canonical_positions]
+
+        # Fallback (custom layouts): return canonical
+        return canonical_positions

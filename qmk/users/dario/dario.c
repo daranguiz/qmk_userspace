@@ -85,6 +85,22 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
 // Custom keycode handler
 // Clipboard keys are handled by macros in dario.h
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Light logging for combo-related keys to see if they arrive together
+    if (record->event.pressed) {
+        switch (keycode) {
+            case KC_B: case KC_Q: case KC_Z:
+            case KC_P: case KC_DOT: case KC_QUOT:
+            case KC_G: case KC_O: case KC_U:
+                uprintf("combo-key %u r%u c%u t%u layer=%u\n",
+                        keycode,
+                        record->event.key.row,
+                        record->event.key.col,
+                        record->event.time,
+                        get_highest_layer(layer_state));
+                break;
+        }
+    }
+
     switch (keycode) {
         case MACRO_GITHUB_URL:
             if (record->event.pressed) {
@@ -93,4 +109,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
     }
     return true;
+}
+
+// Combo debug logging: prints combo index + press/release to QMK console
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    uprintf("combo %u %s layer=%u state=%lu\n",
+            combo_index,
+            pressed ? "down" : "up",
+            get_highest_layer(layer_state),
+            (unsigned long)layer_state);
 }

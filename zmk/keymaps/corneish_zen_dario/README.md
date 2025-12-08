@@ -218,9 +218,9 @@
 
 ```
  0: &none
- 1: &kp PERCENT
+ 1: &kp DOLLAR
  2: &kp ASTERISK
- 3: &kp DOLLAR
+ 3: &kp PERCENT
  4: &kp COLON
  5: &none
 

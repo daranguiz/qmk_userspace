@@ -87,7 +87,7 @@
 
         sym_night_layer {
             bindings = <
-                &none &kp PERCENT &kp ASTERISK &kp DOLLAR &kp COLON &none &kp PLUS &kp LT &kp LBRC &kp RBRC &kp GT &none
+                &none &kp DOLLAR &kp ASTERISK &kp PERCENT &kp COLON &none &kp PLUS &kp LT &kp LBRC &kp RBRC &kp GT &none
                 &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp EQUAL &kp EXCL &kp QUESTION &kp LPAR &kp RPAR &kp SEMI &none
                 &none &none &none &none &kp AMPERSAND &none &kp BSLH &kp MINUS &kp LBKT &kp RBKT &kp COMMA &none
                 &none &none &none &kp FSLH &kp SPACE &kp ENTER

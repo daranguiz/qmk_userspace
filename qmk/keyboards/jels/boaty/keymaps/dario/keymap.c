@@ -36,8 +36,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [SYM_NIGHT] = LAYOUT(
         KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             ,
-        KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_PERC             ,
-        KC_ASTR             , KC_DLR              , KC_COLN             , KC_NO               , KC_PLUS             , KC_LT               , KC_LCBR             , KC_RCBR             , KC_GT               , KC_TRNS             , KC_TRNS             , KC_TRNS             ,
+        KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_TRNS             , KC_DLR              ,
+        KC_ASTR             , KC_PERC             , KC_COLN             , KC_NO               , KC_PLUS             , KC_LT               , KC_LCBR             , KC_RCBR             , KC_GT               , KC_TRNS             , KC_TRNS             , KC_TRNS             ,
         KC_LGUI             , KC_LALT             , KC_LCTL             , KC_LSFT             , KC_EQL              , KC_EXLM             , KC_QUES             , KC_LPRN             , KC_RPRN             , KC_SCLN             , KC_TRNS             , KC_NO               , KC_NO               , KC_NO               ,
         KC_AMPR             , KC_NO               , KC_BSLS             , KC_MINS             , KC_LBRC             , KC_RBRC             , KC_COMM             , KC_NO               , KC_NO               , KC_NO               , KC_SLSH             , KC_SPC              , KC_ENT              
     ),
@@ -71,9 +71,9 @@ enum combo_events {
 #define COMBO_COUNT COMBO_LENGTH
 
 // Combo key sequences
-const uint16_t PROGMEM dfu_left_combo[] = {0, 4, 24, COMBO_END};
-const uint16_t PROGMEM dfu_right_combo[] = {5, 9, 25, COMBO_END};
-const uint16_t PROGMEM github_url_combo[] = {6, 7, 8, 9, COMBO_END};
+const uint16_t PROGMEM dfu_left_combo[] = {KC_B, KC_Q, KC_Z, COMBO_END};
+const uint16_t PROGMEM dfu_right_combo[] = {KC_P, KC_DOT, KC_QUOT, COMBO_END};
+const uint16_t PROGMEM github_url_combo[] = {KC_G, KC_O, KC_U, KC_DOT, COMBO_END};
 
 // Combo definitions
 combo_t key_combos[] = {

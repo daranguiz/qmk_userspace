@@ -8,6 +8,7 @@ SPLIT_KEYBOARD = yes
 MOUSEKEY_ENABLE = yes          # Mouse keys
 OLED_ENABLE = yes              # OLED display
 RGB_MATRIX_ENABLE = yes        # RGB matrix lighting
+override CONSOLE_ENABLE = yes  # Safe on RP2040; used for combo logging
 
 # Optional features
 ENCODER_ENABLE = no            # Rotary encoders (if present)
