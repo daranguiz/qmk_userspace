@@ -4,36 +4,29 @@
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // Home row mods from all BASE layers: use HRM tapping term (280ms)
-        // BASE_COLEMAK: LGUI/LALT/LCTL/LSFT on A/R/S/T (left), LSFT/LCTL/LALT/LGUI on N/E/I/O (right)
-        case LGUI_T(KC_A):
-        case LALT_T(KC_R):
-        case LCTL_T(KC_S):
-        case LSFT_T(KC_T):
-        case LSFT_T(KC_N):
-        case LCTL_T(KC_E):
-        case LALT_T(KC_I):
-        case LGUI_T(KC_O):
         // BASE_NIGHT: LGUI/LALT/LCTL/LSFT on N/S/H/T (left), LSFT/LCTL/LALT/LGUI on C/A/E/I (right)
         case LGUI_T(KC_N):
         case LALT_T(KC_S):
         case LCTL_T(KC_H):
-        // case LSFT_T(KC_T):  // Already listed above (BASE_COLEMAK)
+        case LSFT_T(KC_T):
         case LSFT_T(KC_C):
         case LCTL_T(KC_A):
         case LALT_T(KC_E):
         case LGUI_T(KC_I):
-        // BASE_DUSK: LGUI/LALT/LCTL/LSFT on N/S/T/C (left), LSFT/LCTL/LALT/LGUI on H/A/E/I (right)
-        // Most keys already covered above, no additional unique combinations needed
+        // BASE_GALLIUM: LGUI/LALT/LCTL/LSFT on N/R/T/S (left), LSFT/LCTL/LALT/LGUI on H/A/E/I (right)
+        case LALT_T(KC_R):
+        // case LSFT_T(KC_T):  // Already listed above (BASE_NIGHT)
+        // case LSFT_T(KC_C):  // Already listed above (BASE_NIGHT - but GALLIUM uses H here)
+        case LSFT_T(KC_H):
+        // case LCTL_T(KC_A):  // Already listed above (BASE_NIGHT)
+        // case LALT_T(KC_E):  // Already listed above (BASE_NIGHT)
+        // case LGUI_T(KC_I):  // Already listed above (BASE_NIGHT)
             return TAPPING_TERM_HRM;
 
         // Layer-tap keys: use standard tapping term (200ms)
-        case LT(NAV, KC_SPC):
-        case LT(NUM, KC_BSPC):
-        case LT(SYM, KC_DEL):
-        case LT(MEDIA, KC_ENT):
         case LT(NAV_NIGHT, KC_SPC):
         case LT(NUM_NIGHT, KC_BSPC):
-        case LT(SYM_NIGHT, KC_DEL):
+        case LT(SYM_NIGHT, KC_R):
         case LT(MEDIA_NIGHT, KC_ENT):
             return 200;
 
@@ -60,14 +53,7 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
 #ifdef CHORDAL_HOLD
 static bool is_thumb_keycode(uint16_t keycode) {
     switch (keycode) {
-        // Thumbs on BASE_COLEMAK
-        case KC_ENT:
-        case LT(NAV, KC_SPC):
-        case LT(MEDIA, KC_TAB):
-        case LT(SYM, KC_DEL):
-        case KC_LSFT:
-        case LT(NUM, KC_BSPC):
-        // Thumbs on BASE_NIGHT
+        // Thumbs on BASE_NIGHT and BASE_GALLIUM (both use _NIGHT variants)
         case LT(NUM_NIGHT, KC_BSPC):
         case LT(SYM_NIGHT, KC_R):
         case LSFT_T(KC_DEL):

@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Optional, List, Dict, Iterator
 from config_parser import YAMLConfigParser
 from qmk_translator import QMKTranslator
+from base_layer_utils import BaseLayerManager
 from svglib.svglib import svg2rlg
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -32,6 +33,9 @@ class KeymapVisualizer:
         self.config_file = repo_root / ".keymap-drawer-config.yaml"
         self.config_dir = repo_root / "config"
         self.qmk_translator = qmk_translator
+
+        # Initialize base layer manager
+        self.base_layer_manager = BaseLayerManager(self.config_dir)
 
         # Load keycode display mappings
         self.keycodes = self._load_keycodes()
@@ -810,11 +814,8 @@ class KeymapVisualizer:
                     draw_result.stdout, board.layout_size
                 )
 
-                # Replace BASE_* layer names with clean names in SVG
-                svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
-                svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
-                svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
-                svg_output = svg_output.replace('BASE_DUSK', 'DUSK')
+                # Replace layer names with display names
+                svg_output = self.base_layer_manager.apply_display_names_to_svg(svg_output)
 
                 # Write SVG file
                 svg_file.write_text(svg_output)
@@ -891,14 +892,15 @@ class KeymapVisualizer:
         return keycodes
 
     def _get_layer_sets_by_base(self) -> Dict[str, List[str]]:
-        """Map each base layer to its associated layers"""
-        return {
-            'BASE_NIGHT': ['BASE_NIGHT', 'SYM_NIGHT', 'NUM_NIGHT',
-                          'NAV_NIGHT', 'MEDIA_NIGHT', 'FUN'],
-            'BASE_DUSK': ['BASE_DUSK', 'SYM_NIGHT', 'NUM_NIGHT',
-                          'NAV_NIGHT', 'MEDIA_NIGHT', 'FUN'],
-            'BASE_COLEMAK': ['BASE_COLEMAK', 'SYM', 'NUM', 'NAV', 'MEDIA', 'FUN']
-        }
+        """
+        Map each base layer to its associated layers
+
+        Now uses BaseLayerManager for automatic layer family derivation
+        """
+        layer_families = {}
+        for base_name in self.base_layer_manager.get_all_base_layers():
+            layer_families[base_name] = self.base_layer_manager.get_layer_family(base_name)
+        return layer_families
 
     def generate_superset_visualizations(self, board_inventory) -> None:
         """Generate visualizations grouped by base layer (3x6_3 only)"""
@@ -1092,18 +1094,8 @@ class KeymapVisualizer:
                     draw_result.stdout, layout_size
                 )
 
-                # Replace BASE_* layer names with clean names in SVG
-                # Order matters: replace longer names first to avoid partial matches
-                svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
-                svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
-                svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
-                svg_output = svg_output.replace('BASE_DUSK', 'DUSK')
-
-                # Replace NIGHT variant layer names with clean names (NUM, SYM, etc.)
-                svg_output = svg_output.replace('NUM_NIGHT', 'NUM')
-                svg_output = svg_output.replace('SYM_NIGHT', 'SYM')
-                svg_output = svg_output.replace('NAV_NIGHT', 'NAV')
-                svg_output = svg_output.replace('MEDIA_NIGHT', 'MEDIA')
+                # Replace layer names with display names
+                svg_output = self.base_layer_manager.apply_display_names_to_svg(svg_output)
 
                 # Apply inline styles for better rendering
                 # for_display controls white outline: True=white outline (SVG), False=no outline (PDF)
@@ -1637,11 +1629,8 @@ class KeymapVisualizer:
                     draw_result.stdout, layout_size
                 )
 
-                # Replace BASE_* layer names with clean names in SVG
-                svg_output = svg_output.replace('BASE_COLEMAK', 'COLEMAK')
-                svg_output = svg_output.replace('BASE_GALLIUM', 'GALLIUM')
-                svg_output = svg_output.replace('BASE_NIGHT', 'NIGHT')
-                svg_output = svg_output.replace('BASE_DUSK', 'DUSK')
+                # Replace layer names with display names
+                svg_output = self.base_layer_manager.apply_display_names_to_svg(svg_output)
 
                 # Write SVG file
                 svg_file.write_text(svg_output)

@@ -6,12 +6,7 @@
 // NOTE: Order must match config/keymap.yaml layer order
 enum layers {
     BASE_NIGHT,
-    BASE_COLEMAK,
-    BASE_DUSK,
-    NUM,
-    SYM,
-    NAV,
-    MEDIA,
+    BASE_GALLIUM,
     FUN,
     NUM_NIGHT,
     SYM_NIGHT,

@@ -1,5 +1,14 @@
 # Unified Keymap Configuration
 
+# Base layer metadata
+base_layers:
+  BASE_GALLIUM:
+    display_name: "GALLIUM"
+    description: "Gallium colstag https://github.com/GalileoBlues/Gallium"
+  BASE_NIGHT:
+    display_name: "NIGHT"
+    description: "Night thumb alpha"
+
 layers:
   BASE_NIGHT:
     core: # (3x5)
@@ -16,137 +25,26 @@ layers:
         - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
     extensions:
       3x6_3:
-        outer_pinky_left: [NONE, NONE, NONE]
-        outer_pinky_right: [NONE, ENT, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: LBRC  # future magic
-        outer_pinky_right: RBRC # future magic
+        outer_pinky_left: [NONE, LBRC, NONE]
+        outer_pinky_right: [NONE, RBRC, NONE]   
 
-  BASE_COLEMAK:
+  BASE_GALLIUM:
     core: # (3x5)
       left:
-        - [Q              , W              , F              , P              , G              ]
-        - [hrm:LGUI:A     , hrm:LALT:R     , hrm:LCTL:S     , hrm:LSFT:T     , D              ]
-        - [Z              , X              , C              , V              , B              ]
+        - [B              , L              , D              , C              , V              ]
+        - [hrm:LGUI:N     , hrm:LALT:R     , hrm:LCTL:T     , hrm:LSFT:S     , G              ]
+        - [X              , Q              , M              , W              , Z              ]
       right:
-        - [J              , L              , U              , Y              , QUOT           ]
-        - [H              , hrm:LSFT:N     , hrm:LCTL:E     , hrm:LALT:I     , hrm:LGUI:O     ]
-        - [K              , M              , COMM           , DOT            , SLSH           ]
+        - [J              , Y              , O              , U              , DOT           ]
+        - [P              , hrm:LSFT:H     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
+        - [K              , F              , QUOT           , MINS           , COMM            ]
       thumbs:
-        - [ENT            , lt:NAV:SPC     , lt:MEDIA:TAB   ]
-        - [lt:SYM:DEL     , LSFT           , lt:NUM:BSPC    ]
-    extensions:
-      3x6_3:
-        outer_pinky_left: [NONE, NONE, NONE]
-        outer_pinky_right: [NONE, ENT, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: LBRC
-        outer_pinky_right: RBRC
-
-  BASE_DUSK:
-    core: # (3x5)
-      left:
-        - [B              , F              , D              , W              , P              ]
-        - [hrm:LGUI:N     , hrm:LALT:S     , hrm:LCTL:T     , hrm:LSFT:C     , Y              ]
-        - [X              , V              , K              , G              , Q              ]
-      right:
-        - [J              , QUOT           , O              , U              , DOT            ]
-        - [M              , hrm:LSFT:H     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
-        - [Z              , L              , MINS           , SCLN           , COMM           ]
-      thumbs:
-        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:DEL    ]
+        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R    , mt:LSFT:DEL    ]
         - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
     extensions:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, ENT, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: LBRC  # future magic
-        outer_pinky_right: RBRC # future magic
-
-  NUM:
-    core: # (3x5)
-      left:
-        - [LBRC           , 4              , 5              , 6              , RBRC           ]
-        - [SLSH           , 1              , 2              , 3              , EQL            ]
-        - [GRV            , 7              , 8              , 9              , BSLS           ]
-      right:
-        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
-        - [NONE           , LSFT           , LCTL           , LALT           , LGUI           ]
-        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
-      thumbs:
-        - [COLN           , 0              , MINS           ]
-        - [NONE           , NONE           , NONE           ]
-    extensions:
-      3x6_3:
-        outer_pinky_left: [NONE, LCBR, NONE]
-        outer_pinky_right: [NONE, RCBR, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: LCBR
-        outer_pinky_right: RCBR
-
-  SYM:
-    core: # (3x5)
-      left:
-        - [LCBR           , DLR            , PERC           , CIRC           , RCBR           ]
-        - [QUES           , EXLM           , AT             , HASH           , PLUS           ]
-        - [TILD           , AMPR           , ASTR           , COLN           , PIPE           ]
-      right:
-        - [NONE           , NONE           , NONE           , NONE           , NONE        ]
-        - [NONE           , LSFT           , LCTL           , LALT           , LGUI           ]
-        - [DFU            , NONE           , NONE           , NONE           , NONE                ]
-      thumbs:
-        - [LPRN           , RPRN           , UNDS           ]
-        - [NONE           , NONE           , NONE           ]
-    extensions:
-      3x6_3:
-        outer_pinky_left: [NONE, NONE, NONE]
-        outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
-
-  NAV:
-    core: # (3x5)
-      left:
-        - [BT_SEL_0       , BT_SEL_1       , BT_SEL_2       , BT_SEL_3       , BT_CLR         ]
-        - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
-        - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
-      right:
-        - [ESC            , NONE           , NONE           , NONE           , NONE           ]
-        - [CAPS           , LEFT           , DOWN           , UP             , RGHT           ]
-        - [INS            , HOME           , PGDN           , PGUP           , END            ]
-      thumbs:
-        - [NONE           , NONE           , NONE           ]
-        - [DEL            , ENT            , BSPC           ]
-    extensions:
-      3x6_3:
-        outer_pinky_left: [NONE, NONE, NONE]
-        outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
-
-  MEDIA:
-    core: # (3x5)
-      left:
-        - [df:BASE_NIGHT  , df:BASE_DUSK   , df:BASE_COLEMAK, NONE           , NONE           ]
-        - [LGUI           , LALT           , LCTL           , LSFT           , NONE           ]
-        - [NONE           , NONE           , NONE           , NONE           , DFU           ]
-      right:
-        - [NONE           , NONE           , NONE           , NONE           , NONE]
-        - [NONE           , MPRV           , VOLD           , VOLU           , MNXT           ]
-        - [NONE           , NONE           , NONE           , NONE           , NONE           ]
-      thumbs:
-        - [NONE           , NONE           , NONE           ]
-        - [MSTP           , MPLY           , MUTE           ]
-    extensions:
-      3x6_3:
-        outer_pinky_left: [NONE, NONE, NONE]
-        outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
 
   FUN:
     core: # (3x5)
@@ -165,9 +63,6 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
 
   # Night-specific layers (hands flipped compared to original)
   NUM_NIGHT:
@@ -187,9 +82,6 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
 
   SYM_NIGHT:
     core: # (3x5)
@@ -208,9 +100,6 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
 
   NAV_NIGHT:
     core: # (3x5)
@@ -229,14 +118,11 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
 
   MEDIA_NIGHT:
     core: # (3x5)
       left:
-        - [df:BASE_NIGHT  , df:BASE_DUSK   , df:BASE_COLEMAK, NONE           , NONE           ]
+        - [df:BASE_NIGHT  , df:BASE_GALLIUM, NONE           , NONE           , NONE           ]
         - [MNXT           , VOLU           , VOLD           , MPRV           , NONE           ]
         - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:
@@ -250,9 +136,6 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, NONE, NONE]
-      3x5_3_pinky:
-        outer_pinky_left: NONE
-        outer_pinky_right: NONE
 
 # Combo definitions
 # NOTE: Positions use canonical 36-key (3x5_3) numbering
@@ -264,7 +147,7 @@ combos:
     action: DFU
     timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
-    layers: [BASE_NIGHT, BASE_DUSK, BASE_COLEMAK]
+    layers: [BASE_NIGHT, BASE_GALLIUM]
 
   - name: dfu_right
     description: "Enter bootloader (right hand)"
@@ -272,7 +155,7 @@ combos:
     action: DFU
     timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
-    layers: [BASE_NIGHT, BASE_DUSK, BASE_COLEMAK]
+    layers: [BASE_NIGHT, BASE_GALLIUM]
 
   - name: github_url
     description: "Expand to GitHub repo URL"
@@ -280,4 +163,4 @@ combos:
     action: MACRO_GITHUB_URL
     macro_text: "https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme"
     timeout_ms: 100  # Slightly longer for 4-key combo
-    layers: [BASE_NIGHT, BASE_DUSK, BASE_COLEMAK]
+    layers: [BASE_NIGHT, BASE_GALLIUM]

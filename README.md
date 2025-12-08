@@ -7,11 +7,11 @@ Custom keyboard firmware for split ergonomic keyboards using a unified keymap co
 ## Combos
 
 ### Bootloader Entry (DFU)
-- Left hand: B + Q + Z
-- Right hand: P + . + '
+- Left hand: `B` + `Q` + `Z`
+- Right hand: `P` + `.` + `'`
 
 ### GitHub URL
-- Keys: G + O + U + .
+- Keys: `G` + `O` + `U` + `.`
 - Outputs: `https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme`
 
 ## Keymap Visualizations
@@ -21,11 +21,8 @@ Custom keyboard firmware for split ergonomic keyboards using a unified keymap co
 #### NIGHT Layout
 ![NIGHT Layout](docs/night.svg)
 
-#### DUSK Layout
-![DUSK Layout](docs/dusk.svg)
-
-#### Colemak Layout
-![Colemak Layout](docs/colemak.svg)
+#### Gallium Layout
+![Gallium Layout](docs/gallium.svg)
 
 ### Row-Staggered Keyboards (macOS .keylayout)
 

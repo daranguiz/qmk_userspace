@@ -85,23 +85,14 @@ class LayerExtension:
     Represents additional keys for boards larger than 36-key
 
     Extension types:
-    - 3x5_3_pinky: 38-key (36 + 1 outer pinky key per side)
     - 3x6_3: 42-key (36 + 3-key outer pinky column per side)
     """
-    extension_type: str  # "3x5_3_pinky", "3x6_3", etc.
+    extension_type: str  # "3x6_3", etc.
     keys: Dict[str, Union[str, List[str]]]
 
     def validate(self):
         """Validate extension structure"""
-        if self.extension_type == "3x5_3_pinky":
-            required = {"outer_pinky_left", "outer_pinky_right"}
-            if not required.issubset(self.keys.keys()):
-                raise ValidationError(f"3x5_3_pinky requires: {required}")
-            for pos in required:
-                if isinstance(self.keys[pos], list):
-                    raise ValidationError(f"{pos} must be a single key, not a list")
-
-        elif self.extension_type == "3x6_3":
+        if self.extension_type == "3x6_3":
             required = {"outer_pinky_left", "outer_pinky_right"}
             if not required.issubset(self.keys.keys()):
                 raise ValidationError(f"3x6_3 requires: {required}")
@@ -195,8 +186,6 @@ class Board:
         """Infer which extensions to apply based on layout_size"""
         if self.layout_size == "3x5_3":
             return []  # Base 36-key, no extensions
-        elif self.layout_size == "3x5_3_pinky":
-            return ["3x5_3_pinky"]  # 38-key
         elif self.layout_size == "3x6_3":
             return ["3x6_3"]  # 42-key
         elif self.layout_size.startswith("custom_"):

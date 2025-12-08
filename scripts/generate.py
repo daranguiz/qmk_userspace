@@ -23,6 +23,7 @@ Examples:
 
 import sys
 import argparse
+import subprocess
 from pathlib import Path
 
 # Add scripts directory to Python path
@@ -349,6 +350,17 @@ class KeymapGenerator:
 
         # Generate row-staggered .keylayout files
         self._generate_rowstagger_keylayouts()
+
+        # Update .keymap-drawer-config.yaml with auto-generated layer metadata
+        print("\n📝 Updating .keymap-drawer-config.yaml...")
+        try:
+            subprocess.run(
+                ["python3", str(self.repo_root / "scripts" / "update_keymap_drawer_config.py")],
+                check=True,
+                cwd=self.repo_root
+            )
+        except subprocess.CalledProcessError as e:
+            print(f"⚠️  Warning: Failed to update .keymap-drawer-config.yaml: {e}")
 
         # Generate visualizations (grouped by base layer)
         visualizer = KeymapVisualizer(self.repo_root, self.qmk_translator)

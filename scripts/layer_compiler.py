@@ -114,7 +114,6 @@ class LayerCompiler:
         """
         result = []
         # Extensions define keys positionally
-        # For 3x5_3_pinky: outer_pinky_left, outer_pinky_right
         # For 3x6_3: outer_pinky_left (list of 3), outer_pinky_right (list of 3)
 
         # Process in consistent order
@@ -196,14 +195,6 @@ class LayerCompiler:
             padded_42 = self._pad_to_3x6(keycodes, layer)
             return self._pad_to_58_keys_from_3x6(padded_42, layer, board)
 
-        # 38-key boards (3x5_3_pinky): add 2 keys (1 per side)
-        elif layout_size == "3x5_3_pinky":
-            if "3x5_3_pinky" in layer.extensions:
-                ext_keys = self.get_extension_keys(layer.extensions["3x5_3_pinky"])
-                return keycodes + ext_keys
-            else:
-                # No extension defined - pad with NONE
-                return keycodes + ["NONE"] * 2
 
         # 58-key boards (custom_58): Lulu, Lily58
         # These have: 12 number row + 30 main (3x5x2) + 2 outer pinky + 8 thumbs (4x2)

@@ -1,198 +1,99 @@
 parse_config:
   qmk_remove_keycode_prefix:
-    - "KC_"
-
-  # Highlight all keys that activate layers (not just first one)
+  - KC_
   mark_alternate_layer_activators: true
-
-  # Specify which layer each named layer corresponds to
-  # CRITICAL: Order must match config/keymap.yaml and qmk/users/dario/dario.h enum
   layer_names:
-    - BASE_COLEMAK
-    - BASE_GALLIUM
-    - BASE_NIGHT
-    - NUM
-    - SYM
-    - NAV
-    - MEDIA
-    - FUN
-    - NUM_NIGHT
-    - SYM_NIGHT
-    - NAV_NIGHT
-    - MEDIA_NIGHT
-    - BASE_NIGHT_V2
-    - NUM_NIGHT_V2
-    - SYM_NIGHT_V2
-    - NAV_NIGHT_V2
-    - MEDIA_NIGHT_V2
-
-  # Custom layer names (for keys that reference layers)
+  - BASE_NIGHT
+  - BASE_GALLIUM
+  - FUN
+  - NUM_NIGHT
+  - SYM_NIGHT
+  - NAV_NIGHT
+  - MEDIA_NIGHT
   layer_legend_map:
-    "BASE_COLEMAK": "COLEMAK"
-    "BASE_GALLIUM": "GALLIUM"
-    "BASE_NIGHT": "NIGHT"
-    "BASE_NIGHT_V2": "NIGHT_V2"
-    "NAV": "NAV"
-    "MEDIA": "MEDIA"
-    "NUM": "NUM"
-    "SYM": "SYM"
-    "FUN": "FUN"
-    "NUM_NIGHT": "NUM"
-    "SYM_NIGHT": "SYM"
-    "NAV_NIGHT": "NAV"
-    "MEDIA_NIGHT": "MEDIA"
-    "NUM_NIGHT_V2": "NUM"
-    "SYM_NIGHT_V2": "SYM"
-    "NAV_NIGHT_V2": "NAV"
-    "MEDIA_NIGHT_V2": "MEDIA"
-
+    BASE_NIGHT: NIGHT
+    BASE_GALLIUM: GALLIUM
+    NUM_NIGHT: NUM
+    SYM_NIGHT: SYM
+    NAV_NIGHT: NAV
+    MEDIA_NIGHT: MEDIA
   raw_binding_map:
-    # Layer-tap and mod-tap keys are AUTO-GENERATED from config/keymap.yaml
-    # Do not add manual entries here - they will be overwritten
-    # See scripts/visualizer.py::_generate_layer_tap_mappings()
-
-    # Empty/blank keys
-    "KC_NO": ""
-    "U_NA": ""
-    "U_NU": ""
-    "U_NP": ""
-    "U_UND": "⎌ Undo"
-    "U_RDO": "⟲ Redo"
-    "U_CUT": "✂ Cut"
-    "U_CPY": "⧉ Copy"
-    "U_PST": "⎀ Paste"
-
-    # Mouse keycodes
-    "MS_LEFT": "M←"
-    "MS_DOWN": "M↓"
-    "MS_UP": "M↑"
-    "MS_RGHT": "M→"
-    "MS_BTN1": "LC"
-    "MS_BTN2": "RC"
-    "MS_BTN3": "MC"
-    "MS_WHLL": "W←"
-    "MS_WHLD": "W↓"
-    "MS_WHLU": "W↑"
-    "MS_WHLR": "W→"
-
-    # RGB controls (QMK)
-    "RM_TOGG": "RGB"
-    "RM_NEXT": "Mode"
-    "RM_HUEU": "Hue+"
-    "RM_SATU": "Sat+"
-    "RM_VALU": "Val+"
-
-    # Bluetooth controls (ZMK - shown in superset view)
-    "KC_BT_SEL_0": "BT 0"
-    "KC_BT_SEL_1": "BT 1"
-    "KC_BT_SEL_2": "BT 2"
-    "KC_BT_SEL_3": "BT 3"
-    "KC_BT_SEL_4": "BT 4"
-    "KC_BT_CLR": "BT Clr"
-
-    # Default layer switching
-    "DF(BASE_COLEMAK)": "CLMK"
-    "DF(BASE_GALLIUM)": "GLIUM"
-    "DF(BASE_NIGHT)": "NHT"
-    "DF(BASE_NIGHT_V2)": "NHT2"
-
+    KC_NO: ''
+    U_NA: ''
+    U_NU: ''
+    U_NP: ''
+    U_UND: ⎌ Undo
+    U_RDO: ⟲ Redo
+    U_CUT: ✂ Cut
+    U_CPY: ⧉ Copy
+    U_PST: ⎀ Paste
+    MS_LEFT: M←
+    MS_DOWN: M↓
+    MS_UP: M↑
+    MS_RGHT: M→
+    MS_BTN1: LC
+    MS_BTN2: RC
+    MS_BTN3: MC
+    MS_WHLL: W←
+    MS_WHLD: W↓
+    MS_WHLU: W↑
+    MS_WHLR: W→
+    RM_TOGG: RGB
+    RM_NEXT: Mode
+    RM_HUEU: Hue+
+    RM_SATU: Sat+
+    RM_VALU: Val+
+    KC_BT_SEL_0: BT 0
+    KC_BT_SEL_1: BT 1
+    KC_BT_SEL_2: BT 2
+    KC_BT_SEL_3: BT 3
+    KC_BT_SEL_4: BT 4
+    KC_BT_CLR: BT Clr
+    DF(BASE_COLEMAK): COAK
+    DF(BASE_GALLIUM): GAUM
+    DF(BASE_NIGHT): NIHT
+    DF(BASE_NIGHT_V2): NHT2
 draw_config:
   ortho_layout:
     split: true
     rows: 3
     columns: 5
     thumbs: 3
-
-  # Glyph/icon dimensions (increased from defaults for better visibility)
-  glyph_tap_size: 28      # default: 14, matching row-stagger
-  glyph_hold_size: 20     # default: 12, matching row-stagger
-  glyph_shifted_size: 16  # default: 10, matching row-stagger
-
-  # Custom styling for held keys (layer activators)
-  svg_extra_style: |
-    /* Increase font size and make bold for all tap labels (matching row-stagger) */
-    .tap {
-      font-size: 24px !important;
-      font-weight: 600 !important;
-    }
-
-    /* Remove underline from layer activator text */
-    text.layer-activator {
-      text-decoration: none !important;
-    }
-
-    /* Remove bold from hold text (layer names on modifier keys) */
-    text.hold {
-      font-weight: normal !important;
-    }
-
-    /* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green on all BASE layers */
-    .layer-BASE_COLEMAK .keypos-31 rect,
-    .layer-BASE_COLEMAK .keypos-32 rect,
-    .layer-BASE_COLEMAK .keypos-33 rect,
-    .layer-BASE_COLEMAK .keypos-35 rect,
-    .layer-BASE_COLEMAK .keypos-29 rect,
-    .layer-BASE_GALLIUM .keypos-31 rect,
-    .layer-BASE_GALLIUM .keypos-32 rect,
-    .layer-BASE_GALLIUM .keypos-33 rect,
-    .layer-BASE_GALLIUM .keypos-35 rect,
-    .layer-BASE_GALLIUM .keypos-29 rect {
-      fill: #4CAF50 !important;
-      stroke: none !important;
-      opacity: 1 !important;
-    }
-    .layer-BASE_COLEMAK .keypos-31 text,
-    .layer-BASE_COLEMAK .keypos-32 text,
-    .layer-BASE_COLEMAK .keypos-33 text,
-    .layer-BASE_COLEMAK .keypos-35 text,
-    .layer-BASE_COLEMAK .keypos-29 text,
-    .layer-BASE_GALLIUM .keypos-31 text,
-    .layer-BASE_GALLIUM .keypos-32 text,
-    .layer-BASE_GALLIUM .keypos-33 text,
-    .layer-BASE_GALLIUM .keypos-35 text,
-    .layer-BASE_GALLIUM .keypos-29 text {
-      fill: white !important;
-    }
-
-    /* Highlight home row mods (positions 10-13, 16-19) with lighter green stroke on all BASE layers */
-    .layer-BASE_COLEMAK .keypos-10 rect,
-    .layer-BASE_COLEMAK .keypos-11 rect,
-    .layer-BASE_COLEMAK .keypos-12 rect,
-    .layer-BASE_COLEMAK .keypos-13 rect,
-    .layer-BASE_COLEMAK .keypos-16 rect,
-    .layer-BASE_COLEMAK .keypos-17 rect,
-    .layer-BASE_COLEMAK .keypos-18 rect,
-    .layer-BASE_COLEMAK .keypos-19 rect,
-    .layer-BASE_GALLIUM .keypos-10 rect,
-    .layer-BASE_GALLIUM .keypos-11 rect,
-    .layer-BASE_GALLIUM .keypos-12 rect,
-    .layer-BASE_GALLIUM .keypos-13 rect,
-    .layer-BASE_GALLIUM .keypos-16 rect,
-    .layer-BASE_GALLIUM .keypos-17 rect,
-    .layer-BASE_GALLIUM .keypos-18 rect,
-    .layer-BASE_GALLIUM .keypos-19 rect {
-      stroke: #66BB6A !important;
-      stroke-width: 2 !important;
-    }
-
-    /* On other layers, highlight the key that keeps you on that layer */
-    .layer-NAV .keypos-31 rect,
-    .layer-MEDIA .keypos-32 rect,
-    .layer-NUM .keypos-35 rect,
-    .layer-SYM .keypos-33 rect,
-    .layer-FUN .keypos-29 rect {
-      fill: #FF9800 !important;
-      stroke: none !important;
-    }
-    .layer-NAV .keypos-31 text,
-    .layer-MEDIA .keypos-32 text,
-    .layer-NUM .keypos-35 text,
-    .layer-SYM .keypos-33 text,
-    .layer-FUN .keypos-29 text {
-      fill: white !important;
-    }
-
-    /* Make sure ghost keys (on other layers) are clearly different */
-    .key.ghost rect {
-      opacity: 0.3 !important;
-    }
+  glyph_tap_size: 28
+  glyph_hold_size: 20
+  glyph_shifted_size: 16
+  svg_extra_style: "/* Increase font size and make bold for all tap labels (matching\
+    \ row-stagger) */\n.tap {\n  font-size: 24px !important;\n  font-weight: 600 !important;\n\
+    }\n\n/* Remove underline from layer activator text */\ntext.layer-activator {\n\
+    \  text-decoration: none !important;\n}\n\n/* Remove bold from hold text (layer\
+    \ names on modifier keys) */\ntext.hold {\n  font-weight: normal !important;\n\
+    }\n\n/* Highlight layer-tap thumb keys (positions 21, 31-33, 35) with bright green\
+    \ on all BASE layers */\n.layer-BASE_COLEMAK .keypos-31 rect,\n.layer-BASE_COLEMAK\
+    \ .keypos-32 rect,\n.layer-BASE_COLEMAK .keypos-33 rect,\n.layer-BASE_COLEMAK\
+    \ .keypos-35 rect,\n.layer-BASE_COLEMAK .keypos-29 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-31 rect,\n.layer-BASE_GALLIUM .keypos-32 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-33 rect,\n.layer-BASE_GALLIUM .keypos-35 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-29 rect {\n  fill: #4CAF50 !important;\n  stroke: none !important;\n\
+    \  opacity: 1 !important;\n}\n.layer-BASE_COLEMAK .keypos-31 text,\n.layer-BASE_COLEMAK\
+    \ .keypos-32 text,\n.layer-BASE_COLEMAK .keypos-33 text,\n.layer-BASE_COLEMAK\
+    \ .keypos-35 text,\n.layer-BASE_COLEMAK .keypos-29 text,\n.layer-BASE_GALLIUM\
+    \ .keypos-31 text,\n.layer-BASE_GALLIUM .keypos-32 text,\n.layer-BASE_GALLIUM\
+    \ .keypos-33 text,\n.layer-BASE_GALLIUM .keypos-35 text,\n.layer-BASE_GALLIUM\
+    \ .keypos-29 text {\n  fill: white !important;\n}\n\n/* Highlight home row mods\
+    \ (positions 10-13, 16-19) with lighter green stroke on all BASE layers */\n.layer-BASE_COLEMAK\
+    \ .keypos-10 rect,\n.layer-BASE_COLEMAK .keypos-11 rect,\n.layer-BASE_COLEMAK\
+    \ .keypos-12 rect,\n.layer-BASE_COLEMAK .keypos-13 rect,\n.layer-BASE_COLEMAK\
+    \ .keypos-16 rect,\n.layer-BASE_COLEMAK .keypos-17 rect,\n.layer-BASE_COLEMAK\
+    \ .keypos-18 rect,\n.layer-BASE_COLEMAK .keypos-19 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-10 rect,\n.layer-BASE_GALLIUM .keypos-11 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-12 rect,\n.layer-BASE_GALLIUM .keypos-13 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-16 rect,\n.layer-BASE_GALLIUM .keypos-17 rect,\n.layer-BASE_GALLIUM\
+    \ .keypos-18 rect,\n.layer-BASE_GALLIUM .keypos-19 rect {\n  stroke: #66BB6A !important;\n\
+    \  stroke-width: 2 !important;\n}\n\n/* On other layers, highlight the key that\
+    \ keeps you on that layer */\n.layer-NAV .keypos-31 rect,\n.layer-MEDIA .keypos-32\
+    \ rect,\n.layer-NUM .keypos-35 rect,\n.layer-SYM .keypos-33 rect,\n.layer-FUN\
+    \ .keypos-29 rect {\n  fill: #FF9800 !important;\n  stroke: none !important;\n\
+    }\n.layer-NAV .keypos-31 text,\n.layer-MEDIA .keypos-32 text,\n.layer-NUM .keypos-35\
+    \ text,\n.layer-SYM .keypos-33 text,\n.layer-FUN .keypos-29 text {\n  fill: white\
+    \ !important;\n}\n\n/* Make sure ghost keys (on other layers) are clearly different\
+    \ */\n.key.ghost rect {\n  opacity: 0.3 !important;\n}\n"

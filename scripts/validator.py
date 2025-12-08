@@ -133,21 +133,7 @@ class ConfigValidator:
         Raises:
             ValidationError: If validation fails
         """
-        if ext_name == "3x5_3_pinky":
-            # 38-key: single outer pinky key per side
-            required = {"outer_pinky_left", "outer_pinky_right"}
-            if not required.issubset(extension.keys.keys()):
-                raise ValidationError(
-                    f"Layer {layer_name}: extension 3x5_3_pinky requires: {required}"
-                )
-            for pos in required:
-                if isinstance(extension.keys[pos], list):
-                    raise ValidationError(
-                        f"Layer {layer_name}: extension 3x5_3_pinky "
-                        f"{pos} must be a single key, not a list"
-                    )
-
-        elif ext_name == "3x6_3":
+        if ext_name == "3x6_3":
             # 42-key: 3-key outer pinky column per side
             required = {"outer_pinky_left", "outer_pinky_right"}
             if not required.issubset(extension.keys.keys()):
@@ -199,7 +185,7 @@ class ConfigValidator:
             )
 
         # Validate layout_size
-        valid_sizes = ["3x5_3", "3x5_3_pinky", "3x6_3"]
+        valid_sizes = ["3x5_3", "3x6_3"]
         if not (board.layout_size in valid_sizes or board.layout_size.startswith("custom_")):
             raise ValidationError(
                 f"Board {board.id}: invalid layout_size '{board.layout_size}'. "
