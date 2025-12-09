@@ -496,9 +496,23 @@ class ZMKGenerator:
                 code_lines.append(f"            {trigger_name} {{")
                 code_lines.append(f"                trigger-keys = <{prev_keycode}>;")
                 code_lines.append(f"                bindings = <{alt_zmk}>;")
-                code_lines.append(f"                max-prior-idle-ms = <{mapping.timeout_ms}>;")
+                # If timeout_ms is 0, omit the property to allow unlimited timing
+                if mapping.timeout_ms > 0:
+                    code_lines.append(f"                max-prior-idle-ms = <{mapping.timeout_ms}>;")
                 code_lines.append(f"            }};")
 
+            code_lines.append(f"        }};")
+            code_lines.append("")
+
+            # Layer-tap helper so MAGIC can be used as the tap side of a layer-tap
+            code_lines.append(f"        lt_ak_{behavior_suffix}: lt_ak_{behavior_suffix} {{")
+            code_lines.append(f"            compatible = \"zmk,behavior-hold-tap\";")
+            code_lines.append(f"            label = \"LT_AK_{behavior_suffix.upper()}\";")
+            code_lines.append(f"            #binding-cells = <2>;")
+            code_lines.append(f"            flavor = \"balanced\";")
+            code_lines.append(f"            tapping-term-ms = <200>;")
+            code_lines.append(f"            quick-tap-ms = <200>;")
+            code_lines.append(f"            bindings = <&mo>, <&ak_{behavior_suffix}>;")
             code_lines.append(f"        }};")
             code_lines.append("")
 
@@ -517,6 +531,10 @@ class ZMKGenerator:
         Returns:
             ZMK keycode (e.g., "&kp A", "&kp DOT", "&kp SLASH")
         """
+        # Strip QMK-style KC_ prefix if present for compatibility with magic defaults
+        if keycode.startswith("KC_"):
+            keycode = keycode[3:]
+
         # Handle special characters
         special_chars = {
             ".": "DOT",

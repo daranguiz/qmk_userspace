@@ -229,9 +229,25 @@ class KeymapGenerator:
         visualization = generator.generate_visualization(board, compiled_layers)
 
         # Prepare files to write
+        readme_sections = [f"# {board.name} - ZMK Keymap", "", visualization]
+
+        # Add magic key mappings summary if present
+        if self.magic_config and self.magic_config.mappings:
+            readme_sections.append("## Magic Key Mappings")
+            for base_layer, mapping in self.magic_config.mappings.items():
+                readme_sections.append(f"### {base_layer}")
+                readme_sections.append(f"- default: {mapping.default}")
+                readme_sections.append(f"- timeout_ms: {mapping.timeout_ms}")
+                readme_sections.append("- mappings:")
+                for prev_key, alt_key in mapping.mappings.items():
+                    readme_sections.append(f"  - {prev_key} → {alt_key}")
+                readme_sections.append("")  # spacing
+
+        readme_content = "\n".join(readme_sections).rstrip() + "\n"
+
         files = {
             f"{board.zmk_shield}.keymap": keymap_content,
-            "README.md": f"# {board.name} - ZMK Keymap\n\n{visualization}"
+            "README.md": readme_content,
         }
 
         # Write files

@@ -495,10 +495,10 @@ class MagicKeyMapping:
 
     def validate(self):
         """Validate magic key mapping"""
-        # Validate timeout
-        if self.timeout_ms < 1:
+        # Validate timeout (0 = no limit)
+        if self.timeout_ms < 0:
             raise ValidationError(
-                f"Magic key {self.base_layer}: timeout_ms must be positive"
+                f"Magic key {self.base_layer}: timeout_ms must be zero or positive"
             )
 
         # Validate mappings is non-empty

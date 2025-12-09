@@ -68,6 +68,9 @@ class ZMKTranslator:
 
             # Determine base layer from current layer name
             base_layer = self._get_base_layer_for_layer(self.current_layer)
+            # Fallback to first configured base layer if current layer can't be mapped
+            if not base_layer and self.magic_config.mappings:
+                base_layer = next(iter(self.magic_config.mappings.keys()))
 
             if base_layer and base_layer in self.magic_config.mappings:
                 # Return base-layer-specific adaptive key behavior
@@ -162,6 +165,21 @@ class ZMKTranslator:
                 f"Alias {alias_name} expects {len(alias.params)} parameters, "
                 f"got {len(parts) - 1}"
             )
+
+        # Special handling for MAGIC inside layer-tap:
+        # Using &lt with MAGIC would pass the adaptive-key phandle to &kp, which
+        # results in an invalid keycode (observed as a stray "6" on hardware).
+        # Route MAGIC through a layer-tap wrapper that taps the adaptive key
+        # directly instead of wrapping it in &kp.
+        if alias_name == 'lt' and len(parts) == 3 and parts[2] == 'MAGIC':
+            base_layer = self._get_base_layer_for_layer(self.current_layer)
+            if self.magic_config and base_layer and base_layer in self.magic_config.mappings:
+                suffix = base_layer.lower().replace("base_", "")
+                # Pass layer plus dummy 0 to satisfy hold-tap's two binding cells
+                return f"&lt_ak_{suffix} {parts[1]} 0"
+            # If no magic config is available, drop the binding rather than emit
+            # an invalid keycode.
+            return "&none"
 
         # Build parameter dict
         params = {}
