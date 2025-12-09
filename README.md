@@ -15,11 +15,12 @@ Custom keyboard firmware for split ergonomic keyboards using a unified keymap co
 - Outputs: `https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme`
 
 ## Magic Keys
-- Adaptive key powered by `urob/zmk-adaptive-key`; each base layer has its own MAGIC behavior.
-- Where to press: Gallium left thumb is `LT(SYM_NIGHT, MAGIC)`, Night left thumb is `MT(LSFT, MAGIC)`.
-- Training mode is on by default: typing a mapped bigram directly emits `#` so you learn to use MAGIC. Disable with `python3.11 scripts/generate.py --no-magic-training`.
-- Gallium mappings (tap MAGIC after the first key): `B→R`, `A→Y`, `E→Y`, `R→L`, `U→E`, `O→K`, `.`→`/`, `S→C`, `C→S`, `M→B`, `G→S`, `P→H`, `Y→E` (default: repeat).
-- Night mappings: `U→E`, `P→Y`, `C→Y`, `Y→'`, `G→Y`, `H→L`, `V→S`, `A→O` (default: repeat).
+- Powered by `urob/zmk-adaptive-key`. Training is on: typing a mapped bigram directly emits `#`; disable with `python3.11 scripts/generate.py --no-magic-training`.
+
+| Base   | Mappings (first key → tap MAGIC)                                                        | Default |
+| ------ | --------------------------------------------------------------------------------------- | ------- |
+| Gallium| `B→R`, `A→Y`, `E→Y`, `R→L`, `U→E`, `O→K`, `.`→`/`, `S→C`, `C→S`, `M→B`, `G→S`, `P→H`, `Y→E` | repeat  |
+| Night  | `U→E`, `P→Y`, `C→Y`, `Y→'`, `G→Y`, `H→L`, `V→S`, `A→O`                                   | repeat  |
 
 ## Keymap Visualizations
 
