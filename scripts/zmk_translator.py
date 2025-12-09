@@ -181,6 +181,16 @@ class ZMKTranslator:
             # an invalid keycode.
             return "&none"
 
+        # Special handling for MAGIC inside mod-tap:
+        # Use a mod-tap helper that taps the adaptive key directly.
+        if alias_name == 'mt' and len(parts) == 3 and parts[2] == 'MAGIC':
+            base_layer = self._get_base_layer_for_layer(self.current_layer)
+            if self.magic_config and base_layer and base_layer in self.magic_config.mappings:
+                suffix = base_layer.lower().replace("base_", "")
+                # Supply a dummy second cell (0) to satisfy hold-tap's two binding cells
+                return f"&mt_ak_{suffix} {parts[1]} 0"
+            return "&none"
+
         # Build parameter dict
         params = {}
         for i, param_name in enumerate(alias.params):

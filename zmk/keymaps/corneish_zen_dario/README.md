@@ -49,7 +49,7 @@
 
 36: &lt NUM_NIGHT BSPC
 37: &lt SYM_NIGHT R
-38: &mt LSFT DEL
+38: &mt_ak_night LSFT 0
 39: &mt LSFT TAB
 40: &lt NAV_NIGHT SPACE
 41: &lt MEDIA_NIGHT ENTER

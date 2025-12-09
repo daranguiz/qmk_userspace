@@ -119,6 +119,16 @@
             bindings = <&mo>, <&ak_gallium>;
         };
 
+        mt_ak_gallium: mt_ak_gallium {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MT_AK_GALLIUM";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            bindings = <&kp>, <&ak_gallium>;
+        };
+
         // Adaptive key for BASE_NIGHT family
         ak_night: ak_night {
             compatible = "zmk,behavior-adaptive-key";
@@ -169,6 +179,180 @@
             bindings = <&mo>, <&ak_night>;
         };
 
+        mt_ak_night: mt_ak_night {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MT_AK_NIGHT";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            bindings = <&kp>, <&ak_night>;
+        };
+
+    };
+
+    // Magic training behaviors: punish direct bigrams with '#'
+    behaviors {
+        ak_train_gallium_r: ak_train_gallium_r {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp R>;
+            guard_trigger {
+                trigger-keys = <B>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_y: ak_train_gallium_y {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp Y>;
+            guard_trigger {
+                trigger-keys = <A E>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_l: ak_train_gallium_l {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp L>;
+            guard_trigger {
+                trigger-keys = <R>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_e: ak_train_gallium_e {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp E>;
+            guard_trigger {
+                trigger-keys = <U Y>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_k: ak_train_gallium_k {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp K>;
+            guard_trigger {
+                trigger-keys = <O>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_slash: ak_train_gallium_slash {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp SLASH>;
+            guard_trigger {
+                trigger-keys = <DOT>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_c: ak_train_gallium_c {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp C>;
+            guard_trigger {
+                trigger-keys = <S>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_s: ak_train_gallium_s {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp S>;
+            guard_trigger {
+                trigger-keys = <C G>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_b: ak_train_gallium_b {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp B>;
+            guard_trigger {
+                trigger-keys = <M>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_gallium_h: ak_train_gallium_h {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp H>;
+            guard_trigger {
+                trigger-keys = <P>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_night_e: ak_train_night_e {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp E>;
+            guard_trigger {
+                trigger-keys = <U>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_night_y: ak_train_night_y {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp Y>;
+            guard_trigger {
+                trigger-keys = <P C G>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_night_quot: ak_train_night_quot {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp SQT>;
+            guard_trigger {
+                trigger-keys = <Y>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_night_l: ak_train_night_l {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp L>;
+            guard_trigger {
+                trigger-keys = <H>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_night_s: ak_train_night_s {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp S>;
+            guard_trigger {
+                trigger-keys = <V>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_night_o: ak_train_night_o {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp O>;
+            guard_trigger {
+                trigger-keys = <A>;
+                bindings = <&kp HASH>;
+            };
+        };
+
     };
 
     keymap {
@@ -176,18 +360,18 @@
 
         base_night_layer {
             bindings = <
-                &none &kp B &kp F &kp L &kp K &kp Q &kp P &kp G &kp O &kp U &kp DOT &none
-                &kp Y &hml LGUI N &hml LALT S &hml LCTL H &hml LSFT T &kp M &kp Y &hmr LSFT C &hmr LCTL A &hmr LALT E &hmr LGUI I &none
-                &none &kp X &kp V &kp J &kp D &kp Z &kp SQT &kp W &kp MINUS &kp SEMI &kp COMMA &none
-                &lt NUM_NIGHT BSPC &lt SYM_NIGHT R &mt LSFT DEL &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
+                &none &kp B &kp F &ak_train_night_l &kp K &kp Q &kp P &kp G &ak_train_night_o &kp U &kp DOT &none
+                &ak_train_night_y &hml LGUI N &hml LALT S &hml LCTL H &hml LSFT T &kp M &ak_train_night_y &hmr LSFT C &hmr LCTL A &hmr LALT E &hmr LGUI I &none
+                &none &kp X &kp V &kp J &kp D &kp Z &ak_train_night_quot &kp W &kp MINUS &kp SEMI &kp COMMA &none
+                &lt NUM_NIGHT BSPC &lt SYM_NIGHT R &mt_ak_night LSFT 0 &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
             >;
         };
 
         base_gallium_layer {
             bindings = <
-                &none &kp B &kp L &kp D &kp C &kp V &kp J &kp Y &kp O &kp U &kp DOT &none
+                &none &ak_train_gallium_b &ak_train_gallium_l &kp D &ak_train_gallium_c &kp V &kp J &ak_train_gallium_y &kp O &kp U &kp DOT &none
                 &none &hml LGUI N &hml LALT R &hml LCTL T &hml LSFT S &kp G &kp P &hmr LSFT H &hmr LCTL A &hmr LALT E &hmr LGUI I &kp ENTER
-                &none &kp X &kp Q &kp M &kp W &kp Z &kp K &kp F &kp SQT &kp MINUS &kp COMMA &none
+                &none &kp X &kp Q &kp M &kp W &kp Z &ak_train_gallium_k &kp F &kp SQT &kp MINUS &kp COMMA &none
                 &lt NUM_NIGHT BSPC &lt_ak_gallium SYM_NIGHT 0 &mt LSFT DEL &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
             >;
         };

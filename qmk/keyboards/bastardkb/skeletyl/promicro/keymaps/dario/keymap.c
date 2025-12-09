@@ -13,7 +13,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_P                , KC_G                , KC_O                , KC_U                , KC_DOT              ,
         KC_Y                , LSFT_T(KC_C)        , LCTL_T(KC_A)        , LALT_T(KC_E)        , LGUI_T(KC_I)        ,
         KC_QUOT             , KC_W                , KC_MINS             , KC_SCLN             , KC_COMM             ,
-                              LT(NUM_NIGHT, KC_BSPC), LT(SYM_NIGHT, KC_R) , LSFT_T(KC_DEL)      ,
+                              LT(NUM_NIGHT, KC_BSPC), LT(SYM_NIGHT, KC_R) , LSFT_T(QK_AREP)     ,
                               LSFT_T(KC_TAB)      , LT(NAV_NIGHT, KC_SPC), LT(MEDIA_NIGHT, KC_ENT)
     ),
     [BASE_GALLIUM] = LAYOUT_split_3x5_3(

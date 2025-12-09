@@ -21,7 +21,7 @@ layers:
         - [Y              , hrm:LSFT:C     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
         - [QUOT           , W              , MINS           , SCLN           , COMM           ]
       thumbs:
-        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:DEL    ]
+        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:MAGIC    ]
         - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
     extensions:
       3x6_3:

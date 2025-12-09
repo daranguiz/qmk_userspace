@@ -24,7 +24,7 @@ qmk compile -kb bastardkb/skeletyl/promicro -km dario
 │ KC_X    │ KC_V    │ KC_J    │ KC_D    │ KC_Z    │   │ KC_QUOT │ KC_W    │ KC_MINS │ KC_SCLN │ KC_COMM │
 ╰─────────┴─────────┴─────────┼─────────┼─────────┤   ├─────────┼─────────┼─────────┴─────────┴─────────╯
                               │ LT(NUM_NIGHT, KC_BSPC) │ LT(SYM_NIGHT, KC_R) │   │ LT(NAV_NIGHT, KC_SPC) │ LT(MEDIA_NIGHT, KC_ENT) │
-                              │ LSFT_T(KC_DEL) │         │   │         │         │
+                              │ LSFT_T(QK_AREP) │         │   │         │         │
                               ╰─────────┴─────────╯   ╰─────────┴─────────╯
 
 ```

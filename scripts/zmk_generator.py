@@ -4,7 +4,7 @@ ZMK keymap generator
 Generates ZMK devicetree (.keymap) files from compiled layers
 """
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from pathlib import Path
 from data_model import CompiledLayer, Board, ComboConfiguration, Combo
 
@@ -12,8 +12,8 @@ from data_model import CompiledLayer, Board, ComboConfiguration, Combo
 class ZMKGenerator:
     """Generate ZMK devicetree keymap files"""
 
-    def __init__(self):
-        pass
+    def __init__(self, magic_training: bool = False):
+        self.magic_training = magic_training
 
     def generate_keymap(
         self,
@@ -39,14 +39,6 @@ class ZMKGenerator:
         for idx, layer in enumerate(compiled_layers):
             layer_defines += f"#define {layer.name} {idx}\n"
 
-        # Generate layer definitions
-        layer_defs = []
-        for layer in compiled_layers:
-            layer_def = self._format_layer_definition(layer, board)
-            layer_defs.append(layer_def)
-
-        layers_code = "\n\n".join(layer_defs)
-
         # Generate combo and macro sections
         layer_names = [layer.name for layer in compiled_layers]
         combos_section = ""
@@ -58,8 +50,23 @@ class ZMKGenerator:
 
         # Generate magic key behaviors section
         behaviors_section = ""
+        training_replacements: Dict[str, Dict[str, str]] = {}
         if magic_config and magic_config.mappings:
             behaviors_section = "\n" + self.generate_magic_keys_section(magic_config, compiled_layers)
+            if self.magic_training:
+                training_behaviors, training_replacements = self.generate_magic_training_section(
+                    magic_config, compiled_layers
+                )
+                if training_behaviors:
+                    behaviors_section += "\n" + training_behaviors
+
+        # Generate layer definitions (with optional training replacements)
+        layer_defs = []
+        for layer in compiled_layers:
+            layer_def = self._format_layer_definition(layer, board, training_replacements, magic_config)
+            layer_defs.append(layer_def)
+
+        layers_code = "\n\n".join(layer_defs)
 
         # Generate complete keymap file
         shield_or_board = board.zmk_shield if board.zmk_shield else board.zmk_board
@@ -85,7 +92,13 @@ class ZMKGenerator:
 }};
 """
 
-    def _format_layer_definition(self, layer: CompiledLayer, board: Board) -> str:
+    def _format_layer_definition(
+        self,
+        layer: CompiledLayer,
+        board: Board,
+        training_replacements: Dict[str, Dict[str, str]],
+        magic_config: 'MagicKeyConfiguration'
+    ) -> str:
         """
         Format a single layer as ZMK devicetree node
 
@@ -97,7 +110,19 @@ class ZMKGenerator:
             Layer definition as string
         """
         layer_name = layer.name.lower()
-        bindings = self._format_bindings(layer.keycodes, board.layout_size)
+
+        # Apply training replacements if applicable to this layer's base family
+        keycodes = layer.keycodes
+        if training_replacements and magic_config:
+            # Determine base mapping for this layer
+            mapping = magic_config.get_mapping_for_layer(layer.name) if hasattr(magic_config, "get_mapping_for_layer") else None
+            if mapping:
+                base_layer = mapping.base_layer
+                if base_layer in training_replacements:
+                    replacement_map = training_replacements[base_layer]
+                    keycodes = [replacement_map.get(kc, kc) for kc in keycodes]
+
+        bindings = self._format_bindings(keycodes, board.layout_size)
 
         return f"""        {layer_name}_layer {{
             bindings = <
@@ -516,10 +541,94 @@ class ZMKGenerator:
             code_lines.append(f"        }};")
             code_lines.append("")
 
+            # Mod-tap helper so MAGIC can be used as the tap side of a mod-tap
+            code_lines.append(f"        mt_ak_{behavior_suffix}: mt_ak_{behavior_suffix} {{")
+            code_lines.append(f"            compatible = \"zmk,behavior-hold-tap\";")
+            code_lines.append(f"            label = \"MT_AK_{behavior_suffix.upper()}\";")
+            code_lines.append(f"            #binding-cells = <2>;")
+            code_lines.append(f"            flavor = \"balanced\";")
+            code_lines.append(f"            tapping-term-ms = <200>;")
+            code_lines.append(f"            quick-tap-ms = <200>;")
+            code_lines.append(f"            bindings = <&kp>, <&ak_{behavior_suffix}>;")
+            code_lines.append(f"        }};")
+            code_lines.append("")
+
         code_lines.append("    };")
         code_lines.append("")
 
         return "\n".join(code_lines)
+
+    def generate_magic_training_section(
+        self,
+        magic_config: 'MagicKeyConfiguration',
+        compiled_layers: List[CompiledLayer]
+    ) -> Tuple[str, Dict[str, Dict[str, str]]]:
+        """
+        Generate training adaptive-key behaviors that emit '#' when a magic
+        bigram is typed directly (without using MAGIC). For each base layer,
+        creates one adaptive key per alternate output that falls back to the
+        normal key but maps any magic-triggering predecessor to '#'.
+
+        Returns:
+            (behaviors_code, replacement_map) where replacement_map maps
+            base_layer -> {alt_keycode: training_behavior_ref}
+        """
+        code_lines = [
+            "    // Magic training behaviors: punish direct bigrams with '#'",
+            "    behaviors {",
+        ]
+
+        replacement_map: Dict[str, Dict[str, str]] = {}
+
+        for base_layer, mapping in magic_config.mappings.items():
+            # Group prev keys by alt output
+            grouped: Dict[str, List[str]] = {}
+            for prev_key, alt_key in mapping.mappings.items():
+                grouped.setdefault(alt_key, []).append(prev_key)
+
+            if not grouped:
+                continue
+
+            behavior_suffix = base_layer.lower().replace("base_", "")
+            replacement_map[base_layer] = {}
+
+            for alt_key, prev_list in grouped.items():
+                alt_zmk = self._translate_simple_keycode(alt_key)
+                alt_keycode = alt_zmk.replace("&kp ", "")
+
+                # Safe behavior name
+                alt_safe = alt_key.replace('.', 'dot').replace('/', 'slash').replace("'", 'quot').replace('-', 'minus').replace(';', 'semi').replace('[', 'lb').replace(']', 'rb')
+                behavior_name = f"ak_train_{behavior_suffix}_{alt_safe.lower()}"
+
+                # Build trigger key list
+                trigger_keys = []
+                for prev_key in prev_list:
+                    prev_zmk_raw = self._translate_simple_keycode(prev_key)
+                    trigger_keys.append(prev_zmk_raw.replace("&kp ", ""))
+
+                code_lines.append(f"        {behavior_name}: {behavior_name} {{")
+                code_lines.append(f"            compatible = \"zmk,behavior-adaptive-key\";")
+                code_lines.append(f"            #binding-cells = <0>;")
+                code_lines.append(f"            bindings = <{alt_zmk}>;")
+
+                code_lines.append(f"            guard_trigger {{")
+                code_lines.append(f"                trigger-keys = <{' '.join(trigger_keys)}>;")
+                code_lines.append(f"                bindings = <&kp HASH>;")
+                if mapping.timeout_ms > 0:
+                    code_lines.append(f"                max-prior-idle-ms = <{mapping.timeout_ms}>;")
+                code_lines.append(f"            }};")
+
+                code_lines.append(f"        }};")
+                code_lines.append("")
+
+                replacement_map[base_layer][alt_zmk] = f"&{behavior_name}"
+
+        code_lines.append("    };")
+        code_lines.append("")
+
+        # If no behaviors generated, return empty
+        behaviors_code = "\n".join(code_lines) if len(code_lines) > 2 else ""
+        return behaviors_code, replacement_map
 
     def _translate_simple_keycode(self, keycode: str) -> str:
         """

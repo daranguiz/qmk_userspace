@@ -433,7 +433,7 @@ path.combo {
 </g>
 <g transform="translate(351, 224) rotate(30.0)" class="key keypos-38">
 <rect rx="6" ry="6" x="-26" y="-40" width="52" height="80" class="key"/>
-<use href="#mdi:backspace-reverse-outline" xlink:href="#mdi:backspace-reverse-outline" x="-14" y="-14" height="28" width="28.0" class="key tap glyph mdi:backspace-reverse-outline"/>
+<text x="0" y="0" class="key tap" style="font-size: 20px; font-weight: 400; font-family: Helvetica, Arial, sans-serif">Magic</text>
 <use href="#mdi:apple-keyboard-shift" xlink:href="#mdi:apple-keyboard-shift" x="-10" y="18" height="20" width="20.0" class="key hold glyph mdi:apple-keyboard-shift"/>
 </g>
 <g transform="translate(489, 224) rotate(-30.0)" class="key keypos-39">

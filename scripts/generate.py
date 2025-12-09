@@ -46,17 +46,19 @@ from keylayout_generator import KeylayoutGenerator
 class KeymapGenerator:
     """Main generator orchestrator"""
 
-    def __init__(self, repo_root: Path, verbose: bool = False):
+    def __init__(self, repo_root: Path, verbose: bool = False, magic_training: bool = True):
         """
         Initialize generator
 
         Args:
             repo_root: Repository root directory
             verbose: Enable verbose output
+            magic_training: Enable magic-key training mode (punish direct bigrams)
         """
         self.repo_root = repo_root
         self.config_dir = repo_root / "config"
         self.verbose = verbose
+        self.magic_training = magic_training
 
         # Parse configuration
         self._log("📖 Parsing configuration...")
@@ -221,7 +223,7 @@ class KeymapGenerator:
 
     def _generate_zmk(self, board, compiled_layers):
         """Generate ZMK keymap files"""
-        generator = ZMKGenerator()
+        generator = ZMKGenerator(magic_training=self.magic_training)
         output_dir = self.repo_root / board.get_output_directory()
 
         # Generate keymap file with combos and magic keys
@@ -417,6 +419,11 @@ def main():
         action="store_true",
         help="Enable verbose output (detailed progress information)"
     )
+    parser.add_argument(
+        "--no-magic-training",
+        action="store_true",
+        help="Disable magic-key training (default is on; training replaces mapped bigrams with '#')"
+    )
 
     args = parser.parse_args()
 
@@ -425,7 +432,11 @@ def main():
 
     try:
         # Initialize generator (this validates configuration)
-        generator = KeymapGenerator(repo_root, verbose=args.verbose)
+        generator = KeymapGenerator(
+            repo_root,
+            verbose=args.verbose,
+            magic_training=not args.no_magic_training
+        )
 
         if args.validate_only:
             print("\n✅ Configuration is valid!")
