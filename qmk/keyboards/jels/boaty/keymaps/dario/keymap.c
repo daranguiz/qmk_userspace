@@ -141,6 +141,17 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case KC_H: return KC_L;
             case KC_V: return KC_S;
             case KC_A: return KC_O;
+            case KC_M: return KC_ENT;
+            case KC_DOT: return KC_SLSH;
+            case KC_MINS: return KC_>;
+            case KC_I: return KC_ON;
+            case KC_T: return KC_ION;
+            case KC_Q: return KC_UE;
+            case KC_SPC: return KC_THE;
+            case KC_W: return KC_HAT;
+            case KC_COMM: return KC_ BUT;
+            case KC_J: return KC_UST;
+            case KC_O: return KC_A;
         }
     }
 

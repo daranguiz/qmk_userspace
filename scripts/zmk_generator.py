@@ -5,15 +5,20 @@ Generates ZMK devicetree (.keymap) files from compiled layers
 """
 
 from typing import List, Dict, Tuple
+import re
 from pathlib import Path
-from data_model import CompiledLayer, Board, ComboConfiguration, Combo
+from data_model import CompiledLayer, Board, ComboConfiguration, Combo, ValidationError
 
 
 class ZMKGenerator:
     """Generate ZMK devicetree keymap files"""
 
-    def __init__(self, magic_training: bool = False):
+    def __init__(self, magic_training: bool = False, special_keycodes: Dict[str, Dict[str, str]] = None):
         self.magic_training = magic_training
+        self.special_keycodes = special_keycodes or {}
+        self.char_token_map = self._build_char_token_map()
+        # Track macro behaviors generated for magic/combos so bindings can reference them
+        self.generated_macros: Dict[str, str] = {}
 
     def generate_keymap(
         self,
@@ -43,19 +48,28 @@ class ZMKGenerator:
         layer_names = [layer.name for layer in compiled_layers]
         combos_section = ""
         macros_section = ""
+        macro_refs: Dict[Tuple[str, str], str] = {}
 
+        # Collect macros for combos and magic expansions (text outputs)
+        macro_defs: List[str] = []
         if combos and combos.combos:
             combos_section = "\n" + self.generate_combos_section(combos, layer_names, board)
-            macros_section = "\n" + self.generate_macros_section(combos)
+
+        if magic_config and magic_config.mappings:
+            magic_macro_defs, macro_refs = self._collect_magic_macros(magic_config)
+            macro_defs.extend(magic_macro_defs)
+
+        if macro_defs:
+            macros_section = "\n" + self._wrap_macros_section(macro_defs)
 
         # Generate magic key behaviors section
         behaviors_section = ""
         training_replacements: Dict[str, Dict[str, str]] = {}
         if magic_config and magic_config.mappings:
-            behaviors_section = "\n" + self.generate_magic_keys_section(magic_config, compiled_layers)
+            behaviors_section = "\n" + self.generate_magic_keys_section(magic_config, compiled_layers, macro_refs)
             if self.magic_training:
                 training_behaviors, training_replacements = self.generate_magic_training_section(
-                    magic_config, compiled_layers
+                    magic_config, compiled_layers, macro_refs
                 )
                 if training_behaviors:
                     behaviors_section += "\n" + training_behaviors
@@ -455,10 +469,115 @@ class ZMKGenerator:
 }};
 """
 
+    def _wrap_macros_section(self, macro_defs: List[str]) -> str:
+        """
+        Wrap a list of macro behavior definitions in a macros node.
+        """
+        return f"""    macros {{
+{chr(10).join(macro_defs)}
+    }};
+"""
+
+    def _build_macro_definition(self, name: str, sequence: List[str]) -> str:
+        """
+        Build a single macro behavior definition using a safe tap timing so longer
+        text expansions don't drop characters.
+        """
+        # Convert sequence of characters into &kp keypresses
+        key_sequence = []
+        for ch in sequence:
+            zmk_key = self.char_to_zmk_keycode(ch)
+            key_sequence.append(f"&kp {zmk_key}")
+
+        # Group into lines for readability (10 keys per line)
+        lines = [
+            f"        {name}: {name}_macro {{",
+            f"            compatible = \"zmk,behavior-macro\";",
+            f"            label = \"{name.upper()}\";",
+            f"            #binding-cells = <0>;",
+            f"            bindings",
+            f"                = <&macro_wait_time 10>",
+            f"                , <&macro_tap_time 10>",
+        ]
+
+        for i in range(0, len(key_sequence), 10):
+            chunk = key_sequence[i:i+10]
+            lines.append("                , <&macro_tap " + " ".join(chunk) + ">")
+
+        lines.append("                ;")
+        lines.append("        };")
+
+        return "\n".join(lines)
+
+    def _collect_combo_macros(self, combos: ComboConfiguration) -> List[str]:
+        """
+        Collect macro definitions for combo text expansions.
+        """
+        macro_defs: List[str] = []
+        if not combos or not combos.combos:
+            return macro_defs
+
+        for combo in combos.combos:
+            if combo.macro_text is None:
+                continue
+            macro_name = combo.name.lower()
+            if macro_name in self.generated_macros:
+                continue
+            macro_def = self._build_macro_definition(macro_name, list(combo.macro_text))
+            self.generated_macros[macro_name] = macro_def
+            macro_defs.append(macro_def)
+
+        return macro_defs
+
+    def _extract_macro_sequence(self, keycode) -> List[str]:
+        """
+        Determine if a keycode represents a text sequence; return list of chars if so.
+        """
+        if isinstance(keycode, dict) and 'text' in keycode and isinstance(keycode['text'], str):
+            return list(keycode['text'])
+        if isinstance(keycode, list):
+            return [str(ch) for ch in keycode]
+        if isinstance(keycode, str) and len(keycode) > 1:
+            return list(keycode)
+        return []
+
+    def _collect_magic_macros(self, magic_config: 'MagicKeyConfiguration') -> Tuple[List[str], Dict[Tuple[str, str], str]]:
+        """
+        Collect macro definitions for magic key text expansions and return macro references.
+        """
+        macro_defs: List[str] = []
+        macro_refs: Dict[Tuple[str, str], str] = {}
+
+        if not magic_config or not magic_config.mappings:
+            return macro_defs, macro_refs
+
+        for base_layer, mapping in magic_config.mappings.items():
+            behavior_suffix = base_layer.lower().replace("base_", "")
+            for prev_key, alt_key in mapping.mappings.items():
+                sequence = self._extract_macro_sequence(alt_key)
+                if not sequence:
+                    continue
+
+                safe_prev = self._sanitize_token(prev_key)
+                if safe_prev == "key":
+                    safe_prev = "chr_" + "_".join(str(ord(c)) for c in str(prev_key))
+                macro_name = f"magic_{behavior_suffix}_{safe_prev}"
+                macro_refs[(base_layer, str(prev_key))] = macro_name
+
+                if macro_name in self.generated_macros:
+                    continue
+
+                macro_def = self._build_macro_definition(macro_name, sequence)
+                self.generated_macros[macro_name] = macro_def
+                macro_defs.append(macro_def)
+
+        return macro_defs, macro_refs
+
     def generate_magic_keys_section(
         self,
         magic_config: 'MagicKeyConfiguration',
-        compiled_layers: List[CompiledLayer]
+        compiled_layers: List[CompiledLayer],
+        macro_refs: Dict[Tuple[str, str], str] = None
     ) -> str:
         """
         Generate ZMK adaptive key behaviors for magic keys
@@ -477,6 +596,8 @@ class ZMKGenerator:
         """
         if not magic_config or not magic_config.mappings:
             return ""
+
+        macro_refs = macro_refs or {}
 
         code_lines = [
             "    // Magic key behaviors (adaptive key)",
@@ -509,14 +630,19 @@ class ZMKGenerator:
             # Generate trigger for each mapping
             for prev_key, alt_key in mapping.mappings.items():
                 prev_zmk_raw = self._translate_simple_keycode(prev_key)
-                alt_zmk = self._translate_simple_keycode(alt_key)
+
+                macro_name = macro_refs.get((base_layer, str(prev_key)))
+                if macro_name:
+                    alt_zmk = f"&{macro_name}"
+                else:
+                    alt_zmk = self._translate_simple_keycode(alt_key)
 
                 # Extract keycode from &kp syntax for trigger-keys
-                # "&kp U" → "U", "&kp DOT" → "DOT"
-                prev_keycode = prev_zmk_raw.replace("&kp ", "")
+                # "&kp U" → "U", "&kp DOT" → "DOT", "&macro_tap &kp E &kp N" → "E"
+                prev_keycode = prev_zmk_raw.replace("&kp ", "").split()[0]
 
                 # Generate safe trigger name
-                trigger_name = prev_key.replace('.', 'dot').replace('/', 'slash').replace("'", 'quot').lower() + "_trigger"
+                trigger_name = f"{self._sanitize_token(prev_zmk_raw)}_trigger"
 
                 code_lines.append(f"            {trigger_name} {{")
                 code_lines.append(f"                trigger-keys = <{prev_keycode}>;")
@@ -561,7 +687,8 @@ class ZMKGenerator:
     def generate_magic_training_section(
         self,
         magic_config: 'MagicKeyConfiguration',
-        compiled_layers: List[CompiledLayer]
+        compiled_layers: List[CompiledLayer],
+        macro_refs: Dict[Tuple[str, str], str] = None
     ) -> Tuple[str, Dict[str, Dict[str, str]]]:
         """
         Generate training adaptive-key behaviors that emit '#' when a magic
@@ -578,6 +705,7 @@ class ZMKGenerator:
             "    behaviors {",
         ]
 
+        macro_refs = macro_refs or {}
         replacement_map: Dict[str, Dict[str, str]] = {}
 
         # Track adaptive training behaviors per base layer so HRMs can reference them
@@ -586,8 +714,15 @@ class ZMKGenerator:
         for base_layer, mapping in magic_config.mappings.items():
             # Group prev keys by alt output
             grouped: Dict[str, List[str]] = {}
+            alt_lookup: Dict[str, object] = {}
             for prev_key, alt_key in mapping.mappings.items():
-                grouped.setdefault(alt_key, []).append(prev_key)
+                macro_name = macro_refs.get((base_layer, str(prev_key)))
+                if macro_name:
+                    alt_zmk = f"&{macro_name}"
+                else:
+                    alt_zmk = self._translate_simple_keycode(alt_key)
+                alt_lookup[alt_zmk] = alt_key
+                grouped.setdefault(alt_zmk, []).append(prev_key)
 
             if not grouped:
                 continue
@@ -596,13 +731,20 @@ class ZMKGenerator:
             replacement_map[base_layer] = {}
             training_meta[base_layer] = {}
 
-            for alt_key, prev_list in grouped.items():
-                alt_zmk = self._translate_simple_keycode(alt_key)
+            for alt_zmk, prev_list in grouped.items():
+                alt_key_value = alt_lookup[alt_zmk]
+                macro_name = None
+                if isinstance(prev_list, list) and prev_list:
+                    macro_name = macro_refs.get((base_layer, str(prev_list[0])))
+                if macro_name:
+                    alt_zmk = f"&{macro_name}"
+                else:
+                    alt_zmk = self._translate_simple_keycode(alt_key_value)
                 alt_keycode = alt_zmk.replace("&kp ", "")
 
-                # Safe behavior name
-                alt_safe = alt_key.replace('.', 'dot').replace('/', 'slash').replace("'", 'quot').replace('-', 'minus').replace(';', 'semi').replace('[', 'lb').replace(']', 'rb')
-                behavior_name = f"ak_train_{behavior_suffix}_{alt_safe.lower()}"
+                # Safe behavior name derived from translated ZMK keycode
+                alt_safe = self._sanitize_token(alt_zmk)
+                behavior_name = f"ak_train_{behavior_suffix}_{alt_safe}"
 
                 # Build trigger key list
                 trigger_keys = []
@@ -658,7 +800,7 @@ class ZMKGenerator:
 
                 meta = training_meta[base_layer][alt_zmk]
                 behavior_suffix = meta["behavior_suffix"]
-                alt_safe = meta["alt_safe"].lower()
+                alt_safe = meta["alt_safe"]
                 ak_train_ref = f"&{meta['behavior_name']}"
 
                 if kc.startswith("&hml"):
@@ -710,37 +852,64 @@ class ZMKGenerator:
         behaviors_code = "\n".join(code_lines) if len(code_lines) > 2 else ""
         return behaviors_code, replacement_map
 
-    def _translate_simple_keycode(self, keycode: str) -> str:
+    def _translate_simple_keycode(self, keycode) -> str:
         """
         Translate simple keycode to ZMK format (for magic key mappings)
 
         Args:
-            keycode: Simple keycode (e.g., "A", ".", "/")
+            keycode: Simple keycode (e.g., "A", ".", "/") or disambiguated dict
 
         Returns:
             ZMK keycode (e.g., "&kp A", "&kp DOT", "&kp SLASH")
         """
+        # Disambiguated mapping forms: {'text': 'ent'} or {'kc': 'ENTER'}
+        if isinstance(keycode, dict):
+            if 'text' in keycode and isinstance(keycode['text'], str):
+                macro_keys = " ".join(
+                    [f"&kp {self.char_to_zmk_keycode(ch)}" for ch in keycode['text']]
+                )
+                return f"&macro_tap {macro_keys}"
+            if 'kc' in keycode and isinstance(keycode['kc'], str):
+                return self._translate_simple_keycode(keycode['kc'])
+
+        # Array of chars/keys → macro tap sequence
+        if isinstance(keycode, list):
+            macro_keys = " ".join(
+                [f"&kp {self.char_to_zmk_keycode(str(ch))}" for ch in keycode]
+            )
+            return f"&macro_tap {macro_keys}"
+
+        if not isinstance(keycode, str):
+            keycode = str(keycode)
+
         # Strip QMK-style KC_ prefix if present for compatibility with magic defaults
         if keycode.startswith("KC_"):
             keycode = keycode[3:]
 
-        # Handle special characters
-        special_chars = {
-            ".": "DOT",
-            ",": "COMMA",
-            "/": "SLASH",
-            "'": "SQT",
-            "-": "MINUS",
-            ";": "SEMI",
-            "[": "LBKT",
-            "]": "RBKT",
-        }
+        # Multi-letter string → emit a macro_tap sequence of characters (avoids interpreting as keycode like ENT)
+        if isinstance(keycode, str) and len(keycode) > 1:
+            macro_keys = " ".join(
+                [f"&kp {self.char_to_zmk_keycode(ch)}" for ch in keycode]
+            )
+            return f"&macro_tap {macro_keys}"
 
-        if keycode in special_chars:
-            return f"&kp {special_chars[keycode]}"
+        # Prefer keycodes.yaml lookup when available (single-token names)
+        if isinstance(keycode, str) and keycode in self.special_keycodes:
+            zmk_val = self.special_keycodes[keycode].get("zmk")
+            if zmk_val:
+                return zmk_val
+
+        # Canonicalize single-character punctuation/digits to tokens based on keycodes.yaml
+        if isinstance(keycode, str) and len(keycode) == 1:
+            token = self.char_token_map.get(keycode)
+            if token and token in self.special_keycodes:
+                zmk_val = self.special_keycodes[token].get("zmk")
+                if zmk_val:
+                    return zmk_val
+            raise ValidationError(f"Unknown magic key '{keycode}' not found in keycodes.yaml")
 
         # Single letter
-        if len(keycode) == 1 and keycode.isalpha():
+        if isinstance(keycode, str) and len(keycode) == 1 and keycode.isalpha():
             return f"&kp {keycode.upper()}"
 
         # Already prefixed
@@ -750,20 +919,61 @@ class ZMKGenerator:
         # Default: add &kp prefix
         return f"&kp {keycode}"
 
-    def char_to_zmk_keycode(self, char: str) -> str:
-        """Convert character to ZMK keycode"""
-        # Mapping of characters to ZMK keycodes
-        char_map = {
-            'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E',
-            'f': 'F', 'g': 'G', 'h': 'H', 'i': 'I', 'j': 'J',
-            'k': 'K', 'l': 'L', 'm': 'M', 'n': 'N', 'o': 'O',
-            'p': 'P', 'q': 'Q', 'r': 'R', 's': 'S', 't': 'T',
-            'u': 'U', 'v': 'V', 'w': 'W', 'x': 'X', 'y': 'Y', 'z': 'Z',
-            '0': 'N0', '1': 'N1', '2': 'N2', '3': 'N3', '4': 'N4',
-            '5': 'N5', '6': 'N6', '7': 'N7', '8': 'N8', '9': 'N9',
-            '/': 'FSLH', '-': 'MINUS', '.': 'DOT', ':': 'COLON',
-            '?': 'QMARK', '=': 'EQUAL', '#': 'HASH', '_': 'UNDER',
-            ' ': 'SPACE'
-        }
+    def _sanitize_token(self, token: str) -> str:
+        """
+        Sanitize a ZMK expression or key token into a devicetree-safe identifier fragment.
+        """
+        token = str(token)
+        token = token.replace("&macro_tap ", "mt_")
+        token = token.replace("&kp ", "")
+        token = token.replace("&", "")
+        token = token.replace(" ", "_")
+        token = re.sub(r'[^A-Za-z0-9_]+', "_", token)
+        token = token.strip("_")
+        return token.lower() or "key"
 
-        return char_map.get(char, char.upper())
+    def char_to_zmk_keycode(self, char: str) -> str:
+        """Convert character to ZMK keycode, using keycodes.yaml tokens."""
+        char = str(char)
+        if len(char) != 1:
+            raise ValidationError(f"Expected a single character for macro output, got '{char}'")
+
+        # Letters and digits map directly
+        if char.isalpha():
+            token = char.upper()
+        elif char.isdigit():
+            token = f"N{char}"
+        else:
+            token = self.char_token_map.get(char)
+
+        if not token or token not in self.special_keycodes:
+            raise ValidationError(f"Unknown character '{char}' for magic macro; add it to keycodes.yaml")
+
+        zmk_val = self.special_keycodes[token].get("zmk")
+        if not zmk_val:
+            raise ValidationError(f"Missing ZMK value for token '{token}' in keycodes.yaml")
+
+        # Remove leading '&kp ' to keep compatibility with earlier consumers
+        return zmk_val.replace("&kp ", "") if isinstance(zmk_val, str) and zmk_val.startswith("&kp ") else zmk_val
+
+    def _build_char_token_map(self) -> Dict[str, str]:
+        """
+        Build a mapping from single characters to keycodes.yaml tokens, derived from known token names.
+        """
+        char_map: Dict[str, str] = {}
+        for token, meta in self.special_keycodes.items():
+            if not isinstance(meta, dict):
+                continue
+
+            # Prefer explicit "char" field in keycodes.yaml
+            ch = meta.get("char")
+
+            # Fall back to a single-character display_name if present
+            if not ch:
+                display_name = meta.get("display_name")
+                if isinstance(display_name, str) and len(display_name) == 1:
+                    ch = display_name
+
+            if isinstance(ch, str) and len(ch) == 1:
+                char_map[ch] = token
+        return char_map

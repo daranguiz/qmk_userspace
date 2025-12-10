@@ -11,6 +11,26 @@ from pathlib import Path
 from typing import Dict, List
 import yaml
 
+
+def _safe_loader_without_bools():
+    """
+    Return a SafeLoader that does not implicitly convert bare words like
+    ON/OFF/YES/NO/TRUE/FALSE into booleans. This keeps multi-letter magic
+    mappings (e.g., ON/ION) as plain strings.
+    """
+    class NoBoolSafeLoader(yaml.SafeLoader):
+        pass
+
+    # Strip bool resolvers
+    for ch, resolvers in list(NoBoolSafeLoader.yaml_implicit_resolvers.items()):
+        filtered = [r for r in resolvers if r[0] != 'tag:yaml.org,2002:bool']
+        if filtered:
+            NoBoolSafeLoader.yaml_implicit_resolvers[ch] = filtered
+        else:
+            NoBoolSafeLoader.yaml_implicit_resolvers.pop(ch, None)
+
+    return NoBoolSafeLoader
+
 from data_model import (
     KeyGrid,
     Layer,
@@ -41,8 +61,9 @@ class YAMLConfigParser:
         Returns:
             KeymapConfiguration with all layers loaded (merged if overlay provided)
         """
+        loader = _safe_loader_without_bools()
         with open(yaml_path, 'r') as f:
-            data = yaml.safe_load(f)
+            data = yaml.load(f, Loader=loader)
 
         if not data or 'layers' not in data:
             raise ValidationError("keymap.yaml must contain 'layers' section")
@@ -404,12 +425,19 @@ class YAMLConfigParser:
                     f"Magic key configuration for {base_layer} missing required field: 'mappings'"
                 )
 
+            # Support new boolean default flag
+            default_value = config.get('default')
+            if default_value is None and 'default_repeat' in config:
+                default_value = 'REPEAT' if config.get('default_repeat') else 'NONE'
+            if default_value is None:
+                default_value = 'REPEAT'
+
             # Create magic key mapping
             mapping = MagicKeyMapping(
                 base_layer=base_layer,
                 timeout_ms=config.get('timeout_ms', 150),
                 mappings=config.get('mappings', {}),
-                default=config.get('default', 'REPEAT')
+                default=default_value
             )
 
             mapping.validate()

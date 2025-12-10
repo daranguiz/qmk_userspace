@@ -1,7 +1,7 @@
 parse_config:
   qmk_remove_keycode_prefix:
   - KC_
-  mark_alternate_layer_activators: true
+  mark_alternate_layer_activators: !!bool 'true'
   layer_names:
   - BASE_NIGHT
   - BASE_GALLIUM
@@ -55,7 +55,7 @@ parse_config:
     DF(BASE_NIGHT_V2): NHT2
 draw_config:
   ortho_layout:
-    split: true
+    split: !!bool 'true'
     rows: 3
     columns: 5
     thumbs: 3

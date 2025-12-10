@@ -404,3 +404,14 @@
   - H → L
   - V → S
   - A → O
+  - M → ENT
+  - . → /
+  - - → >
+  - I → ON
+  - T → ION
+  - Q → UE
+  -   → THE
+  - W → HAT
+  - , →  BUT
+  - J → UST
+  - O → A

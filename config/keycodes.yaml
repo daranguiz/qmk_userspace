@@ -252,107 +252,139 @@ F12:
 QUOT:  # '
   qmk: "KC_QUOT"
   zmk: "&kp SQT"
+  char: "'"
 DQUO:  # "
   qmk: "KC_DQUO"
   zmk: "&kp DQT"
+  char: "\""
 LABK:  # <
   qmk: "KC_LT"
   zmk: "&kp LT"
+  char: "<"
 RABK:  # >
   qmk: "KC_GT"
   zmk: "&kp GT"
+  char: ">"
 COMM:  # ,
   qmk: "KC_COMM"
   zmk: "&kp COMMA"
+  char: ","
 DOT:  # .
   qmk: "KC_DOT"
   zmk: "&kp DOT"
+  char: "."
 SLSH:  # /
   qmk: "KC_SLSH"
   zmk: "&kp FSLH"
+  char: "/"
 QUES:  # ?
   qmk: "KC_QUES"
   zmk: "&kp QUESTION"
+  char: "?"
 BSLS:  # \
   qmk: "KC_BSLS"
   zmk: "&kp BSLH"
+  char: "\\"
 SCLN:  # ;
   qmk: "KC_SCLN"
   zmk: "&kp SEMI"
+  char: ";"
 COLN:  # :
   qmk: "KC_COLN"
   zmk: "&kp COLON"
+  char: ":"
 GRV:  # `
   qmk: "KC_GRV"
   zmk: "&kp GRAVE"
+  char: "`"
 TILD:  # ~
   qmk: "KC_TILD"
   zmk: "&kp TILDE"
+  char: "~"
 MINS:  # -
   qmk: "KC_MINS"
   zmk: "&kp MINUS"
+  char: "-"
 UNDS:  # _
   qmk: "KC_UNDS"
   zmk: "&kp UNDERSCORE"
+  char: "_"
 EQL:  # =
   qmk: "KC_EQL"
   zmk: "&kp EQUAL"
+  char: "="
 PLUS:  # +
   qmk: "KC_PLUS"
   zmk: "&kp PLUS"
+  char: "+"
 
 # Brackets & braces
 LBRC:  # [
   qmk: "KC_LBRC"
   zmk: "&kp LBKT"
   display_name: "["
+  char: "["
 RBRC:  # ]
   qmk: "KC_RBRC"
   zmk: "&kp RBKT"
   display_name: "]"
+  char: "]"
 LCBR:  # {
   qmk: "KC_LCBR"
   zmk: "&kp LBRC"
   display_name: "{"
+  char: "{"
 RCBR:  # }
   qmk: "KC_RCBR"
   zmk: "&kp RBRC"
   display_name: "}"
+  char: "}"
 LPRN:  # (
   qmk: "KC_LPRN"
   zmk: "&kp LPAR"
+  char: "("
 RPRN:  # )
   qmk: "KC_RPRN"
   zmk: "&kp RPAR"
+  char: ")"
 
 # Shifted symbols
 EXLM:  # !
   qmk: "KC_EXLM"
   zmk: "&kp EXCL"
+  char: "!"
 AT:  # @
   qmk: "KC_AT"
   zmk: "&kp AT"
+  char: "@"
 HASH:  # #
   qmk: "KC_HASH"
   zmk: "&kp HASH"
+  char: "#"
 DLR:  # $
   qmk: "KC_DLR"
   zmk: "&kp DOLLAR"
+  char: "$"
 PERC:  # %
   qmk: "KC_PERC"
   zmk: "&kp PERCENT"
+  char: "%"
 CIRC:  # ^
   qmk: "KC_CIRC"
   zmk: "&kp CARET"
+  char: "^"
 AMPR:  # &
   qmk: "KC_AMPR"
   zmk: "&kp AMPERSAND"
+  char: "&"
 ASTR:  # *
   qmk: "KC_ASTR"
   zmk: "&kp ASTERISK"
+  char: "*"
 PIPE:  # |
   qmk: "KC_PIPE"
   zmk: "&kp PIPE"
+  char: "|"
 
 # Modifiers
 LSFT:
@@ -444,10 +476,12 @@ TAB:
   qmk: "KC_TAB"
   zmk: "&kp TAB"
   display_glyph: "$$mdi:keyboard-tab$$"
+  char: "\t"
 SPC:
   qmk: "KC_SPC"
   zmk: "&kp SPACE"
   display_glyph: "$$mdi:keyboard-space$$"
+  char: " "
 INS:
   qmk: "KC_INS"
   zmk: "&kp INS"

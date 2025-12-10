@@ -762,7 +762,7 @@ combo_t key_combos[] = {{
 
         return "\n".join(code_lines)
 
-    def _translate_simple_keycode(self, keycode: str) -> str:
+    def _translate_simple_keycode(self, keycode) -> str:
         """
         Translate simple keycode to QMK format (for magic key mappings)
 
@@ -772,6 +772,12 @@ combo_t key_combos[] = {{
         Returns:
             QMK keycode (e.g., "KC_A", "KC_DOT", "KC_SLSH")
         """
+        if isinstance(keycode, list):
+            keycode = "".join(str(k) for k in keycode)
+
+        if not isinstance(keycode, str):
+            keycode = str(keycode)
+
         # Handle special characters
         special_chars = {
             ".": "KC_DOT",
@@ -782,6 +788,7 @@ combo_t key_combos[] = {{
             ";": "KC_SCLN",
             "[": "KC_LBRC",
             "]": "KC_RBRC",
+            " ": "KC_SPC",
         }
 
         if keycode in special_chars:

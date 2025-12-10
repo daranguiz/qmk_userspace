@@ -507,12 +507,36 @@ class MagicKeyMapping:
                 f"Magic key {self.base_layer}: mappings cannot be empty"
             )
 
+        # Validate mapping values and allow explicit disambiguation
+        for prev_key, alt in self.mappings.items():
+            if isinstance(prev_key, dict):
+                raise ValidationError(
+                    f"Magic key {self.base_layer}: trigger '{prev_key}' must be a keycode string"
+                )
+
+            valid = False
+            if isinstance(alt, str):
+                valid = True
+            elif isinstance(alt, list):
+                # Array of chars/keys
+                valid = all(isinstance(item, str) for item in alt)
+            elif isinstance(alt, dict):
+                if ('text' in alt and isinstance(alt['text'], str)) or ('kc' in alt and isinstance(alt['kc'], str)):
+                    valid = True
+            if not valid:
+                raise ValidationError(
+                    f"Magic key {self.base_layer}: mapping for '{prev_key}' must be a string, list of strings, or dict with 'text'/'kc'"
+                )
+
         # Validate default action
         valid_defaults = ["REPEAT", "NONE"]
-        if self.default not in valid_defaults and not self.default.startswith("KC_"):
-            raise ValidationError(
-                f"Magic key {self.base_layer}: invalid default '{self.default}'"
-            )
+        if isinstance(self.default, dict):
+            if not (('text' in self.default and isinstance(self.default['text'], str)) or ('kc' in self.default and isinstance(self.default['kc'], str))):
+                raise ValidationError(
+                    f"Magic key {self.base_layer}: default mapping must use 'text' or 'kc'"
+                )
+        elif self.default not in valid_defaults and not str(self.default).startswith("KC_"):
+            raise ValidationError(f"Magic key {self.base_layer}: invalid default '{self.default}'")
 
 
 @dataclass

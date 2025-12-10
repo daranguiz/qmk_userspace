@@ -185,7 +185,7 @@ magic_keys:
       G: S
       P: H
       Y: E
-    default: REPEAT  # Default to repeat if no trigger matches
+    default_repeat: true  
 
   BASE_NIGHT:
     timeout_ms: 0
@@ -198,4 +198,16 @@ magic_keys:
       H: L
       V: S
       A: O
-    default: REPEAT
+      M: ENT
+      ".": "/"
+      "-": ">"
+      I: ON
+      T: ION
+      Q: UE
+      " ": THE
+      W: HAT
+      ",": " BUT"
+      J: UST
+      O: A
+      # S: (repeat) 
+    default_repeat: true
