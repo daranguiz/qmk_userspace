@@ -885,6 +885,25 @@ combo_t key_combos[] = {{
         lines.append("")
         return "\n".join(lines)
 
+    def _char_to_qmk_keycode(self, ch: str) -> str:
+        """Translate a single character to a QMK keycode string."""
+        if len(ch) != 1:
+            raise ValueError(f"Expected single character, got '{ch}'")
+        if ch.isalpha():
+            return f"KC_{ch.upper()}"
+        mapping = {
+            " ": "KC_SPC",
+            ",": "KC_COMM",
+            ".": "KC_DOT",
+            "-": "KC_MINS",
+            "'": "KC_QUOT",
+            "/": "KC_SLSH",
+        }
+        if ch in mapping:
+            return mapping[ch]
+        # Fallback: use the character itself; likely to be caught by compiler if invalid
+        return f"KC_{ch.upper()}"
+
     def generate_magic_macro_handlers(self, macro_map: Dict[str, str]) -> str:
         """
         Emit process_magic_record() helper that SEND_STRINGs magic expansions.
@@ -912,6 +931,22 @@ combo_t key_combos[] = {{
 
         lines.append("    }")
         lines.append("    return true;")
+        lines.append("}")
+        lines.append("")
+
+        # Helper used by magic.c training: map magic macro keycodes to the first
+        # key they would emit, so we can detect direct bigrams and punish with '#'.
+        lines.append("uint16_t magic_training_first_keycode(uint16_t keycode) {")
+        lines.append("    switch (keycode) {")
+        for name in sorted(macro_map.keys()):
+            text = macro_map[name]
+            text = text.lower()
+            first = text[0] if text else ""
+            # Only train on bigrams (single-char alternates). Skip multi-char macros.
+            keycode_str = self._char_to_qmk_keycode(first) if first and len(text) == 1 else "KC_NO"
+            lines.append(f"        case {name}: return {keycode_str};")
+        lines.append("    }")
+        lines.append("    return keycode;")
         lines.append("}")
         lines.append("")
 

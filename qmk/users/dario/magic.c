@@ -7,7 +7,14 @@
 // Forward declaration generated in keymap.c (magic macros/text expansions)
 extern bool process_magic_record(uint16_t keycode, keyrecord_t *record);
 
+// Training helper generated in keymap.c (maps magic macro to its first key)
+__attribute__((weak)) uint16_t magic_training_first_keycode(uint16_t keycode) { return keycode; }
+
 #define MAGIC_LOG(...) uprintf(__VA_ARGS__)
+
+// Track previous tapped key for training (independent of QK_REP tracking)
+static uint16_t training_prev_key = KC_NO;
+static uint8_t training_prev_mods = 0;
 
 static void magic_debug_banner(void) {
     static bool shown = false;
@@ -30,6 +37,13 @@ static uint16_t unwrap_tap_keycode(uint16_t keycode) {
         return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
     }
     return keycode;
+}
+
+static bool is_magic_tap_action(uint16_t keycode, keyrecord_t *record) {
+    if (IS_QK_MOD_TAP(keycode) || IS_QK_LAYER_TAP(keycode)) {
+        return record->tap.count > 0 && !record->tap.interrupted;
+    }
+    return true;
 }
 
 // Core handler for alternate repeat tap (magic) key
@@ -110,6 +124,33 @@ bool magic_process_record(uint16_t keycode, keyrecord_t *record) {
 
     uint16_t tap = unwrap_tap_keycode(keycode);
     const bool is_magic_mod_tap = IS_QK_MOD_TAP(keycode) && tap == QK_AREP;
+
+    // Training mode: if the previous key would trigger a magic alternate that
+    // matches this key, emit '#' instead to encourage using MAGIC.
+    if (record->event.pressed && tap != QK_AREP && tap != QK_REP && is_magic_tap_action(keycode, record)) {
+        uint16_t last_key = unwrap_tap_keycode(training_prev_key);
+        uint16_t alt = get_alt_repeat_key_keycode_user(last_key, training_prev_mods);
+        uint16_t expected = magic_training_first_keycode(alt);
+        MAGIC_LOG("TRAIN check last=%u alt=%u expected=%u key=%u layer=%u\n",
+                  last_key,
+                  alt,
+                  expected,
+                  tap,
+                  get_highest_layer(layer_state));
+        if (expected == tap && expected != QK_REP && expected != KC_NO) {
+            MAGIC_LOG("TRAIN block last=%u alt=%u key=%u layer=%u\n",
+                      last_key,
+                      alt,
+                      expected,
+                      get_highest_layer(layer_state));
+            tap_code16(KC_HASH);
+            return false;
+        }
+
+        // Update training tracker after evaluating
+        training_prev_key = tap;
+        training_prev_mods = get_mods();
+    }
 
     // For mod-tap magic key: only treat as tap on release when it was a real tap.
     if (is_magic_mod_tap) {

@@ -238,3 +238,19 @@ bool process_magic_record(uint16_t keycode, keyrecord_t *record) {
     }
     return true;
 }
+
+uint16_t magic_training_first_keycode(uint16_t keycode) {
+    switch (keycode) {
+        case MAGIC_NIGHT_B: return KC_NO;
+        case MAGIC_NIGHT_CHR_32: return KC_NO;
+        case MAGIC_NIGHT_CHR_44: return KC_NO;
+        case MAGIC_NIGHT_I: return KC_NO;
+        case MAGIC_NIGHT_J: return KC_NO;
+        case MAGIC_NIGHT_M: return KC_NO;
+        case MAGIC_NIGHT_N: return KC_NO;
+        case MAGIC_NIGHT_Q: return KC_NO;
+        case MAGIC_NIGHT_T: return KC_NO;
+        case MAGIC_NIGHT_W: return KC_NO;
+    }
+    return keycode;
+}
