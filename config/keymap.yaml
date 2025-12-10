@@ -172,42 +172,65 @@ magic_keys:
   BASE_GALLIUM:
     timeout_ms: 0  # 0 = no max idle constraint for adaptive key triggers
     mappings:
-      B: R
-      A: Y
-      E: Y
-      R: L
-      U: E
-      O: K
       ".": "/"
-      S: C
+      A: Y
+      B: R
       C: S
-      M: B
+      # D: (repeat)
+      E: Y
+      # F: (repeat)
       G: S
+      # H: (repeat)
+      # I: (repeat)
+      # J: (repeat)
+      # K: (repeat)
+      # L: (repeat)
+      M: B
+      # N: (repeat)
+      O: K
       P: H
+      # Q: (repeat)
+      R: L
+      S: C
+      # T: (repeat)
+      U: E
+      # V: (repeat)
+      # W: (repeat)
+      # X: (repeat)
       Y: E
+      # Z: (repeat)
     default_repeat: true  
 
   BASE_NIGHT:
     timeout_ms: 0
     mappings:
-      U: E
-      P: Y
+      " ": THE
+      ",": " BUT"
+      "-": ">"
+      ".": "/"
+      A: O
+      # B: (repeat)
       C: Y
-      Y: "'"
+      # D: (repeat)
+      # E: (repeat)
+      # F: (repeat)
       G: Y
       H: L
-      V: S
-      A: O
-      M: ENT
-      ".": "/"
-      "-": ">"
       I: ON
-      T: ION
-      Q: UE
-      " ": THE
-      W: HAT
-      ",": " BUT"
       J: UST
+      # K: (repeat)
+      # L: (repeat)
+      M: ENT
+      # N: (repeat)
       O: A
-      # S: (repeat) 
+      P: Y
+      Q: UE
+      # R: (repeat)
+      # S: (repeat)
+      T: ION
+      U: E
+      V: S
+      W: HAT
+      Y: "'"
+      # Z: (repeat)
     default_repeat: true

@@ -22,32 +22,68 @@ Gallium (default: repeat):
 
 | First key | Magic output |
 | --------- | ------------ |
-| B         | R            |
-| A         | Y            |
-| E         | Y            |
-| R         | L            |
-| U         | E            |
-| O         | K            |
 | .         | /            |
-| S         | C            |
+| A         | Y            |
+| B         | R            |
 | C         | S            |
-| M         | B            |
+| D         | --           |
+| E         | Y            |
+| F         | --           |
 | G         | S            |
+| H         | --           |
+| I         | --           |
+| J         | --           |
+| K         | --           |
+| L         | --           |
+| M         | B            |
+| N         | --           |
+| O         | K            |
 | P         | H            |
+| Q         | --           |
+| R         | L            |
+| S         | C            |
+| T         | --           |
+| U         | E            |
+| V         | --           |
+| W         | --           |
+| X         | --           |
 | Y         | E            |
+| Z         | --           |
 
 Night (default: repeat):
 
 | First key | Magic output |
 | --------- | ------------ |
-| U         | E            |
-| P         | Y            |
+| (space)   | THE          |
+| ,         |  BUT         |
+| -         | >            |
+| .         | /            |
+| A         | O            |
+| B         | --           |
 | C         | Y            |
-| Y         | '            |
+| D         | --           |
+| E         | --           |
+| F         | --           |
 | G         | Y            |
 | H         | L            |
+| I         | ON           |
+| J         | UST          |
+| K         | --           |
+| L         | --           |
+| M         | ENT          |
+| N         | --           |
+| O         | A            |
+| P         | Y            |
+| Q         | UE           |
+| R         | --           |
+| S         | --           |
+| T         | ION          |
+| U         | E            |
 | V         | S            |
-| A         | O            |
+| W         | HAT          |
+| X         | --           |
+| Y         | '            |
+| Z         | --           |
 
 ## Keymap Visualizations
 
