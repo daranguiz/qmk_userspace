@@ -580,6 +580,9 @@ class ZMKGenerator:
 
         replacement_map: Dict[str, Dict[str, str]] = {}
 
+        # Track adaptive training behaviors per base layer so HRMs can reference them
+        training_meta: Dict[str, Dict[str, Dict[str, str]]] = {}
+
         for base_layer, mapping in magic_config.mappings.items():
             # Group prev keys by alt output
             grouped: Dict[str, List[str]] = {}
@@ -591,6 +594,7 @@ class ZMKGenerator:
 
             behavior_suffix = base_layer.lower().replace("base_", "")
             replacement_map[base_layer] = {}
+            training_meta[base_layer] = {}
 
             for alt_key, prev_list in grouped.items():
                 alt_zmk = self._translate_simple_keycode(alt_key)
@@ -622,6 +626,82 @@ class ZMKGenerator:
                 code_lines.append("")
 
                 replacement_map[base_layer][alt_zmk] = f"&{behavior_name}"
+                training_meta[base_layer][alt_zmk] = {
+                    "behavior_name": behavior_name,
+                    "alt_safe": alt_safe,
+                    "behavior_suffix": behavior_suffix,
+                }
+
+        # Generate HRM training wrappers: swap tap side of home-row mods to the
+        # adaptive training behavior when the tap key is a magic alternate.
+        hrm_behavior_names: set = set()
+        for layer in compiled_layers:
+            # Map this layer to its base magic family (if any)
+            layer_mapping = magic_config.get_mapping_for_layer(layer.name) if hasattr(magic_config, "get_mapping_for_layer") else None
+            if not layer_mapping:
+                continue
+            base_layer = layer_mapping.base_layer
+            if base_layer not in training_meta:
+                continue
+
+            for kc in layer.keycodes:
+                if not (kc.startswith("&hml") or kc.startswith("&hmr")):
+                    continue
+                parts = kc.split()
+                if len(parts) < 3:
+                    continue
+                mod = parts[1]
+                tap_key = parts[2]
+                alt_zmk = self._translate_simple_keycode(tap_key)
+                if alt_zmk not in training_meta[base_layer]:
+                    continue
+
+                meta = training_meta[base_layer][alt_zmk]
+                behavior_suffix = meta["behavior_suffix"]
+                alt_safe = meta["alt_safe"].lower()
+                ak_train_ref = f"&{meta['behavior_name']}"
+
+                if kc.startswith("&hml"):
+                    hrm_name = f"hml_train_{behavior_suffix}_{alt_safe}"
+                    # Left-hand hold-tap wrapper using the training adaptive key as tap
+                    if hrm_name not in hrm_behavior_names:
+                        code_lines.append(f"        {hrm_name}: {hrm_name} {{")
+                        code_lines.append(f"            compatible = \"zmk,behavior-hold-tap\";")
+                        code_lines.append(f"            label = \"HML_TRAIN_{behavior_suffix.upper()}_{alt_safe.upper()}\";")
+                        code_lines.append(f"            #binding-cells = <2>;")
+                        code_lines.append(f"            flavor = \"balanced\";")
+                        code_lines.append(f"            require-prior-idle-ms = <150>;")
+                        code_lines.append(f"            tapping-term-ms = <280>;")
+                        code_lines.append(f"            quick-tap-ms = <175>;")
+                        code_lines.append(f"            bindings = <&kp>, <{ak_train_ref}>;")
+                        code_lines.append(f"            hold-trigger-key-positions = <6 7 8 9 10 11 18 19 20 21 22 23 30 31 32 33 34 35 39 40 41>;  // right hand + thumbs")
+                        code_lines.append(f"            hold-trigger-on-release;")
+                        code_lines.append(f"        }};")
+                        code_lines.append("")
+                        hrm_behavior_names.add(hrm_name)
+
+                    # Replace this specific HRM keycode in the layer
+                    replacement_map.setdefault(base_layer, {})[kc] = f"&{hrm_name} {mod} 0"
+
+                elif kc.startswith("&hmr"):
+                    hrm_name = f"hmr_train_{behavior_suffix}_{alt_safe}"
+                    if hrm_name not in hrm_behavior_names:
+                        code_lines.append(f"        {hrm_name}: {hrm_name} {{")
+                        code_lines.append(f"            compatible = \"zmk,behavior-hold-tap\";")
+                        code_lines.append(f"            label = \"HMR_TRAIN_{behavior_suffix.upper()}_{alt_safe.upper()}\";")
+                        code_lines.append(f"            #binding-cells = <2>;")
+                        code_lines.append(f"            flavor = \"balanced\";")
+                        code_lines.append(f"            require-prior-idle-ms = <150>;")
+                        code_lines.append(f"            tapping-term-ms = <280>;")
+                        code_lines.append(f"            quick-tap-ms = <175>;")
+                        code_lines.append(f"            bindings = <&kp>, <{ak_train_ref}>;")
+                        code_lines.append(f"            hold-trigger-key-positions = <0 1 2 3 4 5 12 13 14 15 16 17 24 25 26 27 28 29 36 37 38>;  // left hand + thumbs")
+                        code_lines.append(f"            hold-trigger-on-release;")
+                        code_lines.append(f"        }};")
+                        code_lines.append("")
+                        hrm_behavior_names.add(hrm_name)
+
+                    replacement_map.setdefault(base_layer, {})[kc] = f"&{hrm_name} {mod} 0"
 
         code_lines.append("    };")
         code_lines.append("")
