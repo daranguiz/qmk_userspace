@@ -619,3 +619,4 @@ MAGIC:
   qmk: "QK_AREP"
   zmk: "&none"  # Will be translated layer-aware by translator
   display_name: "Magic"
+  display_glyph: "$$mdi:auto-fix$$"

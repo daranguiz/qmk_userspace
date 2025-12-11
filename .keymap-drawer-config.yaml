@@ -59,6 +59,13 @@ draw_config:
     rows: 3
     columns: 5
     thumbs: 3
+  glyphs:
+    magic-star: "<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n\
+      \  <path fill=\"currentColor\" d=\"M11.8 2.5l2 4.2 4.6.4-3.5 2.9 1.1 4.5-4.2-2.4-4.2\
+      \ 2.4 1.1-4.5-3.5-2.9 4.6-.4z\"/>\n  <path fill=\"currentColor\" opacity=\"\
+      0.65\" d=\"M18.5 4.8l.8 1.7 1.8.2-1.4 1.2.4 1.8-1.6-.9-1.6.9.4-1.8-1.4-1.2 1.8-.2z\"\
+      />\n  <path fill=\"currentColor\" opacity=\"0.65\" d=\"M6.2 4.8l.8 1.7 1.8.2-1.4\
+      \ 1.2.4 1.8-1.6-.9-1.6.9.4-1.8-1.4-1.2 1.8-.2z\"/>\n</svg>\n"
   glyph_tap_size: 28
   glyph_hold_size: 20
   glyph_shifted_size: 16

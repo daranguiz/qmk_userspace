@@ -8,7 +8,11 @@ import re
 import subprocess
 import shutil
 import tempfile
+import math
 import yaml
+
+LETTER_WIDTH_PT = 612   # 8.5 inches * 72
+LETTER_HEIGHT_PT = 792  # 11 inches * 72
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Optional, List, Dict, Iterator
@@ -39,6 +43,8 @@ class KeymapVisualizer:
 
         # Load keycode display mappings
         self.keycodes = self._load_keycodes()
+        # Load magic key configuration (used for cheat sheets)
+        self.magic_config = self._load_magic_config()
 
         # Ensure output directories exist
         self.docs_dir.mkdir(parents=True, exist_ok=True)
@@ -51,6 +57,13 @@ class KeymapVisualizer:
         if keycodes_path.exists():
             return YAMLConfigParser.parse_keycodes(keycodes_path)
         return {}
+
+    def _load_magic_config(self):
+        """Load magic key mappings for visualization add-ons"""
+        try:
+            return YAMLConfigParser.parse_magic_keys(self.config_dir / "keymap.yaml")
+        except Exception:
+            return None
 
     def _get_friendly_key_name(self, key: str) -> str:
         """
@@ -84,6 +97,83 @@ class KeymapVisualizer:
             "TAB": "Tab",
         }
         return special_keys.get(key, key)
+
+    def _escape_svg_text(self, text: str) -> str:
+        """Escape XML entities for SVG text content"""
+        return (
+            str(text)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+        )
+
+    def _flatten_magic_output(self, alt_value) -> str:
+        """
+        Normalize a magic mapping value into a text string.
+
+        alt_value can be a string, list of chars, or dict with 'text'/'kc'.
+        """
+        if isinstance(alt_value, dict):
+            if "text" in alt_value and isinstance(alt_value["text"], str):
+                return alt_value["text"]
+            if "kc" in alt_value and isinstance(alt_value["kc"], str):
+                return alt_value["kc"]
+        if isinstance(alt_value, list):
+            return "".join(str(item) for item in alt_value)
+        return str(alt_value)
+
+    def _normalize_magic_text(self, text: str) -> str:
+        """Lowercase letters for friendlier word rendering but keep symbols intact"""
+        normalized = []
+        for ch in text:
+            normalized.append(ch.lower() if ch.isalpha() else ch)
+        return "".join(normalized)
+
+    def _build_magic_display(self, prev_key: str, alt_value) -> (str, int):
+        """
+        Build the display text for a magic mapping.
+
+        Returns:
+            (display_text, first_char_index)
+        """
+        alt_text = self._flatten_magic_output(alt_value)
+        normalized_alt = self._normalize_magic_text(alt_text)
+
+        if prev_key == " ":
+            prefix = "[ ]"
+            display = f"{prefix}{normalized_alt}"
+            return display, 0
+
+        display = self._normalize_magic_text(str(prev_key) + alt_text)
+        return display, 0
+
+    def _is_basic_bigram(self, prev_key: str, alt_value) -> bool:
+        """
+        Identify simple letter → letter mappings (e.g., a→y) so they can be
+        grouped separately from symbols and longer words.
+        """
+        if not (isinstance(prev_key, str) and len(prev_key) == 1 and prev_key.isalpha()):
+            return False
+
+        alt_text = self._flatten_magic_output(alt_value)
+        return len(alt_text) == 1 and alt_text.isalpha()
+
+    def _format_magic_trigger_label(self, prev_key: str) -> str:
+        """Human-friendly label for the trigger key column"""
+        special_labels = {
+            " ": "Space",
+            ",": "Comma",
+            ".": "Period",
+            "-": "Hyphen",
+            "'": "Quote",
+        }
+        if prev_key in special_labels:
+            return special_labels[prev_key]
+
+        label = self._get_friendly_key_name(prev_key)
+        if len(label) == 1:
+            return label.upper()
+        return label
 
     def _generate_layer_tap_mappings(self) -> Dict[str, Dict[str, str]]:
         """
@@ -321,7 +411,7 @@ class KeymapVisualizer:
 
         # Continue building CSS
         css += '''
-    /* Remove underline from layer activator text */
+    /* Normalize layer activator text styling */
     text.layer-activator {
       text-decoration: none !important;
     }
@@ -949,6 +1039,136 @@ class KeymapVisualizer:
         if json_file.exists():
             json_file.unlink()
 
+    def _generate_magic_cheatsheet_svg(self, base_name: str, output_name: str) -> Optional[Path]:
+        """
+        Create a one-page SVG cheat sheet for magic keys with the first
+        character highlighted to show the typed letter.
+        """
+        if not self.magic_config or not self.magic_config.mappings:
+            return None
+
+        mapping = self.magic_config.mappings.get(base_name)
+        if not mapping or not mapping.mappings:
+            return None
+
+        entries = []
+        for prev_key, alt_value in mapping.mappings.items():
+            display_text, first_idx = self._build_magic_display(prev_key, alt_value)
+            if not display_text:
+                continue
+            entries.append({
+                "key_label": self._format_magic_trigger_label(prev_key),
+                "display": display_text,
+                "first_idx": first_idx,
+                "is_basic_bigram": self._is_basic_bigram(prev_key, alt_value)
+            })
+
+        if not entries:
+            return None
+
+        priority_entries = [e for e in entries if not e["is_basic_bigram"]]
+        bigram_entries = [e for e in entries if e["is_basic_bigram"]]
+
+        width = LETTER_WIDTH_PT
+        height = LETTER_HEIGHT_PT
+        margin = 16
+        column_count = 4
+        column_width = (width - 2 * margin) / column_count
+        row_height = 24
+        section_gap = 14
+
+        def _section_height(count: int) -> int:
+            if count == 0:
+                return 0
+            rows = math.ceil(count / column_count)
+            return 18 + rows * row_height
+
+        total_height = (
+            96
+            + _section_height(len(priority_entries))
+            + (_section_height(len(bigram_entries)) + section_gap if bigram_entries else 0)
+            + (section_gap if priority_entries and bigram_entries else 0)
+        )
+        height = max(total_height, 320)
+
+        base_display = self.base_layer_manager.get_display_name(base_name)
+
+        svg_parts = [
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+            '<style>',
+            '  .title { font-family: "Helvetica, Arial, sans-serif"; font-size: 20px; font-weight: 700; fill: #0f172a; }',
+            '  .subtitle { font-family: "Helvetica, Arial, sans-serif"; font-size: 11px; fill: #334155; }',
+            '  .section { font-family: "Helvetica, Arial, sans-serif"; font-size: 12px; font-weight: 700; fill: #0f172a; letter-spacing: 0.5px; }',
+            '  .row { fill: #f8fafc; stroke: #e5e7eb; stroke-width: 0.75; }',
+            '  .label { font-family: "Helvetica, Arial, sans-serif"; font-size: 10px; fill: #6b7280; }',
+            '  .value { font-family: "Helvetica, Arial, sans-serif"; font-size: 13px; font-weight: 700; fill: #0f172a; }',
+            '  .first-letter { fill: #2563eb; font-weight: 800; }',
+            '</style>',
+            f'<rect width="{width}" height="{height}" fill="#ffffff" />',
+            f'<text class="title" x="{margin}" y="28">Magic Keys — {self._escape_svg_text(base_display)}</text>',
+        ]
+
+        current_y = 54
+
+        def _render_section(items: List[Dict], heading: str, start_y: int) -> int:
+            if not items:
+                return start_y
+            svg_parts.append(f'<text class="section" x="{margin}" y="{start_y}">{self._escape_svg_text(heading)}</text>')
+            start_y += 12
+
+            for idx, item in enumerate(items):
+                col = idx % column_count
+                row = idx // column_count
+                x = margin + col * column_width
+                y = start_y + row * row_height
+
+                svg_parts.append(
+                    f'<rect class="row" x="{x:.2f}" y="{y:.2f}" width="{column_width - 4:.2f}" height="{row_height:.2f}" />'
+                )
+
+                text_y = y + 16
+                value_x = x + 10
+
+                raw_text = item["display"]
+                if raw_text.startswith("[ ]"):
+                    # Color both brackets when the trigger was space
+                    rest = self._escape_svg_text(raw_text[3:])
+                    svg_parts.append(
+                        f'<text class="value" x="{value_x:.2f}" y="{text_y:.2f}">'
+                        f'<tspan class="first-letter">[ ]</tspan>{rest}'
+                        f'</text>'
+                    )
+                else:
+                    text = self._escape_svg_text(raw_text)
+                    first_idx = item.get("first_idx", 0)
+                    if first_idx >= len(text):
+                        first_idx = 0
+
+                    prefix = text[:first_idx]
+                    first_char = text[first_idx:first_idx+1]
+                    rest = text[first_idx+1:] if first_char else text[first_idx:]
+
+                    svg_parts.append(
+                        f'<text class="value" x="{value_x:.2f}" y="{text_y:.2f}">'
+                        f'{prefix}<tspan class="first-letter">{first_char}</tspan>{rest}'
+                        f'</text>'
+                    )
+
+            rows = math.ceil(len(items) / column_count)
+            return start_y + rows * row_height + section_gap
+
+        current_y = _render_section(priority_entries, "Symbols & words", current_y)
+        if bigram_entries:
+            current_y += 18  # extra breathing room before bigrams
+        current_y = _render_section(bigram_entries, "Letter bigrams (a-z)", current_y)
+
+        svg_parts.append("</svg>")
+
+        svg_path = self.output_dir / f"{output_name}_magic.svg"
+        svg_path.write_text("\n".join(svg_parts))
+        print(f"    ✅ {svg_path.name}")
+        return svg_path
+
     def _generate_print_pdf_for_base(self, base_name: str, all_layers: List,
                                      layout_size: str) -> Path:
         """Generate 2-page PDF with same layer order as SVG (3 layers per page)"""
@@ -956,11 +1176,25 @@ class KeymapVisualizer:
         # Remove BASE_ prefix and convert to lowercase for output filename
         output_name = base_name.replace('BASE_', '').lower()
 
-        # Split layers into two pages, maintaining the same order as the main SVG
-        # Page 1: First 3 layers (BASE, SYM, NUM)
-        # Page 2: Last 3 layers (NAV, MEDIA, FUN)
-        page1_layers = all_layers[:3]
-        page2_layers = all_layers[3:]
+        # Explicit order for print: BASE, SYM, NUM on page 1; NAV, MEDIA, FUN on page 2
+        layer_map = {layer.name: layer for layer in all_layers}
+        def _get_layer(name):
+            return layer_map.get(name)
+
+        # Derive family suffix from base layer name (e.g., _NIGHT)
+        suffix = ""
+        for known_suffix in ["_NIGHT", "_V2"]:
+            if base_name.endswith(known_suffix):
+                suffix = known_suffix
+                break
+
+        sym_name = f"SYM{suffix}"
+        num_name = f"NUM{suffix}"
+        nav_name = f"NAV{suffix}"
+        media_name = f"MEDIA{suffix}"
+
+        page1_layers = [layer for layer in [_get_layer(base_name), _get_layer(sym_name), _get_layer(num_name)] if layer]
+        page2_layers = [layer for layer in [_get_layer(nav_name), _get_layer(media_name), _get_layer("FUN")] if layer]
 
         # Generate page SVGs for PDF (no white outline on labels)
         # For page 2, we need to pass all_layers for CSS generation context
@@ -976,12 +1210,16 @@ class KeymapVisualizer:
         )
 
         # Combine to PDF
-        pdf_file = self._combine_svgs_to_pdf(output_name, [svg1, svg2])
+        magic_svg = self._generate_magic_cheatsheet_svg(base_name, output_name)
+
+        svg_pages = [svg for svg in [svg1, svg2, magic_svg] if svg]
+        pdf_file = self._combine_svgs_to_pdf(output_name, svg_pages)
 
         # Clean up intermediate SVGs only if PDF generation succeeded
         if pdf_file:
-            svg1.unlink()
-            svg2.unlink()
+            for svg in [svg1, svg2, magic_svg]:
+                if svg and svg.exists():
+                    svg.unlink()
 
         # Clean up JSON files
         for suffix in ["_print1", "_print2"]:
@@ -1248,8 +1486,13 @@ class KeymapVisualizer:
                 with tempfile.NamedTemporaryFile(mode='w', suffix='.pdf', delete=False) as tmp_pdf:
                     temp_pdf_path = tmp_pdf.name
 
-                # Convert SVG to PDF using cairosvg (handles entities properly!)
-                cairosvg.svg2pdf(bytestring=svg_content.encode('utf-8'), write_to=temp_pdf_path)
+                # Convert SVG to PDF using cairosvg with US Letter page dimensions
+                cairosvg.svg2pdf(
+                    bytestring=svg_content.encode('utf-8'),
+                    write_to=temp_pdf_path,
+                    output_width=LETTER_WIDTH_PT,
+                    output_height=LETTER_HEIGHT_PT
+                )
                 temp_pdfs.append(temp_pdf_path)
 
             # Merge all PDFs into one
@@ -1290,8 +1533,13 @@ class KeymapVisualizer:
 
             svg_content = self._add_inline_styles_for_pdf(svg_content)
 
-            # Convert SVG to PDF using cairosvg
-            cairosvg.svg2pdf(bytestring=svg_content.encode('utf-8'), write_to=str(pdf_path))
+            # Convert SVG to PDF using cairosvg (US Letter)
+            cairosvg.svg2pdf(
+                bytestring=svg_content.encode('utf-8'),
+                write_to=str(pdf_path),
+                output_width=LETTER_WIDTH_PT,
+                output_height=LETTER_HEIGHT_PT
+            )
 
             print(f"    📄 {pdf_path.name}")
             return pdf_path
@@ -1322,8 +1570,13 @@ class KeymapVisualizer:
             # Read SVG content (styles already applied with for_display=False)
             svg_content = svg_file.read_text()
 
-            # Convert SVG to PDF using cairosvg
-            cairosvg.svg2pdf(bytestring=svg_content.encode('utf-8'), write_to=str(pdf_path))
+            # Convert SVG to PDF using cairosvg (US Letter)
+            cairosvg.svg2pdf(
+                bytestring=svg_content.encode('utf-8'),
+                write_to=str(pdf_path),
+                output_width=LETTER_WIDTH_PT,
+                output_height=LETTER_HEIGHT_PT
+            )
 
             # Clean up intermediate SVG
             if svg_file.exists():
