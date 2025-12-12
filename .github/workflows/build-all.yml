@@ -28,13 +28,14 @@ jobs:
         run: |
           set -eo pipefail
           REF=$(python - <<'PY'
-import pathlib, re, sys
-text = pathlib.Path("zmk/config/west.yml").read_text()
-match = re.search(r"revision:\s*([^\s#]+)", text)
-if not match:
-    sys.exit("Could not find 'revision' in zmk/config/west.yml")
-print(match.group(1))
-PY
+          import pathlib, re, sys
+          text = pathlib.Path("zmk/config/west.yml").read_text()
+          match = re.search(r"revision:\s*([^\s#]+)", text)
+          if not match:
+              sys.exit("Could not find 'revision' in zmk/config/west.yml")
+          print(match.group(1))
+          PY
+          )
           echo "ref=$REF" >> "$GITHUB_OUTPUT"
 
       - name: Install system dependencies for Python packages
