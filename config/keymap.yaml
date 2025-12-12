@@ -8,6 +8,12 @@ base_layers:
   BASE_NIGHT:
     display_name: "NIGHT"
     description: "Night thumb alpha"
+  BASE_BUNYA:
+    display_name: "BUNYA"
+    description: "Bunya layout (GalileoBlues)"
+  BASE_RACKET:
+    display_name: "RACKET"
+    description: "Racket layout (GalileoBlues)"
 
 layers:
   BASE_NIGHT:
@@ -45,6 +51,42 @@ layers:
       3x6_3:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, ENT, NONE]
+
+  BASE_BUNYA:
+    core: # (3x5)
+      left:
+        - [B              , L              , M              , C              , Z              ]
+        - [hrm:LGUI:N     , hrm:LALT:R     , hrm:LCTL:T     , hrm:LSFT:D     , P              ]
+        - [X              , Q              , V              , G              , W              ]
+      right:
+        - [J              , F              , O              , U              , COMM           ]
+        - [Y              , hrm:LSFT:H     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
+        - [SCLN           , K              , QUOT           , MINS           , DOT            ]
+      thumbs:
+        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:S              , mt:LSFT:MAGIC    ]
+        - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
+
+  BASE_RACKET:
+    core: # (3x5)
+      left:
+        - [F              , D              , L              , W              , J              ]
+        - [hrm:LGUI:S     , hrm:LALT:T     , hrm:LCTL:H     , hrm:LSFT:C     , Y              ]
+        - [X              , K              , M              , G              , V              ]
+      right:
+        - [MINS           , B              , O              , U              , COMM           ]
+        - [Q              , hrm:LSFT:N     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
+        - [Z              , P              , QUOT           , SLSH           , DOT            ]
+      thumbs:
+        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:MAGIC    ]
+        - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
+    extensions:
+      3x6_3:
+        outer_pinky_left: [NONE, NONE, NONE]
+        outer_pinky_right: [NONE, NONE, NONE]
 
   FUN:
     core: # (3x5)
@@ -122,7 +164,7 @@ layers:
   MEDIA_NIGHT:
     core: # (3x5)
       left:
-        - [df:BASE_NIGHT  , df:BASE_GALLIUM, NONE           , NONE           , NONE           ]
+        - [df:BASE_NIGHT  , df:BASE_GALLIUM, df:BASE_BUNYA  , df:BASE_RACKET , NONE           ]
         - [MNXT           , VOLU           , VOLD           , MPRV           , NONE           ]
         - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:
@@ -147,7 +189,7 @@ combos:
     action: DFU
     timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
-    layers: [BASE_NIGHT, BASE_GALLIUM]
+    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_BUNYA, BASE_RACKET]
 
   - name: dfu_right
     description: "Enter bootloader (right hand)"
@@ -155,7 +197,7 @@ combos:
     action: DFU
     timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
-    layers: [BASE_NIGHT, BASE_GALLIUM]
+    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_BUNYA, BASE_RACKET]
 
   - name: github_url
     description: "Expand to GitHub repo URL"
@@ -163,7 +205,7 @@ combos:
     action: MACRO_GITHUB_URL
     macro_text: "https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme"
     timeout_ms: 100  # Slightly longer for 4-key combo
-    layers: [BASE_NIGHT, BASE_GALLIUM]
+    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_BUNYA, BASE_RACKET]
 
 # Magic key definitions
 # Context-aware keys that produce different outputs based on previous keypress
@@ -234,4 +276,19 @@ magic_keys:
       # X: (repeat)
       Y: "'"
       # Z: (repeat)
+    default_repeat: true
+
+  BASE_BUNYA:
+    timeout_ms: 0
+    mappings:
+      " ": THE
+      ",": " BUT"
+      ".": "/"
+      "/": ">"
+    default_repeat: true
+
+  BASE_RACKET:
+    timeout_ms: 0
+    mappings:
+      ".": "/"
     default_repeat: true

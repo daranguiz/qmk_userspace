@@ -108,6 +108,112 @@
 41: &lt MEDIA_NIGHT ENTER
 ```
 
+## BASE_BUNYA Layer
+
+```
+ 0: &none
+ 1: &kp B
+ 2: &kp L
+ 3: &kp M
+ 4: &kp C
+ 5: &kp Z
+
+ 6: &none
+ 7: &hml LGUI N
+ 8: &hml LALT R
+ 9: &hml LCTL T
+10: &hml LSFT D
+11: &kp P
+
+12: &none
+13: &kp X
+14: &kp Q
+15: &kp V
+16: &kp G
+17: &kp W
+
+18: &kp J
+19: &kp F
+20: &kp O
+21: &kp U
+22: &kp COMMA
+23: &none
+
+24: &kp Y
+25: &hmr LSFT H
+26: &hmr LCTL A
+27: &hmr LALT E
+28: &hmr LGUI I
+29: &none
+
+30: &kp SEMI
+31: &kp K
+32: &kp SQT
+33: &kp MINUS
+34: &kp DOT
+35: &none
+
+36: &lt NUM_NIGHT BSPC
+37: &lt SYM_NIGHT S
+38: &mt_ak_bunya LSFT 0
+39: &mt LSFT TAB
+40: &lt NAV_NIGHT SPACE
+41: &lt MEDIA_NIGHT ENTER
+```
+
+## BASE_RACKET Layer
+
+```
+ 0: &none
+ 1: &kp F
+ 2: &kp D
+ 3: &kp L
+ 4: &kp W
+ 5: &kp J
+
+ 6: &none
+ 7: &hml LGUI S
+ 8: &hml LALT T
+ 9: &hml LCTL H
+10: &hml LSFT C
+11: &kp Y
+
+12: &none
+13: &kp X
+14: &kp K
+15: &kp M
+16: &kp G
+17: &kp V
+
+18: &kp MINUS
+19: &kp B
+20: &kp O
+21: &kp U
+22: &kp COMMA
+23: &none
+
+24: &kp Q
+25: &hmr LSFT N
+26: &hmr LCTL A
+27: &hmr LALT E
+28: &hmr LGUI I
+29: &none
+
+30: &kp Z
+31: &kp P
+32: &kp SQT
+33: &kp FSLH
+34: &kp DOT
+35: &none
+
+36: &lt NUM_NIGHT BSPC
+37: &lt SYM_NIGHT R
+38: &mt_ak_racket LSFT 0
+39: &mt LSFT TAB
+40: &lt NAV_NIGHT SPACE
+41: &lt MEDIA_NIGHT ENTER
+```
+
 ## FUN Layer
 
 ```
@@ -326,8 +432,8 @@
  0: &none
  1: &to BASE_NIGHT
  2: &to BASE_GALLIUM
- 3: &none
- 4: &none
+ 3: &to BASE_BUNYA
+ 4: &to BASE_RACKET
  5: &none
 
  6: &none
@@ -416,3 +522,18 @@
   - V → S
   - W → HICH
   - Y → '
+
+### BASE_BUNYA
+- default: REPEAT
+- timeout_ms: 0
+- mappings:
+  -   → THE
+  - , →  BUT
+  - . → /
+  - / → >
+
+### BASE_RACKET
+- default: REPEAT
+- timeout_ms: 0
+- mappings:
+  - . → /

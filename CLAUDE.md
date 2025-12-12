@@ -280,6 +280,105 @@ The firmware uses QMK Community Modules for advanced features:
 - Keyboard-specific features (OLED, encoders, RGB): Add to `qmk/config/boards/<board>.mk`
 - Board-specific layers (like GAME): Define in `config/keymap.yaml` and reference in `config/boards.yaml` under `extra_layers`
 
+### Adding a New Split Keyboard Layout (36-key base)
+
+When adding a new base layer layout (e.g., a new alpha layout like Bunya, Gallium, Night):
+
+1. **Add base layer metadata** in `config/keymap.yaml`:
+   ```yaml
+   base_layers:
+     BASE_NEWLAYOUT:
+       display_name: "NEWLAYOUT"
+       description: "Description of the layout"
+   ```
+
+2. **Define the layer** in `config/keymap.yaml` under `layers:`:
+   ```yaml
+   BASE_NEWLAYOUT:
+     core: # (3x5)
+       left:
+         - [key1, key2, key3, key4, key5]
+         - [hrm:LGUI:key6, hrm:LALT:key7, hrm:LCTL:key8, hrm:LSFT:key9, key10]
+         - [key11, key12, key13, key14, key15]
+       right:
+         - [key16, key17, key18, key19, key20]
+         - [key21, hrm:LSFT:key22, hrm:LCTL:key23, hrm:LALT:key24, hrm:LGUI:key25]
+         - [key26, key27, key28, key29, key30]
+       thumbs:
+         - [lt:NUM_NIGHT:BSPC, lt:SYM_NIGHT:MAGIC, mt:LSFT:DEL]
+         - [mt:LSFT:TAB, lt:NAV_NIGHT:SPC, lt:MEDIA_NIGHT:ENT]
+     extensions:
+       3x6_3:
+         outer_pinky_left: [NONE, NONE, NONE]
+         outer_pinky_right: [NONE, NONE, NONE]
+   ```
+
+3. **Add to layer switching** in `MEDIA_NIGHT` layer:
+   ```yaml
+   MEDIA_NIGHT:
+     core:
+       left:
+         - [df:BASE_NIGHT, df:BASE_GALLIUM, df:BASE_NEWLAYOUT, NONE, NONE]
+   ```
+
+4. **Add to combo definitions** for all combos that should work on the new layer:
+   ```yaml
+   combos:
+     - name: dfu_left
+       layers: [BASE_NIGHT, BASE_GALLIUM, BASE_NEWLAYOUT]
+     - name: dfu_right
+       layers: [BASE_NIGHT, BASE_GALLIUM, BASE_NEWLAYOUT]
+     - name: github_url
+       layers: [BASE_NIGHT, BASE_GALLIUM, BASE_NEWLAYOUT]
+   ```
+
+5. **Add magic key configuration** (optional, can start with just symbols):
+   ```yaml
+   magic_keys:
+     BASE_NEWLAYOUT:
+       timeout_ms: 0
+       mappings:
+         " ": THE
+         ",": " BUT"
+         ".": "/"
+       default_repeat: true
+   ```
+
+6. **Update QMK layer enum** in `qmk/users/dario/dario.h`:
+   ```c
+   enum layers {
+       BASE_NIGHT,
+       BASE_GALLIUM,
+       BASE_NEWLAYOUT,  // Add in correct order
+       FUN,
+       NUM_NIGHT,
+       // ... rest of layers
+   };
+   ```
+   **CRITICAL**: The order must match the order in `config/keymap.yaml`
+
+7. **Update custom board configs** (if you have custom layouts like Boaty):
+   Add the layer definition to `config/boaty.yaml` (or other board-specific config files):
+   ```yaml
+   BASE_NEWLAYOUT:
+     full_layout: [
+       # ... same pattern as other base layers
+       L36_0, L36_1, L36_2, ...  # References to 36-key core
+     ]
+   ```
+
+8. **Build and test**:
+   ```bash
+   ./build_all.sh
+   ```
+
+**Notes**:
+- Use existing base layers (like `BASE_NIGHT`) as templates
+- Keep home row mods consistent across layouts unless there's a specific reason to change
+- Thumb keys typically stay consistent across layouts
+- Magic key mappings can be refined over time based on usage
+- Visualizations are automatically generated for all base layers
+
 ## File Organization
 
 ### New Architecture (Post-Migration)
