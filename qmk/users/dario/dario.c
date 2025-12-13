@@ -5,6 +5,14 @@
 bool process_magic_record(uint16_t keycode, keyrecord_t *record);
 __attribute__((weak)) bool process_magic_record(uint16_t keycode, keyrecord_t *record) { return true; }
 
+// Global variable to track current base layer for magic key context
+static uint8_t current_base_layer = BASE_NIGHT;  // Default starting layer
+
+// Getter function for magic key system to query current base layer
+uint8_t get_current_base_layer(void) {
+    return current_base_layer;
+}
+
 // Per-key tapping term configuration
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -94,6 +102,24 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
 // Custom keycode handler
 // Clipboard keys are handled by macros in dario.h
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Track base layer changes for magic key context
+    if (record->event.pressed) {
+        switch (keycode) {
+            case DF(BASE_NIGHT):
+                current_base_layer = BASE_NIGHT;
+                break;
+            case DF(BASE_GALLIUM):
+                current_base_layer = BASE_GALLIUM;
+                break;
+            case DF(BASE_BUNYA):
+                current_base_layer = BASE_BUNYA;
+                break;
+            case DF(BASE_RACKET):
+                current_base_layer = BASE_RACKET;
+                break;
+        }
+    }
+
     // Light logging for combo-related keys to see if they arrive together
     if (record->event.pressed) {
         switch (keycode) {

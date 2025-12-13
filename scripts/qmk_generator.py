@@ -479,7 +479,7 @@ extern combo_t key_combos[];
             layer_filter_code = f"""
 // Layer filtering
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {{
-    uint8_t layer = get_highest_layer(layer_state);
+    uint8_t layer = get_current_base_layer();
 
     switch (combo_index) {{
 {filter_switch_code}
@@ -586,7 +586,7 @@ combo_t key_combos[] = {{
 
 // Layer filtering
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {{
-    uint8_t layer = get_highest_layer(layer_state);
+    uint8_t layer = get_current_base_layer();
 
     switch (combo_index) {{
 {filter_cases_str}
@@ -725,8 +725,8 @@ combo_t key_combos[] = {{
             "",
             "// Magic key configuration (alternate repeat key)",
             "uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {",
-            "    // Get current layer",
-            "    uint8_t layer = get_highest_layer(layer_state);",
+            "    // Get current base layer (not active overlay)",
+            "    uint8_t base_layer = get_current_base_layer();",
             "    ",
         ]
 
@@ -735,17 +735,10 @@ combo_t key_combos[] = {{
             if base_layer not in layer_map:
                 continue  # Skip if layer not compiled for this board
 
-            # Get all derived layers (BASE_NIGHT → [BASE_NIGHT, NUM_NIGHT, NAV_NIGHT, ...])
-            derived_layers = [
-                l.name for l in compiled_layers
-                if l.name == base_layer or l.name.endswith(base_layer.replace("BASE_", ""))
-            ]
-
-            # Generate layer checks
-            layer_checks = " || ".join([f"layer == {ln}" for ln in derived_layers])
-
+            # Only check the base layer itself, not derived layers
+            # (base layer tracking handles this now)
             code_lines.append(f"    // {base_layer} family")
-            code_lines.append(f"    if ({layer_checks}) {{")
+            code_lines.append(f"    if (base_layer == {base_layer}) {{")
             code_lines.append("        switch (keycode) {")
 
             # Generate mappings

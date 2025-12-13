@@ -125,7 +125,7 @@ combo_t key_combos[] = {
 
 // Layer filtering
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-    uint8_t layer = get_highest_layer(layer_state);
+    uint8_t layer = get_current_base_layer();
 
     switch (combo_index) {
         case COMBO_DFU_LEFT:
@@ -146,11 +146,11 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
 
 // Magic key configuration (alternate repeat key)
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
-    // Get current layer
-    uint8_t layer = get_highest_layer(layer_state);
+    // Get current base layer (not active overlay)
+    uint8_t base_layer = get_current_base_layer();
     
     // BASE_GALLIUM family
-    if (layer == BASE_GALLIUM) {
+    if (base_layer == BASE_GALLIUM) {
         switch (keycode) {
             case KC_DOT: return KC_SLSH;
             case KC_A: return KC_Y;
@@ -169,7 +169,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     }
 
     // BASE_NIGHT family
-    if (layer == BASE_NIGHT || layer == NUM_NIGHT || layer == SYM_NIGHT || layer == NAV_NIGHT || layer == MEDIA_NIGHT) {
+    if (base_layer == BASE_NIGHT) {
         switch (keycode) {
             case KC_SPC: return MAGIC_NIGHT_CHR_32;
             case KC_COMM: return MAGIC_NIGHT_CHR_44;
@@ -195,7 +195,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     }
 
     // BASE_BUNYA family
-    if (layer == BASE_BUNYA) {
+    if (base_layer == BASE_BUNYA) {
         switch (keycode) {
             case KC_SPC: return MAGIC_BUNYA_CHR_32;
             case KC_COMM: return MAGIC_BUNYA_CHR_44;
@@ -205,7 +205,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     }
 
     // BASE_RACKET family
-    if (layer == BASE_RACKET) {
+    if (base_layer == BASE_RACKET) {
         switch (keycode) {
             case KC_DOT: return KC_SLSH;
         }

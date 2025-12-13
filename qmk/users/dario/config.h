@@ -14,7 +14,7 @@
 #define TAPPING_TERM_PER_KEY
 
 // ZMK: quick-tap-ms = <200>
-#define QUICK_TAP_TERM 200
+// #define QUICK_TAP_TERM 200  // Defaults to TAPPING_TERM if not set
 
 // ZMK: flavor = "balanced"
 #define PERMISSIVE_HOLD
@@ -67,7 +67,7 @@
 // ----------------------------------------------------------------------------
 
 // Standard combo timeout (maps to timeout-ms in ZMK)
-#define COMBO_TERM 100
+#define COMBO_TERM 50
 
 // Note: QMK does not have built-in require-prior-idle support for combos
 // This is a ZMK-only feature (require-prior-idle-ms)

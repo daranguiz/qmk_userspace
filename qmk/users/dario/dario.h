@@ -26,6 +26,9 @@ enum custom_macros {
     MACRO_GITHUB_URL = SAFE_RANGE
 };
 
+// Base layer tracking for magic key context
+uint8_t get_current_base_layer(void);
+
 bool magic_process_record(uint16_t keycode, keyrecord_t *record);
 
 // RGB aliases (conditional on RGB support)

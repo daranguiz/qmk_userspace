@@ -127,6 +127,7 @@ bool magic_process_record(uint16_t keycode, keyrecord_t *record) {
 
     // Training mode: if the previous key would trigger a magic alternate that
     // matches this key, emit '#' instead to encourage using MAGIC.
+    // Note: get_alt_repeat_key_keycode_user uses base layer tracking internally
     if (record->event.pressed && tap != QK_AREP && tap != QK_REP && is_magic_tap_action(keycode, record)) {
         uint16_t last_key = unwrap_tap_keycode(training_prev_key);
         uint16_t alt = get_alt_repeat_key_keycode_user(last_key, training_prev_mods);
