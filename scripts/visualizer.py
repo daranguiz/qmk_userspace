@@ -1549,6 +1549,203 @@ class KeymapVisualizer:
             traceback.print_exc()
             return None
 
+    def _add_compact_magic_to_svg(self, svg_content: str, base_name: str, output_name: str) -> str:
+        """
+        Add a clean, print-friendly magic key reference below the keyboard SVG.
+
+        Args:
+            svg_content: Original SVG content
+            base_name: Layer name (e.g., 'BASE_NIGHT')
+            output_name: Output file base name (e.g., 'night')
+
+        Returns:
+            Modified SVG with magic keys added, or original if no magic keys exist
+        """
+        if not self.magic_config or not self.magic_config.mappings:
+            return svg_content
+
+        mapping = self.magic_config.mappings.get(base_name)
+        if not mapping or not mapping.mappings:
+            return svg_content
+
+        # Collect and categorize magic key entries
+        symbols_and_words = []  # Special triggers (space, comma, etc.) + multi-char outputs
+        letter_bigrams = []     # Single letter → single letter
+
+        for prev_key, alt_value in mapping.mappings.items():
+            display_text, first_idx = self._build_magic_display(prev_key, alt_value)
+            if not display_text:
+                continue
+
+            entry = {
+                "trigger": prev_key,
+                "trigger_label": self._format_magic_trigger_label(prev_key),
+                "output": display_text,
+                "first_idx": first_idx,
+            }
+
+            if self._is_basic_bigram(prev_key, alt_value):
+                letter_bigrams.append(entry)
+            else:
+                symbols_and_words.append(entry)
+
+        if not symbols_and_words and not letter_bigrams:
+            return svg_content
+
+        # Parse SVG to get current dimensions
+        import re
+        viewbox_match = re.search(r'viewBox="([^"]+)"', svg_content)
+        if not viewbox_match:
+            return svg_content
+
+        vb_parts = viewbox_match.group(1).split()
+        svg_width = float(vb_parts[2])
+        svg_height = float(vb_parts[3])
+
+        # Typography and spacing constants
+        TITLE_SIZE = 22
+        SECTION_TITLE_SIZE = 15
+        TRIGGER_SIZE = 16
+        OUTPUT_SIZE = 18
+
+        MARGIN = 20
+        SECTION_SPACING = 30
+        ROW_HEIGHT = 38
+        COLUMN_GAP = 50  # Increased from 30 to prevent overlap
+        NUM_COLUMNS = 3  # Configurable: change this to add more columns
+
+        # Start position below keyboard
+        current_y = svg_height + 30
+        table_svg = []
+
+        # Main title
+        base_display = self.base_layer_manager.get_display_name(base_name)
+        title_text = f'Magic Keys — {self._escape_svg_text(base_display)}'
+        table_svg.append(
+            f'<text x="{svg_width / 2}" y="{current_y}" text-anchor="middle" '
+            f'style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Arial, sans-serif; '
+            f'font-size: {TITLE_SIZE}px; font-weight: 700; fill: #1a1a1a;">'
+            f'{title_text}</text>'
+        )
+        current_y += SECTION_SPACING + 5
+
+        # Helper function to render a section
+        def render_section(title, entries, start_y):
+            y = start_y
+
+            if not entries:
+                return y
+
+            # Section title with underline
+            table_svg.append(
+                f'<text x="{MARGIN}" y="{y}" '
+                f'style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Arial, sans-serif; '
+                f'font-size: {SECTION_TITLE_SIZE}px; font-weight: 700; fill: #555;">'
+                f'{self._escape_svg_text(title.upper())}</text>'
+            )
+            table_svg.append(
+                f'<line x1="{MARGIN}" y1="{y + 5}" x2="{svg_width - MARGIN}" y2="{y + 5}" '
+                f'stroke="#ddd" stroke-width="1"/>'
+            )
+            y += SECTION_SPACING
+
+            # Calculate grid positioning
+            available_width = svg_width - (2 * MARGIN)
+            entry_width = (available_width - (NUM_COLUMNS - 1) * COLUMN_GAP) / NUM_COLUMNS
+
+            # Render entries in grid
+            for idx, entry in enumerate(entries):
+                col = idx % NUM_COLUMNS
+                row = idx // NUM_COLUMNS
+
+                cell_x = MARGIN + col * (entry_width + COLUMN_GAP)
+                cell_y = y + row * ROW_HEIGHT
+
+                # Layout with badge for trigger, then output text
+                trigger_label = self._escape_svg_text(entry["trigger_label"])
+                trigger_char = entry["trigger"]
+                raw_text = entry["output"]
+
+                # Strip trigger prefix from output since it's shown in the badge
+                # Space triggers: strip "[ ]" prefix
+                if raw_text.startswith("[ ]"):
+                    output_text = raw_text[3:].lstrip()
+                # Other triggers: strip the trigger character itself (e.g., "," from ", but")
+                elif raw_text.startswith(trigger_char):
+                    output_text = raw_text[len(trigger_char):].lstrip()
+                else:
+                    output_text = raw_text.lstrip()
+                output_text = self._escape_svg_text(output_text)
+
+                # Cell padding
+                cell_padding = 10
+
+                # Badge for trigger - fixed width for consistent alignment
+                badge_width = 75
+                badge_height = 26
+                badge_x = cell_x + cell_padding
+                badge_y = cell_y + (ROW_HEIGHT - badge_height) * 0.5
+
+                # Draw badge background
+                table_svg.append(
+                    f'<rect x="{badge_x}" y="{badge_y}" '
+                    f'width="{badge_width}" height="{badge_height}" '
+                    f'rx="4" fill="#e8eaed"/>'
+                )
+
+                # Trigger text centered in badge - use dominant-baseline for true vertical centering
+                badge_text_x = badge_x + badge_width * 0.5
+                badge_text_y = badge_y + badge_height * 0.5
+                table_svg.append(
+                    f'<text x="{badge_text_x}" y="{badge_text_y}" text-anchor="middle" '
+                    f'dominant-baseline="central" '
+                    f'style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Arial, sans-serif; '
+                    f'font-size: {TRIGGER_SIZE}px; font-weight: 700; fill: #555;">'
+                    f'{trigger_label}</text>'
+                )
+
+                # Output text - fixed position within cell for left-justified alignment
+                # Position at a fixed offset from cell start (badge + gap)
+                output_x = cell_x + cell_padding + badge_width + 25  # Fixed offset from cell
+                output_y = badge_y + badge_height * 0.5
+                # Use inline style for text-anchor to override global CSS rule
+                table_svg.append(
+                    f'<text x="{output_x}" y="{output_y}" '
+                    f'style="text-anchor: start; dominant-baseline: central; '
+                    f'font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Arial, sans-serif; '
+                    f'font-size: {OUTPUT_SIZE}px; font-weight: 600; fill: #000;">'
+                    f'{output_text}</text>'
+                )
+
+            # Calculate total height used
+            rows_needed = (len(entries) + NUM_COLUMNS - 1) // NUM_COLUMNS
+            return y + (rows_needed * ROW_HEIGHT) + SECTION_SPACING
+
+        # Render sections
+        if symbols_and_words:
+            current_y = render_section("Words & Symbols", symbols_and_words, current_y)
+
+        if letter_bigrams:
+            # Sort letter bigrams alphabetically by trigger for easy lookup
+            letter_bigrams.sort(key=lambda e: e["trigger"].lower())
+            current_y = render_section("Letter Alternatives", letter_bigrams, current_y)
+
+        # Update SVG dimensions
+        new_height = current_y + MARGIN
+        svg_content = svg_content.replace(
+            f'viewBox="{viewbox_match.group(1)}"',
+            f'viewBox="0 0 {svg_width} {new_height}"'
+        )
+
+        # Insert content before the FINAL closing </svg> tag (not nested ones)
+        table_content = '\n'.join(table_svg)
+        # Use rfind to find the last </svg> and insert before it
+        last_svg_close = svg_content.rfind('</svg>')
+        if last_svg_close != -1:
+            svg_content = svg_content[:last_svg_close] + table_content + '\n' + svg_content[last_svg_close:]
+
+        return svg_content
+
     def _generate_single_layer_pdf(self, base_name: str, base_layer, layout_size: str) -> Optional[Path]:
         """Generate single-layer landscape PDF showing only the base layer for large printing"""
         # Remove BASE_ prefix and convert to lowercase for output filename
@@ -1570,12 +1767,15 @@ class KeymapVisualizer:
             # Read SVG content (styles already applied with for_display=False)
             svg_content = svg_file.read_text()
 
-            # Convert SVG to PDF using cairosvg (US Letter)
+            # Add compact magic key mappings to the SVG if they exist
+            svg_content = self._add_compact_magic_to_svg(svg_content, base_name, output_name)
+
+            # Convert SVG to PDF using cairosvg (Landscape = swap width/height)
             cairosvg.svg2pdf(
                 bytestring=svg_content.encode('utf-8'),
                 write_to=str(pdf_path),
-                output_width=LETTER_WIDTH_PT,
-                output_height=LETTER_HEIGHT_PT
+                output_width=LETTER_HEIGHT_PT,  # Landscape: use height for width
+                output_height=LETTER_WIDTH_PT    # Landscape: use width for height
             )
 
             # Clean up intermediate SVG

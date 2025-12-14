@@ -5,7 +5,7 @@ parse_config:
   layer_names:
   - BASE_NIGHT
   - BASE_GALLIUM
-  - BASE_BUNYA
+  - BASE_DUSK
   - BASE_RACKET
   - FUN
   - NUM_NIGHT
@@ -15,7 +15,7 @@ parse_config:
   layer_legend_map:
     BASE_NIGHT: NIGHT
     BASE_GALLIUM: GALLIUM
-    BASE_BUNYA: BUNYA
+    BASE_DUSK: DUSK
     BASE_RACKET: RACKET
     NUM_NIGHT: NUM
     SYM_NIGHT: SYM
@@ -57,8 +57,8 @@ parse_config:
     DF(BASE_GALLIUM): GAUM
     DF(BASE_NIGHT): NIHT
     DF(BASE_NIGHT_V2): NHT2
-    DF(BASE_BUNYA): BUYA
     DF(BASE_RACKET): RAET
+    DF(BASE_DUSK): DUSK
 draw_config:
   ortho_layout:
     split: !!bool 'true'

@@ -111,8 +111,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case DF(BASE_GALLIUM):
                 current_base_layer = BASE_GALLIUM;
                 break;
-            case DF(BASE_BUNYA):
-                current_base_layer = BASE_BUNYA;
+            case DF(BASE_DUSK):
+                current_base_layer = BASE_DUSK;
                 break;
             case DF(BASE_RACKET):
                 current_base_layer = BASE_RACKET;

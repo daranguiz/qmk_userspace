@@ -108,18 +108,18 @@
 41: &lt MEDIA_NIGHT ENTER
 ```
 
-## BASE_BUNYA Layer
+## BASE_DUSK Layer
 
 ```
  0: &none
  1: &kp B
- 2: &kp L
- 3: &kp M
- 4: &kp C
- 5: &kp Z
+ 2: &kp F
+ 3: &kp D
+ 4: &kp W
+ 5: &kp P
 
  6: &kp J
- 7: &kp F
+ 7: &kp SQT
  8: &kp O
  9: &kp U
 10: &kp COMMA
@@ -127,12 +127,12 @@
 
 12: &none
 13: &hml LGUI N
-14: &hml LALT R
+14: &hml LALT S
 15: &hml LCTL T
-16: &hml LSFT D
-17: &kp P
+16: &hml LSFT C
+17: &kp Y
 
-18: &kp Y
+18: &kp M
 19: &hmr LSFT H
 20: &hmr LCTL A
 21: &hmr LALT E
@@ -141,21 +141,21 @@
 
 24: &none
 25: &kp X
-26: &kp Q
-27: &kp V
+26: &kp V
+27: &kp K
 28: &kp G
-29: &kp W
+29: &kp Q
 
-30: &kp SEMI
-31: &kp K
-32: &kp SQT
-33: &kp MINUS
+30: &kp Z
+31: &kp L
+32: &kp MINUS
+33: &kp FSLH
 34: &kp DOT
 35: &none
 
 36: &lt NUM_NIGHT BSPC
-37: &lt SYM_NIGHT S
-38: &mt_ak_bunya LSFT 0
+37: &lt SYM_NIGHT R
+38: &mt_ak_dusk LSFT 0
 39: &mt LSFT TAB
 40: &lt NAV_NIGHT SPACE
 41: &lt MEDIA_NIGHT ENTER
@@ -281,7 +281,7 @@
  7: &kp N7
  8: &kp N8
  9: &kp N9
-10: &kp DOT
+10: &kp COMMA
 11: &none
 
 12: &none
@@ -309,7 +309,7 @@
 31: &kp N4
 32: &kp N5
 33: &kp N6
-34: &kp COMMA
+34: &kp DOT
 35: &none
 
 36: &none
@@ -331,10 +331,10 @@
  5: &none
 
  6: &kp PLUS
- 7: &kp LT
+ 7: &kp MINUS
  8: &kp LBRC
  9: &kp RBRC
-10: &kp GT
+10: &kp COMMA
 11: &none
 
 12: &none
@@ -359,10 +359,10 @@
 29: &none
 
 30: &kp BSLH
-31: &kp MINUS
+31: &kp LT
 32: &kp LBKT
 33: &kp RBKT
-34: &kp COMMA
+34: &kp GT
 35: &none
 
 36: &none
@@ -432,7 +432,7 @@
  0: &none
  1: &to BASE_NIGHT
  2: &to BASE_GALLIUM
- 3: &to BASE_BUNYA
+ 3: &to BASE_DUSK
  4: &to BASE_RACKET
  5: &none
 
@@ -523,17 +523,19 @@
   - W → HICH
   - Y → '
 
-### BASE_BUNYA
+### BASE_DUSK
 - default: REPEAT
 - timeout_ms: 0
 - mappings:
   -   → THE
   - , →  BUT
   - . → /
-  - / → >
 
 ### BASE_RACKET
 - default: REPEAT
 - timeout_ms: 0
 - mappings:
   - . → /
+  -   → THE
+  - , →  BUT
+  - - → >

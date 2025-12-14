@@ -10,7 +10,7 @@
 
 #define BASE_NIGHT 0
 #define BASE_GALLIUM 1
-#define BASE_BUNYA 2
+#define BASE_DUSK 2
 #define BASE_RACKET 3
 #define FUN 4
 #define NUM_NIGHT 5
@@ -148,9 +148,9 @@
                 , <&macro_tap &kp H &kp I &kp C &kp H>
                 ;
         };
-        magic_bunya_chr_32: magic_bunya_chr_32_macro {
+        magic_dusk_chr_32: magic_dusk_chr_32_macro {
             compatible = "zmk,behavior-macro";
-            label = "MAGIC_BUNYA_CHR_32";
+            label = "MAGIC_DUSK_CHR_32";
             #binding-cells = <0>;
             bindings
                 = <&macro_wait_time 10>
@@ -158,9 +158,29 @@
                 , <&macro_tap &kp T &kp H &kp E>
                 ;
         };
-        magic_bunya_chr_44: magic_bunya_chr_44_macro {
+        magic_dusk_chr_44: magic_dusk_chr_44_macro {
             compatible = "zmk,behavior-macro";
-            label = "MAGIC_BUNYA_CHR_44";
+            label = "MAGIC_DUSK_CHR_44";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_wait_time 10>
+                , <&macro_tap_time 10>
+                , <&macro_tap &kp SPACE &kp B &kp U &kp T>
+                ;
+        };
+        magic_racket_chr_32: magic_racket_chr_32_macro {
+            compatible = "zmk,behavior-macro";
+            label = "MAGIC_RACKET_CHR_32";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_wait_time 10>
+                , <&macro_tap_time 10>
+                , <&macro_tap &kp T &kp H &kp E>
+                ;
+        };
+        magic_racket_chr_44: magic_racket_chr_44_macro {
+            compatible = "zmk,behavior-macro";
+            label = "MAGIC_RACKET_CHR_44";
             #binding-cells = <0>;
             bindings
                 = <&macro_wait_time 10>
@@ -361,48 +381,44 @@
             bindings = <&kp>, <&ak_night>;
         };
 
-        // Adaptive key for BASE_BUNYA family
-        ak_bunya: ak_bunya {
+        // Adaptive key for BASE_DUSK family
+        ak_dusk: ak_dusk {
             compatible = "zmk,behavior-adaptive-key";
             #binding-cells = <0>;
             bindings = <&key_repeat>;
 
             space_trigger {
                 trigger-keys = <SPACE>;
-                bindings = <&magic_bunya_chr_32>;
+                bindings = <&magic_dusk_chr_32>;
             };
             comma_trigger {
                 trigger-keys = <COMMA>;
-                bindings = <&magic_bunya_chr_44>;
+                bindings = <&magic_dusk_chr_44>;
             };
             dot_trigger {
                 trigger-keys = <DOT>;
                 bindings = <&kp FSLH>;
             };
-            fslh_trigger {
-                trigger-keys = <FSLH>;
-                bindings = <&kp GT>;
-            };
         };
 
-        lt_ak_bunya: lt_ak_bunya {
+        lt_ak_dusk: lt_ak_dusk {
             compatible = "zmk,behavior-hold-tap";
-            label = "LT_AK_BUNYA";
+            label = "LT_AK_DUSK";
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <200>;
             quick-tap-ms = <200>;
-            bindings = <&mo>, <&ak_bunya>;
+            bindings = <&mo>, <&ak_dusk>;
         };
 
-        mt_ak_bunya: mt_ak_bunya {
+        mt_ak_dusk: mt_ak_dusk {
             compatible = "zmk,behavior-hold-tap";
-            label = "MT_AK_BUNYA";
+            label = "MT_AK_DUSK";
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <200>;
             quick-tap-ms = <200>;
-            bindings = <&kp>, <&ak_bunya>;
+            bindings = <&kp>, <&ak_dusk>;
         };
 
         // Adaptive key for BASE_RACKET family
@@ -414,6 +430,18 @@
             dot_trigger {
                 trigger-keys = <DOT>;
                 bindings = <&kp FSLH>;
+            };
+            space_trigger {
+                trigger-keys = <SPACE>;
+                bindings = <&magic_racket_chr_32>;
+            };
+            comma_trigger {
+                trigger-keys = <COMMA>;
+                bindings = <&magic_racket_chr_44>;
+            };
+            minus_trigger {
+                trigger-keys = <MINUS>;
+                bindings = <&kp GT>;
             };
         };
 
@@ -721,42 +749,32 @@
             };
         };
 
-        ak_train_bunya_magic_bunya_chr_32: ak_train_bunya_magic_bunya_chr_32 {
+        ak_train_dusk_magic_dusk_chr_32: ak_train_dusk_magic_dusk_chr_32 {
             compatible = "zmk,behavior-adaptive-key";
             #binding-cells = <0>;
-            bindings = <&magic_bunya_chr_32>;
+            bindings = <&magic_dusk_chr_32>;
             guard_trigger {
                 trigger-keys = <SPACE>;
                 bindings = <&kp HASH>;
             };
         };
 
-        ak_train_bunya_magic_bunya_chr_44: ak_train_bunya_magic_bunya_chr_44 {
+        ak_train_dusk_magic_dusk_chr_44: ak_train_dusk_magic_dusk_chr_44 {
             compatible = "zmk,behavior-adaptive-key";
             #binding-cells = <0>;
-            bindings = <&magic_bunya_chr_44>;
+            bindings = <&magic_dusk_chr_44>;
             guard_trigger {
                 trigger-keys = <COMMA>;
                 bindings = <&kp HASH>;
             };
         };
 
-        ak_train_bunya_fslh: ak_train_bunya_fslh {
+        ak_train_dusk_fslh: ak_train_dusk_fslh {
             compatible = "zmk,behavior-adaptive-key";
             #binding-cells = <0>;
             bindings = <&kp FSLH>;
             guard_trigger {
                 trigger-keys = <DOT>;
-                bindings = <&kp HASH>;
-            };
-        };
-
-        ak_train_bunya_gt: ak_train_bunya_gt {
-            compatible = "zmk,behavior-adaptive-key";
-            #binding-cells = <0>;
-            bindings = <&kp GT>;
-            guard_trigger {
-                trigger-keys = <FSLH>;
                 bindings = <&kp HASH>;
             };
         };
@@ -767,6 +785,36 @@
             bindings = <&kp FSLH>;
             guard_trigger {
                 trigger-keys = <DOT>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_racket_magic_racket_chr_32: ak_train_racket_magic_racket_chr_32 {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&magic_racket_chr_32>;
+            guard_trigger {
+                trigger-keys = <SPACE>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_racket_magic_racket_chr_44: ak_train_racket_magic_racket_chr_44 {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&magic_racket_chr_44>;
+            guard_trigger {
+                trigger-keys = <COMMA>;
+                bindings = <&kp HASH>;
+            };
+        };
+
+        ak_train_racket_gt: ak_train_racket_gt {
+            compatible = "zmk,behavior-adaptive-key";
+            #binding-cells = <0>;
+            bindings = <&kp GT>;
+            guard_trigger {
+                trigger-keys = <MINUS>;
                 bindings = <&kp HASH>;
             };
         };
@@ -856,81 +904,81 @@
 
         base_night_layer {
             bindings = <
-                &none &kp B &kp F &ak_train_night_l &kp K &kp Q &ak_train_night_y &hmr LSFT C &hmr LCTL A &hmr_train_night_e LALT 0 &hmr LGUI I &none
-                &kp P &kp G &ak_train_night_o &kp U &kp DOT &none &none &kp X &kp V &kp J &kp D &kp Z
-                &ak_train_night_y &hml LGUI N &hml_train_night_s LALT 0 &hml LCTL H &hml LSFT T &kp M &ak_train_night_sqt &kp W &kp MINUS &kp SEMI &kp COMMA &none
+                &none &kp B &kp F &ak_train_night_l &kp K &kp Q &kp P &kp G &ak_train_night_o &kp U &kp DOT &none
+                &ak_train_night_y &hml LGUI N &hml_train_night_s LALT 0 &hml LCTL H &hml LSFT T &kp M &ak_train_night_y &hmr LSFT C &hmr LCTL A &hmr_train_night_e LALT 0 &hmr LGUI I &none
+                &none &kp X &kp V &kp J &kp D &kp Z &ak_train_night_sqt &kp W &kp MINUS &kp SEMI &kp COMMA &none
                 &lt NUM_NIGHT BSPC &lt SYM_NIGHT R &mt_ak_night LSFT 0 &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
             >;
         };
 
         base_gallium_layer {
             bindings = <
-                &none &ak_train_gallium_b &ak_train_gallium_l &kp D &ak_train_gallium_c &kp V &kp P &hmr_train_gallium_h LSFT 0 &hmr LCTL A &hmr_train_gallium_e LALT 0 &hmr LGUI I &kp ENTER
-                &kp J &ak_train_gallium_y &kp O &kp U &kp DOT &none &none &kp X &kp Q &kp M &kp W &kp Z
-                &none &hml LGUI N &hml_train_gallium_r LALT 0 &hml LCTL T &hml_train_gallium_s LSFT 0 &kp G &ak_train_gallium_k &kp F &kp SQT &kp MINUS &kp COMMA &none
+                &none &ak_train_gallium_b &ak_train_gallium_l &kp D &ak_train_gallium_c &kp V &kp J &ak_train_gallium_y &kp O &kp U &kp DOT &none
+                &none &hml LGUI N &hml_train_gallium_r LALT 0 &hml LCTL T &hml_train_gallium_s LSFT 0 &kp G &kp P &hmr_train_gallium_h LSFT 0 &hmr LCTL A &hmr_train_gallium_e LALT 0 &hmr LGUI I &kp ENTER
+                &none &kp X &kp Q &kp M &kp W &kp Z &ak_train_gallium_k &kp F &kp SQT &kp MINUS &kp COMMA &none
                 &lt NUM_NIGHT BSPC &lt_ak_gallium SYM_NIGHT 0 &mt LSFT DEL &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
             >;
         };
 
-        base_bunya_layer {
+        base_dusk_layer {
             bindings = <
-                &none &kp B &kp L &kp M &kp C &kp Z &kp Y &hmr LSFT H &hmr LCTL A &hmr LALT E &hmr LGUI I &none
-                &kp J &kp F &kp O &kp U &kp COMMA &none &none &kp X &kp Q &kp V &kp G &kp W
-                &none &hml LGUI N &hml LALT R &hml LCTL T &hml LSFT D &kp P &kp SEMI &kp K &kp SQT &kp MINUS &kp DOT &none
-                &lt NUM_NIGHT BSPC &lt SYM_NIGHT S &mt_ak_bunya LSFT 0 &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
+                &none &kp B &kp F &kp D &kp W &kp P &kp J &kp SQT &kp O &kp U &kp COMMA &none
+                &none &hml LGUI N &hml LALT S &hml LCTL T &hml LSFT C &kp Y &kp M &hmr LSFT H &hmr LCTL A &hmr LALT E &hmr LGUI I &none
+                &none &kp X &kp V &kp K &kp G &kp Q &kp Z &kp L &kp MINUS &ak_train_dusk_fslh &kp DOT &none
+                &lt NUM_NIGHT BSPC &lt SYM_NIGHT R &mt_ak_dusk LSFT 0 &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
             >;
         };
 
         base_racket_layer {
             bindings = <
-                &none &kp F &kp D &kp L &kp W &kp J &kp Q &hmr LSFT N &hmr LCTL A &hmr LALT E &hmr LGUI I &none
-                &kp MINUS &kp B &kp O &kp U &kp COMMA &none &none &kp X &kp K &kp M &kp G &kp V
-                &none &hml LGUI S &hml LALT T &hml LCTL H &hml LSFT C &kp Y &kp Z &kp P &kp SQT &ak_train_racket_fslh &kp DOT &none
+                &none &kp F &kp D &kp L &kp W &kp J &kp MINUS &kp B &kp O &kp U &kp COMMA &none
+                &none &hml LGUI S &hml LALT T &hml LCTL H &hml LSFT C &kp Y &kp Q &hmr LSFT N &hmr LCTL A &hmr LALT E &hmr LGUI I &none
+                &none &kp X &kp K &kp M &kp G &kp V &kp Z &kp P &kp SQT &ak_train_racket_fslh &kp DOT &none
                 &lt NUM_NIGHT BSPC &lt SYM_NIGHT R &mt_ak_racket LSFT 0 &mt LSFT TAB &lt NAV_NIGHT SPACE &lt MEDIA_NIGHT ENTER
             >;
         };
 
         fun_layer {
             bindings = <
-                &none &kp F12 &kp F7 &kp F8 &kp F9 &kp PRINTSCREEN &none &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &none
-                &none &none &none &none &none &none &none &kp F10 &kp F1 &kp F2 &kp F3 &kp PAUSE_BREAK
-                &none &kp F11 &kp F4 &kp F5 &kp F6 &kp SCROLLLOCK &none &none &none &none &none &none
+                &none &kp F12 &kp F7 &kp F8 &kp F9 &kp PRINTSCREEN &none &none &none &none &none &none
+                &none &kp F11 &kp F4 &kp F5 &kp F6 &kp SCROLLLOCK &none &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &none
+                &none &kp F10 &kp F1 &kp F2 &kp F3 &kp PAUSE_BREAK &none &none &none &none &none &none
                 &kp K_APP &kp SPACE &kp TAB &none &none &none
             >;
         };
 
         num_night_layer {
             bindings = <
-                &none &none &kp TILDE &kp PERCENT &kp COLON &none &kp HASH &kp N1 &kp N2 &kp N3 &kp GRAVE &none
-                &kp CARET &kp N7 &kp N8 &kp N9 &kp DOT &none &none &kp LG(Z) &kp LG(X) &kp LG(C) &kp LG(V) &kp LG(LS(Z))
-                &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp PIPE &kp DOLLAR &kp N4 &kp N5 &kp N6 &kp COMMA &none
+                &none &none &kp TILDE &kp PERCENT &kp COLON &none &kp CARET &kp N7 &kp N8 &kp N9 &kp COMMA &none
+                &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp PIPE &kp HASH &kp N1 &kp N2 &kp N3 &kp GRAVE &none
+                &none &kp LG(Z) &kp LG(X) &kp LG(C) &kp LG(V) &kp LG(LS(Z)) &kp DOLLAR &kp N4 &kp N5 &kp N6 &kp DOT &none
                 &none &none &none &ak_train_night_fslh &kp N0 &kp AT
             >;
         };
 
         sym_night_layer {
             bindings = <
-                &none &kp DOLLAR &kp ASTERISK &kp PERCENT &kp COLON &none &kp EXCL &kp QUESTION &kp LPAR &kp RPAR &kp SEMI &none
-                &kp PLUS &kp LT &kp LBRC &kp RBRC &ak_train_night_gt &none &none &none &none &none &kp AMPERSAND &none
-                &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp EQUAL &kp BSLH &kp MINUS &kp LBKT &kp RBKT &kp COMMA &none
+                &none &kp DOLLAR &kp ASTERISK &kp PERCENT &kp COLON &none &kp PLUS &kp MINUS &kp LBRC &kp RBRC &kp COMMA &none
+                &none &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp EQUAL &kp EXCL &kp QUESTION &kp LPAR &kp RPAR &kp SEMI &none
+                &none &none &none &none &kp AMPERSAND &none &kp BSLH &kp LT &kp LBKT &kp RBKT &ak_train_night_gt &none
                 &none &none &none &ak_train_night_fslh &kp SPACE &kp ENTER
             >;
         };
 
         nav_night_layer {
             bindings = <
-                &none &none &kp PG_UP &none &none &kp ESC &none &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &none
-                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &none &none &kp END &kp PG_DN &kp DOWN &kp HOME &kp INS
-                &none &none &kp LEFT &kp UP &kp RIGHT &kp CAPS &none &none &none &none &none &none
+                &none &none &kp PG_UP &none &none &kp ESC &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &none
+                &none &none &kp LEFT &kp UP &kp RIGHT &kp CAPS &none &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &none
+                &none &kp END &kp PG_DN &kp DOWN &kp HOME &kp INS &none &none &none &none &none &none
                 &kp BSPC &kp ENTER &kp DEL &none &none &none
             >;
         };
 
         media_night_layer {
             bindings = <
-                &none &to BASE_NIGHT &to BASE_GALLIUM &to BASE_BUNYA &to BASE_RACKET &none &none &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &none
-                &none &none &none &none &none &none &none &kp LG(Z) &kp LG(X) &kp LG(C) &kp LG(V) &kp LG(LS(Z))
-                &none &kp C_NEXT &kp C_VOL_UP &kp C_VOL_DN &kp C_PREV &none &none &none &none &none &bootloader &none
+                &none &to BASE_NIGHT &to BASE_GALLIUM &to BASE_DUSK &to BASE_RACKET &none &none &none &none &none &none &none
+                &none &kp C_NEXT &kp C_VOL_UP &kp C_VOL_DN &kp C_PREV &none &none &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &none
+                &none &kp LG(Z) &kp LG(X) &kp LG(C) &kp LG(V) &kp LG(LS(Z)) &none &none &none &none &bootloader &none
                 &kp C_MUTE &kp C_PLAY_PAUSE &kp C_STOP &none &none &none
             >;
         };

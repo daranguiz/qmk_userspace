@@ -148,7 +148,7 @@ qmk compile -kb jels/boaty -km dario
 62: LT(MEDIA_NIGHT, KC_ENT)
 ```
 
-## BASE_BUNYA Layer
+## BASE_DUSK Layer
 
 ```
  0: KC_PMNS
@@ -175,12 +175,12 @@ qmk compile -kb jels/boaty -km dario
 21: KC_ESC
 22: KC_TAB
 23: KC_B
-24: KC_L
-25: KC_M
-26: KC_C
-27: KC_Z
+24: KC_F
+25: KC_D
+26: KC_W
+27: KC_P
 28: KC_J
-29: KC_F
+29: KC_QUOT
 30: KC_O
 31: KC_U
 32: KC_COMM
@@ -188,28 +188,28 @@ qmk compile -kb jels/boaty -km dario
 34: KC_DEL
 35: KC_CAPS
 36: LGUI_T(KC_N)
-37: LALT_T(KC_R)
+37: LALT_T(KC_S)
 38: LCTL_T(KC_T)
-39: LSFT_T(KC_D)
-40: KC_P
-41: KC_Y
+39: LSFT_T(KC_C)
+40: KC_Y
+41: KC_M
 42: LSFT_T(KC_H)
 43: LCTL_T(KC_A)
 44: LALT_T(KC_E)
 45: LGUI_T(KC_I)
 46: KC_ENT
 47: KC_X
-48: KC_Q
-49: KC_V
+48: KC_V
+49: KC_K
 50: KC_G
-51: KC_W
-52: KC_SCLN
-53: KC_K
-54: KC_QUOT
-55: KC_MINS
+51: KC_Q
+52: KC_Z
+53: KC_L
+54: KC_MINS
+55: KC_SLSH
 56: KC_DOT
 57: LT(NUM_NIGHT, KC_BSPC)
-58: LT(SYM_NIGHT, KC_S)
+58: LT(SYM_NIGHT, KC_R)
 59: LSFT_T(QK_AREP)
 60: LSFT_T(KC_TAB)
 61: LT(NAV_NIGHT, KC_SPC)
@@ -387,7 +387,7 @@ qmk compile -kb jels/boaty -km dario
 29: KC_7
 30: KC_8
 31: KC_9
-32: KC_DOT
+32: KC_COMM
 33: KC_TRNS
 34: KC_TRNS
 35: KC_TRNS
@@ -411,7 +411,7 @@ qmk compile -kb jels/boaty -km dario
 53: KC_4
 54: KC_5
 55: KC_6
-56: KC_COMM
+56: KC_DOT
 57: KC_NO
 58: KC_NO
 59: KC_NO
@@ -452,10 +452,10 @@ qmk compile -kb jels/boaty -km dario
 26: KC_COLN
 27: KC_NO
 28: KC_PLUS
-29: KC_LT
+29: KC_MINS
 30: KC_LCBR
 31: KC_RCBR
-32: KC_GT
+32: KC_COMM
 33: KC_TRNS
 34: KC_TRNS
 35: KC_TRNS
@@ -476,10 +476,10 @@ qmk compile -kb jels/boaty -km dario
 50: KC_AMPR
 51: KC_NO
 52: KC_BSLS
-53: KC_MINS
+53: KC_LT
 54: KC_LBRC
 55: KC_RBRC
-56: KC_COMM
+56: KC_GT
 57: KC_NO
 58: KC_NO
 59: KC_NO
@@ -584,7 +584,7 @@ qmk compile -kb jels/boaty -km dario
 22: KC_TRNS
 23: DF(BASE_NIGHT)
 24: DF(BASE_GALLIUM)
-25: DF(BASE_BUNYA)
+25: DF(BASE_DUSK)
 26: DF(BASE_RACKET)
 27: KC_NO
 28: KC_NO

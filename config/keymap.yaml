@@ -8,9 +8,9 @@ base_layers:
   BASE_NIGHT:
     display_name: "NIGHT"
     description: "Night thumb alpha"
-  BASE_BUNYA:
-    display_name: "BUNYA"
-    description: "Bunya layout (GalileoBlues)"
+  BASE_DUSK:
+    display_name: "DUSK"
+    description: "Dusk-wp layout (kuurama)"
   BASE_RACKET:
     display_name: "RACKET"
     description: "Racket layout (GalileoBlues)"
@@ -52,18 +52,18 @@ layers:
         outer_pinky_left: [NONE, NONE, NONE]
         outer_pinky_right: [NONE, ENT, NONE]
 
-  BASE_BUNYA:
+  BASE_DUSK:
     core: # (3x5)
       left:
-        - [B              , L              , M              , C              , Z              ]
-        - [hrm:LGUI:N     , hrm:LALT:R     , hrm:LCTL:T     , hrm:LSFT:D     , P              ]
-        - [X              , Q              , V              , G              , W              ]
+        - [B              , F              , D              , W              , P              ]
+        - [hrm:LGUI:N     , hrm:LALT:S     , hrm:LCTL:T     , hrm:LSFT:C     , Y              ]
+        - [X              , V              , K              , G              , Q              ]
       right:
-        - [J              , F              , O              , U              , COMM           ]
-        - [Y              , hrm:LSFT:H     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
-        - [SCLN           , K              , QUOT           , MINS           , DOT            ]
+        - [J              , QUOT           , O              , U              , COMM           ]
+        - [M              , hrm:LSFT:H     , hrm:LCTL:A     , hrm:LALT:E     , hrm:LGUI:I     ]
+        - [Z              , L              , MINS           , SLSH           , DOT            ]
       thumbs:
-        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:S              , mt:LSFT:MAGIC    ]
+        - [lt:NUM_NIGHT:BSPC   , lt:SYM_NIGHT:R              , mt:LSFT:MAGIC    ]
         - [mt:LSFT:TAB    , lt:NAV_NIGHT:SPC     , lt:MEDIA_NIGHT:ENT    ]
     extensions:
       3x6_3:
@@ -114,9 +114,9 @@ layers:
         - [LGUI           , LALT           , LCTL           , LSFT           , PIPE           ]
         - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:
-        - [CIRC           , 7              , 8              , 9              , DOT            ]
+        - [CIRC           , 7              , 8              , 9              , COMM           ]
         - [HASH           , 1              , 2              , 3              , GRV            ]
-        - [DLR            , 4              , 5              , 6              , COMM           ]
+        - [DLR            , 4              , 5              , 6              , DOT            ]
       thumbs:
         - [NONE           , NONE           , NONE           ]
         - [SLSH           , 0              , AT             ]
@@ -132,9 +132,9 @@ layers:
         - [LGUI           , LALT           , LCTL           , LSFT           , EQL            ]
         - [NONE           , NONE           , NONE           , AMPR           , NONE           ]
       right:
-        - [PLUS           , LABK           , LCBR           , RCBR           , RABK           ]
+        - [PLUS           , MINS           , LCBR           , RCBR           , COMM           ]
         - [EXLM           , QUES           , LPRN           , RPRN           , SCLN           ]
-        - [BSLS           , MINS           , LBRC           , RBRC           , COMM           ]
+        - [BSLS           , LABK           , LBRC           , RBRC           , RABK           ]
       thumbs:
         - [NONE           , NONE           , NONE           ]
         - [SLSH           , SPC            , ENT            ]
@@ -164,7 +164,7 @@ layers:
   MEDIA_NIGHT:
     core: # (3x5)
       left:
-        - [df:BASE_NIGHT  , df:BASE_GALLIUM, df:BASE_BUNYA  , df:BASE_RACKET , NONE           ]
+        - [df:BASE_NIGHT  , df:BASE_GALLIUM, df:BASE_DUSK   , df:BASE_RACKET , NONE           ]
         - [MNXT           , VOLU           , VOLD           , MPRV           , NONE           ]
         - [UNDO           , CUT            , COPY           , PASTE          , REDO           ]
       right:
@@ -190,7 +190,7 @@ combos:
     action: DFU
     timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
-    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_BUNYA, BASE_RACKET]
+    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_DUSK, BASE_RACKET]
 
   - name: dfu_right
     description: "Enter bootloader (right hand)"
@@ -198,7 +198,7 @@ combos:
     action: DFU
     timeout_ms: 100  # Slightly longer for easier chord
     require_prior_idle_ms: 150  # Prevent during fast typing (ZMK only)
-    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_BUNYA, BASE_RACKET]
+    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_DUSK, BASE_RACKET]
 
   - name: github_url
     description: "Expand to GitHub repo URL"
@@ -206,7 +206,7 @@ combos:
     action: MACRO_GITHUB_URL
     macro_text: "https://github.com/daranguiz/keyboard-config?tab=readme-ov-file#readme"
     timeout_ms: 100  # Slightly longer for 4-key combo
-    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_BUNYA, BASE_RACKET]
+    layers: [BASE_NIGHT, BASE_GALLIUM, BASE_DUSK, BASE_RACKET]
 
 # Magic key definitions
 # Context-aware keys that produce different outputs based on previous keypress
@@ -279,17 +279,24 @@ magic_keys:
       # Z: (repeat)
     default_repeat: true
 
-  BASE_BUNYA:
+  BASE_DUSK:
     timeout_ms: 0
     mappings:
       " ": THE
       ",": " BUT"
       ".": "/"
-      "/": ">"
     default_repeat: true
 
   BASE_RACKET:
     timeout_ms: 0
     mappings:
-      ".": "/"
+      ".": "/" 
+      " ": THE
+      ",": " BUT"
+      "-": ">"
+      # S: K
+      # K: S
+      # L: K
+      # M: Y
+      # C: K
     default_repeat: true

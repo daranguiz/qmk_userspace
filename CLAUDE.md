@@ -338,7 +338,7 @@ The firmware uses QMK Community Modules for advanced features:
 
 ### Adding a New Split Keyboard Layout (36-key base)
 
-When adding a new base layer layout (e.g., a new alpha layout like Bunya, Gallium, Night):
+When adding a new base layer layout (e.g., a new alpha layout like Dusk, Gallium, Night):
 
 1. **Add base layer metadata** in `config/keymap.yaml`:
    ```yaml
